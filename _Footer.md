@@ -1,0 +1,1 @@
+- 이 문서는 Codecademy의 리액트 강의 중 [가상 돔에 대한 설명](https://www.codecademy.com/articles/react-virtual-dom)을 번역한 것입니다.
