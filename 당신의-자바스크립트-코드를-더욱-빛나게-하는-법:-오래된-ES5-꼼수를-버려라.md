@@ -22,34 +22,77 @@ ECMAScript 2015, 2016, 그리고 곧 나올 2017은 이런 현상을 개선하�
 
 어떻게 하면 자바스크립트 코드를 바위처럼 단단히, 빛나게 개발할 수 있을까? 당신의 코드에서 꼼수를 제거하고, 해결책을 적용하고 있는 이 가이드를 따라라. 
 
-## 1. Verify the element existence in an array
+## 1. 배열 내 요소가 존재하는지 증명하는 법
 
-> Searching for an element using array.indexOf(element) !== -1
+> array.indexOf(element) !== -1 를 사용해서 요소를 탐색
 
 Since every application deals with arrays, it's a common task to verify if an element exists within a collection.
+모든 어플리케이션이 배열로 다루어진다면, 집합 내에 특정 요소가 존재하는지 증명하는 건 평범한 작업이다.
 
-- In ES5 the usual solution was to use Array.prototype.indexOf(element, [fromIndex]) method and verify the returned value to be different than -1, which indicates the missing element.
+- ES5에서는 보통 Array.prototype.indexOf(element, [fromIndex]) 메소드를 사용했고, 리턴되는 값과 -1을 비교해서 요소의 존재를 증명했다.
 
-Such verification is using a side effect of the .indexOf() method, because it normally returns the index of an element in array, and simply -1 when its not found.
+이 .indexOf() 메소드를 사용하는 증명법은 부작용이 있는데, 배열 내 요소가 존재하면 요소의 인덱스를 리턴하고, 존재하지 않다면 그냥 -1을 리턴한다.
 
-Let's see a sample:
+예제를 살펴보자.
 
-```
+``` javascript
 var months = ['January', 'March', 'July'];  
 months.indexOf('March') !== -1;  // => true  
 months.indexOf('August') !== -1; // => false  
 ```
-To verify if an elements exists in months array, months.indexOf() should return a value different than -1. 
-For an existing element months.indexOf('March') the method returns the index 1, so the comparison 1 !== -1 is true. 'March' element exists. 
-Calling months.indexOf('August') is evaluated to -1, which indicates that the element is missing: -1 !== -1 is false. 'August' element does not exist.
 
-Even worse you may encounter other ways of comparison:
+months라는 배열에서 한 요소의 존재를 증명하기 위해서 months.indexOf()를 사용했고, 리턴되는 값과 -1을 비교한다. 존재하는 요소인 months.indexOf('March')를 사용하게 되면 인덱스 1을 리턴하게 되고, 1 !== -1 비교 값은 참이 된다. 'March'는 존재한다는 의미다.
+months.indexOf('August')은 -1을 리턴하는데, 이 의미는 요소가 없다는 것: -1 !== -1은 거짓이다. 'August' 요소는 존재하지 않는다는 의미다.
+
+더욱 나쁜 방법은 비교를 하는 방법이 다양하다는 점이다.
 
 - months.indexOf('March') != -1
 - months.indexOf('Match') < 0
 - ~months.indexOf('March')
 - and so on...
 
-Such way to search elements is not convenient and smells like a hack.
+이 방법으로 요소를 탐색하는 것은 간편하지 않을 뿐더러 꼼수를 사용하는 것 같은 느낌이다.
 
-- To pass this problem, ECMAScript 2016 introduces a new method Array.prototype.includes(element, [fromIndex]). It returns a boolean that indicates the existence of element in array.
+- 이 문제를 해결하기 위해, ECMAScript 2016는 새로운 메소드인 Array.prototype.includes(element, [fromIndex])를 소개한다. 이 메소드는 배열 내 요소가 존재하는지 참 / 거짓 값으로 리턴을 해준다.
+
+![includes](https://rainsoft.io/content/images/2016/08/1-4.jpg)
+
+예제를 향상 시켜보자.
+
+``` javascript
+var months = ['January', 'March', 'July'];  
+months.includes('March');  // => true  
+months.includes('August'); // => false  
+```
+
+존재하는 요소의 경우 months.includes('March') 결과 값으로 참, 존재 하지 않는 요소의 경우 months.includes('August') 결과 값으로 거짓을 리턴한다.
+
+간단하고 편리하다! 당연히 .indexOf(element) !== -1은 .includes(element)로 바뀌어야 한다.
+
+## 2. 함수 인자 값에 접근하는 법
+
+> arguments를 사용하는 건 하드코딩을 하는 느낌이다.
+
+arguments는 함수 호출 부분에 전달되는 인자들을 포함하는 하나의 객체다.
+
+내 생각에, arguments 객체는 하드코드 되어있는 제한적인 구조물이다.
+
+- arguments는 유사 배열이다. 그래서 배열 메소드인 .forEach(), .reduce(), etc 등을 사용하는 것은 불가능하다.
+- arguments 이름은 바꿀 수 없다. 예를들어 args로 바꾸는 것도 안 된다.
+- 모든 함수의 스코프는 자신의 arguments를 정의한다. 내부 함수에서 외부 함수의 arguments에 접근하기 위해서는 var outerArgs = arguments; 와 같은 임시 변수가 필요하다.
+- 함수의 기본 형태인 function myFun() {}와 arguments의 실제 사용에는 모순이 있다. 함수 형태에서는 파라미터를 넘겨주지 않지만, 함수 내 코드에서는 갑자기 arguments 객체를 사용하게 되면 코드 상에서 이질감이 생긴다.
+
+예제를 살펴보자.
+
+``` javascript
+function sum() {  
+  return Array.prototype.reduce.call(arguments, function(sum, el) {
+    return sum + el;
+  });
+}
+sum(10, 5, 2); // => 17  
+```
+
+sum() function returns the sum of arguments. As described in the list of limitations above, arguments is an array-like object. So an indirect call of .reduce() method is necessary. 
+The function signature function sum() {} indicates that it does not have any parameters, however in the body arguments accesses the values passed on invocation. This creates confusion, because the signature should clearly indicate what parameters the function accepts, without the necessity to dive into the implementation details.
+
