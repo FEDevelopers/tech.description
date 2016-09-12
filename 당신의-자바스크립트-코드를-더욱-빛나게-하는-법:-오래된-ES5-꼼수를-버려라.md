@@ -53,7 +53,7 @@ months.indexOf('August')은 -1을 리턴하는데, 이 의미는 요소가 없�
 
 이 방법으로 요소를 탐색하는 것은 간편하지 않을 뿐더러 꼼수를 사용하는 것 같은 느낌이다.
 
-- 이 문제를 해결하기 위해, ECMAScript 2016는 새로운 메소드인 Array.prototype.includes(element, [fromIndex])를 소개한다. 이 메소드는 배열 내 요소가 존재하는지 참 / 거짓 값으로 리턴을 해준다.
+- 이 문제를 해결하기 위해, ECMAScript 2015는 새로운 메소드인 Array.prototype.includes(element, [fromIndex])를 소개한다. 이 메소드는 배열 내 요소가 존재하는지 참 / 거짓 값으로 리턴을 해준다.
 
 ![includes](https://rainsoft.io/content/images/2016/08/1-4.jpg)
 
@@ -93,6 +93,32 @@ function sum() {
 sum(10, 5, 2); // => 17  
 ```
 
-sum() function returns the sum of arguments. As described in the list of limitations above, arguments is an array-like object. So an indirect call of .reduce() method is necessary. 
-The function signature function sum() {} indicates that it does not have any parameters, however in the body arguments accesses the values passed on invocation. This creates confusion, because the signature should clearly indicate what parameters the function accepts, without the necessity to dive into the implementation details.
+sum() 함수는 arguments의 합계를 리턴한다. 위에서 말한 것처럼, arguments는 유사 배열이다. 그래서 우회적인 방법으로 .reduce()를 사용해야 한다. function sum() {} 이 함수 선언의 형태는 아무런 인자를 받지 않고 있다, 하지만 함수 내의 arguments는 넘어오지 않는 것처럼 보이는 함수의 인자에 접근하고 있다. 이 부분은 혼란을 야기한다, 그래서 함수의 선언 부분에서는 실핸 부분을 보지 않고서라도, 어떤 인자가 넘어오는지 명확히 인지할 수 있어야 한다.
+
+- 이 문제를 해결하기 위해서 es2015에서 제공하는 나머지 매개변수를 적용한다, function funName(...restParam)
+
+![rest parameter](https://rainsoft.io/content/images/2016/08/2-2.jpg)
+
+The rest parameter is present in the function signature as a regular parameter, only prefixed by three dots .... The rest parameter puts into an array the arguments passed to function on invocation. And as any other parameter, it can be named accordingly to its meaning.
+나머지 매개변수는 함수 
+
+Let's get rid of arguments object from the above example and use a rest parameter:
+
+``` javascript
+Try in repl.it
+function sum(...numbers) {  
+  return numbers.reduce(function(sum, el) {
+    return sum + el;
+  });
+}
+sum(10, 5, 2); // => 17  
+```
+numbers rest parameter contains an array of arguments [10, 5, 2] that function sum(10, 5, 2) was invoked with. 
+The problems specific to arguments object are now solved:
+
+- numbers can call .reduce() array method
+- It is possible to name the variable according to its meaning, in our case as an array of numbers
+- The function signature function sum(...numbers) obviously indicates that arguments list is going into numbers parameter.
+
+Without considerable amount of refactoring, but for a considerable code readability arguments object should be migrated to rest parameters.
 
