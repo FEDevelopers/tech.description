@@ -3,9 +3,9 @@
 ## 목차
 
 
-1. this에 대한 미스터리
-1. 함수 실행 
-  1. 함수 실행에서의 this
+1. [this에 대한 미스터리](https://github.com/FEDevelopers/tech.description/wiki/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-this%EC%97%90-%EB%8C%80%ED%95%9C-%EC%84%A4%EB%AA%85-1#1-this%EC%97%90-%EB%8C%80%ED%95%9C-%EB%AF%B8%EC%8A%A4%ED%84%B0%EB%A6%AC)
+1. [함수 실행](https://github.com/FEDevelopers/tech.description/wiki/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-this%EC%97%90-%EB%8C%80%ED%95%9C-%EC%84%A4%EB%AA%85-1#2-%ED%95%A8%EC%88%98-%EC%8B%A4%ED%96%89)
+  1. [함수 실행에서의 this](https://github.com/FEDevelopers/tech.description/wiki/%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8%EC%97%90%EC%84%9C-%EC%82%AC%EC%9A%A9%EB%90%98%EB%8A%94-this%EC%97%90-%EB%8C%80%ED%95%9C-%EC%84%A4%EB%AA%85-1#22-%EC%97%84%EA%B2%A9-%EB%AA%A8%EB%93%9C%EC%97%90%EC%84%9C-%ED%95%A8%EC%88%98-%EC%8B%A4%ED%96%89%EC%97%90%EC%84%9C%EC%9D%98-this)
   1. 엄격 모드에서 함수 실행에서의 this
   1. 실수: 내부 함수에서의 this를 사용할 때
 1. 메소드 실행
