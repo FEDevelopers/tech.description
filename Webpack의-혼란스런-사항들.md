@@ -1,3 +1,5 @@
+> 이 문서는 https://medium.com/@rajaraodv/webpack-the-confusing-parts-58712f8fcad9#.idkxw015s 를 번역한 내용입니다.
+
 # Webpack - 헷갈리는 부분
  Webpack은 React와 Redux 앱을 위한 주요한 module bundler 이다. Angular2와 다른 프레임워크를 사용하는 사람들 또한 많이 사용하는 것 같다.
 
