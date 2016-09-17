@@ -179,3 +179,68 @@ Note : “entry”의 객체 key가 파일 이름으로 매핑된다.
 당신은 entry Object안에 Array 타입을 사용 할 수 있다. 예를 들어 아래 설정을 보면 3가지 파일이 생성된다.(3개의 파일이 있는 vendor.js 와 index.js , profile.js가 생성된다.)
 
 ![Object안에 Array output](https://d262ilb51hltx0.cloudfront.net/max/1600/1*yz76QY1fVzBGKJ-6X6Eleg.png)
+
+
+## output — “path” Vs “publicPath”
+ “output” 은 어디, 그리고 어떻게 결과 파일이 저장되는지에 대한 것이다. “output”은 ‘path’와 ‘publicPath’ 2가지 속성이 있어서 매우 헷갈린다.
+* path : 어디에 결과가 저장되는지 에 관한 것
+* publicPath : 배포 빌드 할 때 Webpack plugins(ulr-loader,file-loader 같은..), CSS나 HTML파일 안에 URL들을 업데이트 해주기 위한 것(prefix개념)
+
+![개발 vs 배포안에 publicPath](https://d262ilb51hltx0.cloudfront.net/max/1600/1*63Zta4mbC_3o44QdycrD7Q.png)
+
+예를 들어, 당신의 CSS파일안에 url을  localhost에서 `./test.png` 와 같이 사용한다. 그러나 배포모드에서는 `test.png`는  CDN이나 다른 지정된 경로로 위치해 있을 것이다.(의역) 그래서 수동으로 `./test.png`의 url을 수정 해주어야 배포 모드에서 올바른 위치에 파일에 접근 할 수 있다.
+수동으로 수정하지 않고 Webpack ‘publicPath’를 사용하면 수많은 플러그인과 다수의 CSS, HTML파일안에 URL들을 자동으로 업데이트 해준다.
+
+![배포모드에서 publicPath](https://d262ilb51hltx0.cloudfront.net/max/1600/1*aOM5ZF8alWLr4BC0CfZe0w.png)
+
+````
+// 결과
+
+// Development: Both Server and the image are on localhost
+.image { 
+  background-image: url(‘./test.png’);
+ }
+
+// Production: Server is on Heroku but the image is on a CDN
+.image { 
+  background-image: url(‘https://someCDN/test.png’);
+ }
+````
+
+## Loaders And Chaining Loaders
+“Loaders”는 JS,CSS와 같은 브라우저 허용 포맷과 같은 다양한 타입의 파일을 ‘load’ 또는 ‘import’ 하게 도와주는 추가 node modules입니다. 게다가 “Loaders”는 `require` 또는 ES6의 `import` 를 JS파일을  가져올 수 있게 해줍니다.
+예를 들어 당신은 ES6로 쓰여진 JS를 변환해주는 `babel-loader`를 사용 할 수 있습니다.
+
+````
+module: {
+ loaders: [{
+  test: /\.js$/, ←Test for ".js" file, if it passes, use the loader
+  exclude: /node_modules/, ←Exclude node_modules folder
+  loader: ‘babel’ ←use babel (short for ‘babel-loader’)
+ }]
+````
+
+### Chaining Loaders (오른쪽에서 왼쪽방향으로 실행된다.)
+ 다중 “Loaders”는 연결하고, 같은 파일 타입에서 작동할 수 있게 해준다.(Multiple Loaders can be chained and made to work on the same file type)
+“!” 을 사용하여 오른쪽에서 왼쪽 방향으로 작업을 수행한다.
+
+예를 들어 우리는 “myCssFile.css”를 가지고 있으며, 그 파일을 HTML안에 `<style>CSS content</style>` 로 넣고 싶다. 우리는 `css-loader`, `style-loader` 인 2개의 loader로 진행 할 수 있다.
+
+````
+module: {
+ loaders: [{
+  test: /\.css$/,
+  loader: ‘style!css’ <--(short for style-loader!css-loader)
+ }]
+````
+
+#### 작동 방식
+
+![](https://d262ilb51hltx0.cloudfront.net/max/1600/1*nes9iLmskmsD8Fp4Ek3u-A.png)
+
+1. Webpack은 모듈안에 의존적인 CSS파일들을 검색한다. webpack은 `require(‘myCssFie.css’)`을 가지고 있는지 JS파일을 체크한다. 만약 찾았다면, 최초로 `css-loader`를 수행한다.
+2. `css-loader`는 모든 CSS와 그안에 의존적인 다른 CSS(ex: `import otherCSS`) 를 JSON파일로 로드한다. 그후 Webpack은 결과들을 `style-loader`로 보낸다.
+3. `style-loader` 는 JSON을 받고, `<style>CSS content</style>` tag 를 추가하고, index.html 파일안에 tag를 삽입한다.
+
+## Loaders는 스스로 설정 할 수 있다.(Loaders Themselves Can Be Configured)
+
