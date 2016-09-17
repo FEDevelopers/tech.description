@@ -1,0 +1,264 @@
+> 이 문서는 https://rainsoft.io/gentle-explanation-of-this-in-javascript/를 번역한 내용입니다.
+
+## 목차
+
+
+1. this에 대한 미스터리
+1. 함수 실행 
+  1. 함수 실행에서의 this
+  1. 엄격 모드에서 함수 실행에서의 this
+  1. 실수: 내부 함수에서의 this를 사용할 때
+1. 메소드 실행
+  1. 메소드 실행에서의 this
+  1. 실수: 객체로부터 메소드를 분리할 때
+1. 생성자 실행 
+  1. 생성자를 실행할 때의 this
+  1. 실수: new 깜빡할 때
+1. 간접 실행 
+  1. 간접 실행에서의 this
+1. 바인딩 함수
+  1. 바인딩 함수에서의 this
+1. 화살표 함수
+  1. 화살표 함수에서의 this
+  1. 실수: 화살표 함수로 메소드를 정의할 때
+1. 결론
+
+
+## 1. this에 대한 미스터리
+많은 시간 동안 this 키워드는 나를 포함한 자바스크립트 개발자들에게 미스터리의 대상이었다. this는 강력한 기능임에도 불구하고 쉽게 이해하기 힘든 부분이다.
+
+
+Java, PHP와 같은 언어에서 this는 클래스로부터 생성되는 인스턴스 중 현재 객체를 의미한다. 그 이상 그 이하도 아니다. 대부분 클래스 밖에서는 사용될 수 없으며 이러한 접근 방법으로는 혼란이 생기지 않는다.
+
+
+자바스크립트에서 this는 함수의 현재 실행 문맥이다. 자바스크립트에는 4가지의 함수 실행 타입이 있기 때문이다.
+
+
+- 함수 실행: alert('Hello World!')
+- 메소드 실행: console.log('Hello World!')
+- 생성자 실행: new RegExp('\\d')
+- 간접 실행: alert.call(undefined, 'Hello World!')
+
+
+각각의 타입은 서로 다른 각각의 문맥을 가진다. 이 부분에서 개발자들의 예상과 다른 부분이 생긴다.
+더욱이 [엄격 모드](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode) 역시 실행 문맥에 영향을 미친다.
+
+
+this 키워드를 이해할 수 있는 방법은 함수 실행, 함수 실행이 문맥에 어떤 영향을 미치는지에 대해 확실히 이해하는 것이다.
+이 글은 실행에 대한 설명에 초점을 맞췄다. 그리고 함수 호출이 this에 어떤 영향을 미치는지, 그리고 문맥을 식별하는 과정에서 저지르는 일반적인 실수들을 보여줄 것이다.
+
+
+시작하기 전에 아래의 용어들과 친숙해지자.
+
+- 실행이란, 함수 내부에 있는 코드를 실행하는 것이다. (쉽게 말해 함수 호출이라고 보면 됨) 예를 들어 parInt라는 함수는 parseInt('15')로 실행한다.
+- 실행 시점에서의 문맥은 함수 내부에서의 값이다.
+- 함수의 스코프는 변수, 객체, 내부 함수들의 집합이다.
+
+
+## 2. 함수 실행
+
+함수 실행은 함수 객체로 계산 될 표현식이 열림 괄호, 콤마로 구분되는 인자들, 그리고 닫힘 괄호와 함께 수행된다. parseInt('18')가 함수 실행의 예제다.
+이 표현식은 myObject.myFunction와 같이 메소드를 실행하기 위해 사용하는 속성 접근자가 될 수 없다. 예를 들어 [1,5].join(',')는 함수 실행이 아니라 메소드 호출이다.
+
+
+함수 실행에 대한 간단한 예제
+
+
+``` javascript
+function hello(name) {  
+  return 'Hello ' + name + '!';
+}
+// 함수 실행
+var message = hello('World');  
+console.log(message); // => 'Hello World!'  
+```
+
+
+``` hello('World') ```은 함수 실행이다. ``` hello ```표현식은 뒤따라 오는 'World' 인자와 함께 함수 객체로 계산 될 것이다.
+
+
+A more advanced example is the IIFE (immediately-invoked function expression):
+심화 예제로 [IIFE](https://en.wikipedia.org/wiki/Immediately-invoked_function_expression)(즉시실행함수)가 있다.
+
+
+``` javascript
+var message = (function(name) {  
+   return 'Hello ' + name + '!';
+})('World');
+console.log(message) // => 'Hello World!'  
+```
+
+
+즉시실행함수 역시 함수 실행의 종류 중 하나다. 앞 부분에 위치한 괄호 한 쌍은 함수 객체로 바뀔 표현식이고, 뒤에 위치한 괄호 한 쌍은 함수에 전달될 인자들이다. 여기에서는 'World'가 인자다.
+
+
+## 2.1 함수 실행에서의 this
+> 함수 실행에서의 this는 전역 객체다.
+
+전역 객체는 실행 환경에 따라 결정된다. 웹 브라우저에서는 window 객체가 전역 객체다.
+
+
+함수 실행에서의 실행 문맥은 전역 객체다.
+아래의 함수 예제를 통해 문맥을 체크해보자.
+
+
+``` javascript
+function sum(a, b) {  
+   console.log(this === window); // => true
+   this.myNumber = 20; // 전역 객체에 'myNumber'라는 속성을 추가
+   return a + b;
+}
+// sum()은 함수 호출이다.
+// sum()에서의 this는 전역 객체다. (window)
+sum(15, 16);     // => 31  
+window.myNumber; // => 20  
+```
+
+
+sum(15, 16)이 실행되자마자, 자바스크립트는 자동으로 this를 전역 객체로 가진다. 웹 브라우저 환경에서의 this는 window다.
+
+
+this가 함수 스코프 밖(최상단: 전역 실행 문맥)에서 사용되었을 경우, 여기서의 this 역시 전역 객체를 참조하게 된다.
+
+
+``` javascript
+console.log(this === window); // => true  
+this.myString = 'Hello World!';  
+console.log(window.myString); // => 'Hello World!'  
+```
+
+
+``` javascrtipt
+<!-- In an html file -->  
+<script type="text/javascript">  
+   console.log(this === window); // => true
+</script>  
+```
+
+
+## 2.2 엄격 모드에서 함수 실행에서의 this
+> 엄격 모드에서 함수 실행에서의 this는 undefined다.
+
+
+엄격 모드는 코드 안정성과 더 나은 오류 검증을 제공하기 위해 ECMA Script 5.1 버전에서 처음 소개 되었다.
+엄격 모드로 작성하기 위해 함수 내부의 최상단에 'use strict'라는 예약어를 적는다. 이 모드는 실행 문맥인 this를 undefined로 만든다. 실행 문맥은 더이상 전역 객체로 되지 않고, 위의 2.1 케이스와 반대의 상황이 된다.
+
+
+엄격 모드로 실행되는 예제 코드
+
+
+``` javascript
+function multiply(a, b) {  
+  'use strict'; // 엄격 모드
+  console.log(this === undefined); // => true
+  return a * b;
+}
+// multiply() 함수는 엄격 모드로 실행됨
+// multiply()에서의 this는 undefined
+multiply(2, 5); // => 10  
+```
+
+
+multiply(2, 5) 함수가 실행될 때 this는 undefined다.
+
+
+엄격 모드는 현재 스코프 뿐만 아니라 내부 스코프에서도 적용된다. (내부에 정의된 모든 함수에 적용됨)
+
+
+``` javascript
+function execute() {  
+   'use strict'; // 엄격 모드
+   function concat(str1, str2) {
+     // 이곳에서도 마찬가지로 엄격 모드
+     console.log(this === undefined); // => true
+     return str1 + str2;
+   }
+   // concat() 함수는 엄격 모드
+   // concat() 함수 안에서의 this는 undefined
+   concat('Hello', ' World!'); // => "Hello World!"
+}
+execute();  
+```
+
+
+'use strict'은 최상단에 위치하고, 해당 스코프에 엄격 모드를 실행해준다. concat은 실행 스코프 내에 정의되어있기 때문에 엄격 모드를 상속 받는다. 그리고 concat('Hello', ' World!') 실행은 this를 undefined로 만든다.
+
+
+자바스크립트 파일에는 엄격 모드, 비 엄격 모드 두 가지 모두 포함되어있다. 그래서 같은 실행 타입에서 서로 다른 모드를 적용할 수 있다.
+
+
+``` javascript
+function nonStrictSum(a, b) {  
+  // 비 엄격 모드
+  console.log(this === window); // => true
+  return a + b;
+}
+function strictSum(a, b) {  
+  'use strict';
+  // 엄격 모드
+  console.log(this === undefined); // => true
+  return a + b;
+}
+// nonStrictSum() 함수는 비 엄격 모드로 실행
+// nonStrictSum()에서의 this는 window 객체
+nonStrictSum(5, 6); // => 11  
+// strictSum() 함수는 엄격 모드로 실행
+// strictSum()에서의 this는 undefined
+strictSum(8, 12); // => 20  
+```
+
+
+## 2.3. 실수: 내부 함수에서의 this를 사용할 때
+함수를 실행할 때 흔히 하는 실수가 외부 함수에서의 this와 내부 함수에서의 this를 동일하게 생각하는 것이다.
+사실 내부 함수의 문맥은 외부 함수의 문맥에 의존되는 게 아니라 오직 실행 환경에 좌우된다. 
+기대하는 되로 this가 동작되려면 수정이 필요하다. (call이라 apply 메소드를 사용하는 간접 실행, 또는 바인딩 함수를 적용)
+
+
+아래의 예제는 두 수의 합계를 계산해준다.
+
+
+``` javascript
+var numbers = {  
+   numberA: 5,
+   numberB: 10,
+   sum: function() {
+     console.log(this === numbers); // => true
+     function calculate() {
+       // this는 window, 엄격 모드였으면 undefined
+       console.log(this === numbers); // => false
+       return this.numberA + this.numberB;
+     }
+     return calculate();
+   }
+};
+numbers.sum(); // NaN, 엄격 모드였으면 TypeError
+```
+
+
+nubers.sum()은 객체 내에 있는 메소드를 실행하는 것이다. 그래서 sum 메소드 내의 문맥은 numbers 객체다. calculate 함수는 sum 내부에 정의되어있다. 그래서 아마도 calculate() 역시 this를 numbers 객체로 바라보고 있을 거라고 예상한다.
+하지만 calculate()은 메소드 실행이 아닌 함수 실행이다. 그리고 이 함수에서의 this는 전역 객체인 window다. (만약, 엄격 모드였다면 undefined) 비록 외부 함수의 문맥이 numbers 객체지만, calculate 함수에는 영향을 미치지 않는다.
+numbers.sum()의 실행 결과는 NaN, 혹은 엄격 모드에서 numberA 속성이 undefined이므로 접근할 수 없어서 TypeError다. calculate 함수는 제대로 실행되지 않았기 때문에 실행 결과는 기대한대로 5 + 10 = 15가 되지 않는다.
+
+
+- 이 문제를 해결하기 위해, calculate 함수 역시 sum method와 동일한 문맥으로 되어야 한다. 그래야 numberA와 numberB 속성에 접근할 수 있기 때문이다. 해결책 중 하나로 .call 메소드를 사용하는 것이다.
+
+
+``` javascript
+var numbers = {  
+   numberA: 5,
+   numberB: 10,
+   sum: function() {
+     console.log(this === numbers); // => true
+     function calculate() {
+       console.log(this === numbers); // => true
+       return this.numberA + this.numberB;
+     }
+     // 문맥을 수정하기 위해 .call() 메소드를 적용
+     return calculate.call(this);
+   }
+};
+numbers.sum(); // => 15  
+```
+
+
+calculate.call(this)는 이전과 동일하게 계산된다. 하지만 추가로, 첫 번째 파라미터로 들어온 인자로 실행 문맥을 수정해준다. 이제 this.numberA + this.numberB의 결과는 numbers.numberA + numbers.numberB와 동일하게 된다. 그래서 결과값도 예상했던대로 5 + 10 = 15가 된다.
