@@ -110,7 +110,7 @@ http://localhost:8080
 
 * webpack.config.js를 통해서 devServer 객체를 사용한다.
 
-````
+```` javascript
 //Via webpack.config.js
 devServer: {
  inline: true,
@@ -193,7 +193,7 @@ Note : “entry”의 객체 key가 파일 이름으로 매핑된다.
 
 ![배포모드에서 publicPath](https://d262ilb51hltx0.cloudfront.net/max/1600/1*aOM5ZF8alWLr4BC0CfZe0w.png)
 
-````
+```` css
 // 결과
 
 // Development: Both Server and the image are on localhost
@@ -211,7 +211,7 @@ Note : “entry”의 객체 key가 파일 이름으로 매핑된다.
 “Loaders”는 JS,CSS와 같은 브라우저 허용 포맷과 같은 다양한 타입의 파일을 ‘load’ 또는 ‘import’ 하게 도와주는 추가 node modules입니다. 게다가 “Loaders”는 `require` 또는 ES6의 `import` 를 JS파일을  가져올 수 있게 해줍니다.
 예를 들어 당신은 ES6로 쓰여진 JS를 변환해주는 `babel-loader`를 사용 할 수 있습니다.
 
-````
+```` javascript
 module: {
  loaders: [{
   test: /\.js$/, ←Test for ".js" file, if it passes, use the loader
@@ -226,7 +226,7 @@ module: {
 
 예를 들어 우리는 “myCssFile.css”를 가지고 있으며, 그 파일을 HTML안에 `<style>CSS content</style>` 로 넣고 싶다. 우리는 `css-loader`, `style-loader` 인 2개의 loader로 진행 할 수 있다.
 
-````
+```` javascript
 module: {
  loaders: [{
   test: /\.css$/,
