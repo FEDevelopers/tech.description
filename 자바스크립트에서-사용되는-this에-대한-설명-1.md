@@ -262,3 +262,159 @@ numbers.sum(); // => 15
 
 
 calculate.call(this)는 이전과 동일하게 계산된다. 하지만 추가로, 첫 번째 파라미터로 들어온 인자로 실행 문맥을 수정해준다. 이제 this.numberA + this.numberB의 결과는 numbers.numberA + numbers.numberB와 동일하게 된다. 그래서 결과값도 예상했던대로 5 + 10 = 15가 된다.
+
+
+## 3. 메소드 실행
+메소드는 객체의 속성으로 있는 함수다. 예를 들어
+
+
+``` javascript
+var myObject = {  
+  // helloFunction is a method
+  helloFunction: function() {
+    return 'Hello World!';
+  }
+};
+var message = myObject.helloFunction();  
+```
+
+
+helloFunction is a method in myObject. To get the method, use a property accessor: myObject.helloFunction.
+여기서 ```helloFunction```는 myOjbect의 메소드다. 메소드에 접근하기 위해서는 ```myObject.helloFunction```와 같은 속성 접근자를 이용하면 된다.
+
+
+메소드 실행은 속성 접근자 형태의 표현식이 함수 객체로 계산되면서 실행된다. 이 표현식은 함수와 마찬가지로 열림 괄호, 함수에 전달할 인자, 닫힘 괄호의 구조다.
+이전 예제를 활용하면 myObject.helloFunction()은 myObject라는 객체의 helloFunction라는 메소드 실행이다. [1, 2].join(',') 혹은 /\s/.test('beautiful world') 역시 메소드 실행의 종류다.
+
+
+앞서 설명한 함수 실행과 메소드 실행이 다르다는 점은 중요하다. 왜냐하면 둘은 서로 다른 타입이기 때문이다. 둘의 가장 큰 차이점은 메소드 실행은 속성 접근자를 통해 function (<expression>.functionProperty() or <expression>['functionProperty']())를 호출한다. 반면에 함수 실행은 속성 접근자를 사용하지 않고, (<expression>())와 같이 바로 호출한다
+
+
+``` javascript
+['Hello', 'World'].join(', '); // 메소드 실행
+({ ten: function() { return 10; } }).ten(); // 메소드 실행
+var obj = {};  
+obj.myFunction = function() {  
+  return new Date().toString();
+};
+obj.myFunction(); // 메소드 실행
+
+var otherFunction = obj.myFunction;  
+otherFunction();     // 함수 실행  
+parseFloat('16.60'); // 함수 실행  
+isNaN(0);            // 함수 실행  
+```
+
+
+# 3.1 메소드 실행에서의 this
+this is the object that owns the method in a method invocation
+this는 객체다 소유하고 있는 메소드를 메소드 실행에서
+
+
+객체 내에 있는 메소드를 실행할 때, 여기서의 this는 객체 자신이다.
+숫자를 증가하는 메소드를 가진 객체를 하나 만들어보자.
+
+
+``` javascript
+var calc = {  
+  num: 0,
+  increment: function() {
+    console.log(this === calc); // => true
+    this.num += 1;
+    return this.num;
+  }
+};
+// 메소드 실행. 여기서의 this는 calc.
+calc.increment(); // => 1  
+calc.increment(); // => 2  
+```
+
+
+calc.increment() 호출은 increment 함수의 문맥을 calc 객체로 만들어준다. 그래서 this.num 참조로 number 속성을 증가시하는 게 가능하도록 해준다.
+자바스크립트 객체는 프로토타입에 있는 메소드를 상속 받는다. 상속 받은 메소드를 객체 내에서 실행한다면 메소드에서의 문맥은 객체 자신을 가리키게 된다.
+
+
+``` javascript
+var myDog = Object.create({  
+  sayName: function() {
+     console.log(this === myDog); // => true
+     return this.name;
+  }
+});
+myDog.name = 'Milo';  
+// 메소드 실행. 여기서의 this는 myDog.
+myDog.sayName(); // => 'Milo'  
+```
+
+
+Object.create()는 myDog라는 새로운 객체를 만들고, 프로토타입을 설정한다. myDog 객체는 sayName이라는 메소드를 상속받는다. myDog.sayName()이 실행될 때, myDog가 실행 문맥이다.
+
+
+ECMAScript 6의 class 예약어에서 메소드 실행 문맥은 위와 마찬가지로 인스턴스 자신을 가리킨다.
+
+
+``` javascript
+class Planet {  
+  constructor(name) {
+    this.name = name;    
+  }
+  getName() {
+    console.log(this === earth); // => true
+    return this.name;
+  }
+}
+var earth = new Planet('Earth');  
+// 메소드 실행. 여기서의 this는 earth.
+earth.getName(); // => 'Earth'  
+```
+
+
+### 3.2 객체로부터 메소드를 분리할 때
+객체 내에 있는 메소드는 별도의 변수로 분리할 수 있다. 이 변수를 통해 메소드를 호출할 때, 당신은 아마도 여기서의 this가 메소드가 정의되어있는 객체라고 생각할 것이다.
+
+
+사실 객체 밖에 있는 메소드를 호출할 경우, 함수 실행을 한 결과와 같다. 함수 실행을 할 경우 this는 전역 객체인 window를 가리킨다. (엄격 모드에서는 undefined)
+.bind() 바인딩 함수를 사용해서 문맥을 수정할 경우, 메소드를 객체에 포함시킬 수 있다.
+
+
+아래는 Animal 생성자로 myCat이라는 인스턴스를 생성하는 예제다. 그리고 setTimeout() 함수로 1초 뒤 myCat 객체의 정보를 출력한다.
+
+
+``` javascript
+function Animal(type, legs) {  
+  this.type = type;
+  this.legs = legs;  
+  this.logInfo = function() {
+    console.log(this === myCat); // => false
+    console.log('The ' + this.type + ' has ' + this.legs + ' legs');
+  }
+}
+var myCat = new Animal('Cat', 4);  
+// "The undefined has undefined legs" 출력
+// 혹은 엄격모드라면 TypeError 출력
+setTimeout(myCat.logInfo, 1000);  
+```
+
+
+아마도 setTimeout으로 myCat.logInfo()를 호출할 때, myCat 객체가 출력될 거라고 예상할 것이다. 하지만 setTimeout의 매개변수로 전달되었기 때문에 메소드는 객체로부터 분리 되어있고, 1초 뒤 함수 실행이 된다. logInfo가 함수로써 실행되기 때문에 여기서의 this는 전역 객체이거나 엄격 모드에서라면 undefined다. 그렇기 때문에 객체의 정보를 기대한 것대로 출력하지 못한다.
+
+
+함수는 .bind 메소드를 사용해 문맥을 강제로 지정시킬 수 있다. 만약 분리된 메소드가 myCat 객체로 바인딩 된다면 이 문제는 해결된다.
+
+
+``` javascript
+function Animal(type, legs) {  
+  this.type = type;
+  this.legs = legs;  
+  this.logInfo = function() {
+    console.log(this === myCat); // => true
+    console.log('The ' + this.type + ' has ' + this.legs + ' legs');
+  };
+}
+var myCat = new Animal('Cat', 4);  
+// "The Cat has 4 legs" 출력
+setTimeout(myCat.logInfo.bind(myCat), 1000);  
+```
+
+
+myCat.logInfo.bind(myCat)는 객체의 메소드가 logInfo라는 새로운 함수로 실행된다. 하지만 바인딩 메소드 덕분에 함수 실행임에도 불구하고, 여기서의 this는 myCat을 가리키게 된다. 
