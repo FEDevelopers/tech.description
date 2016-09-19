@@ -244,3 +244,95 @@ module: {
 
 ## Loaders는 스스로 설정 할 수 있다.(Loaders Themselves Can Be Configured)
 
+> “Loader”는 매개변수에 의해 다르게 작동하도록 설정 할 수 있습니다.
+
+ 아래 이미지에 나온 예를 보면, 1024bytes 보다 큰 이미지는 URL을 사용하고, 1024bytes 보다 작은 이미지는 DataURLs을 사용 하기 위한 `url-loader` 설정을 할 수 있습니다. 이 방법을 사용하기 위해 `limit` 매개변수를 전달하여 사용 할 수 있습니다. 
+![url-loader 2가지 방법](https://d262ilb51hltx0.cloudfront.net/max/1600/1*-qVdcA3E8JSdtszxHqfIdA.png)
+
+##.babelrc.file
+ **babel-loader** `presets`을 통해 **ES6** 에서 **ES5** 로 어떻게 변환 해야 하는지 그리고 React **JSX** 에서 **JS** 어떻게 파싱 하는지 대해 설정을 할 수 있게 해준다.
+
+```` javascript
+module: {
+  loaders: [
+    {
+      test: /\.jsx?$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel',
+      query: {
+        presets: ['react', 'es2015']
+      }
+    }
+  ]
+}
+````
+
+하지만 대부분에 큰 프로젝트에서는 babel 설정이 굉장히 방대할 수가 있다. 그래서 당신은 **.babelrc** 설정파일을 통해 **babel-loader** 설정을 대신 할 수 있다. 만약 **.babelrc** 파일이 있다면 **babel-loader** 는 자동으로 읽어들인다.
+
+#### Usage:
+
+```` javascript
+//webpack.config.js 
+module: {
+  loaders: [
+    {
+      test: /\.jsx?$/,
+      exclude: /(node_modules|bower_components)/,
+      loader: 'babel'
+    }
+  ]
+}
+
+//.bablerc
+{
+ “presets”: [“react”, “es2015”]
+}
+````
+
+## Plugins
+> **Plugins**는 보통 결과물(**bundle**)에 작동하는 추가적인 **node_modules** 입니다.
+
+예를 들어**uglifyJSPlugin**은 파일 사이즈를 줄이고, minimized를 한 bunlde 파일을 준다.
+
+유사하게 **extract-text-webpack-plugin** 는 내부적으로 **css-loader**, **style-loader**를 사용하여 한곳에 CSS파일을 수집하고 외부 **style.css** 파일로 결과를 추출 하여 **index.html** 안에 **style.css** 를 삽입 하면 된다.
+
+```` javascript
+//webpack.config.js
+//Take all the .css files, combine their contents and it extract them to a single "styles.css"
+var ETP = require("extract-text-webpack-plugin");
+
+module: {
+ loaders: [
+  {test: /\.css$/, loader:ETP.extract("style-loader","css-loader") }
+  ]
+},
+plugins: [
+    new ExtractTextPlugin("styles.css") //Extract to styles.css file
+  ]
+}
+````
+
+> 만약 당신이 HTML 안에 style 태그로 CSS 를 하고 싶다면 **extract-text-webpack-plugin** 사용하지 않고 CSS와 Style loaders를 아래와 같이 사용하면 된다.
+
+```` javascript
+module: {
+ loaders: [{
+  test: /\.css$/,
+  loader: ‘style!css’ <—(줄임말 for style-loader!css-loader)
+ }]
+````
+
+## Loaders VS Plugins
+ 아마 지금까지 잘 읽었다면 **Loaders**는 개인적인 파일 레벨에서나, bundle이 생성되기 전에 작동한다는 것을 알아차렸을 것이다. 그리고 **Plugins**은 bundle 이나 chunk 레벨 그리고 bundle이 생선 된 후에 작동한다.
+그리고 **commonsChunksPlugins**와 같은 몇몇 Plugins은 더 나아가서 자신이 생성되는 방법에 대해 수정 한다.(And some Plugins like commonsChunksPlugins go even further and modify how the bundles themselves are created.)
+
+## Resolving File Extensions
+ 대부분의 **Webpack** 설정 파일은 아래와 같이 빈 string 을 포함한 **resolve extensions** 라는 속성을 가지고 있다. 빈 string 은 `require(‘./myFile’)` 과 같은 빈 확장자를 import하게 도와주는 역할이다. 
+
+```` javascript
+{
+ resolve: {
+   extensions: [‘’, ‘.js’, ‘.jsx’]
+ }
+}
+```
