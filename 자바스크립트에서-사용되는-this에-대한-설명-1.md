@@ -1,4 +1,4 @@
-> 이 문서는 https://rainsoft.io/gentle-explanation-of-this-in-javascript/를 번역한 내용입니다.
+> 이 문서는 https://rainsoft.io/gentle-explanation-of-this-in-javascript/ 를 번역한 내용입니다.
 
 ## 목차
 
