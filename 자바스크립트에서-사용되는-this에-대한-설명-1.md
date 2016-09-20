@@ -237,6 +237,8 @@ numbers.sum(); // NaN, 엄격 모드였으면 TypeError
 
 nubers.sum()은 객체 내에 있는 메소드를 실행하는 것이다. 그래서 sum 메소드 내의 문맥은 numbers 객체다. calculate 함수는 sum 내부에 정의되어있다. 그래서 아마도 calculate() 역시 this를 numbers 객체로 바라보고 있을 거라고 예상한다.
 하지만 calculate()은 메소드 실행이 아닌 함수 실행이다. 그리고 이 함수에서의 this는 전역 객체인 window다. (만약, 엄격 모드였다면 undefined) 비록 외부 함수의 문맥이 numbers 객체지만, calculate 함수에는 영향을 미치지 않는다.
+
+
 numbers.sum()의 실행 결과는 NaN, 혹은 엄격 모드에서 numberA 속성이 undefined이므로 접근할 수 없어서 TypeError다. calculate 함수는 제대로 실행되지 않았기 때문에 실행 결과는 기대한대로 5 + 10 = 15가 되지 않는다.
 
 
