@@ -418,3 +418,173 @@ setTimeout(myCat.logInfo.bind(myCat), 1000);
 
 
 myCat.logInfo.bind(myCat)는 객체의 메소드가 logInfo라는 새로운 함수로 실행된다. 하지만 바인딩 메소드 덕분에 함수 실행임에도 불구하고, 여기서의 this는 myCat을 가리키게 된다. 
+
+
+## 4. 생성자 실행
+생성자 실행은 표현식 앞에 new라는 키워드가 붙었을 때, 함수 객체로 계산되어 수행된다. 이 표현식은 함수와 마찬가지로 열림 괄호, 함수에 전달할 인자, 닫힘 괄호의 구조다. 예를 들어 new RegExp('\\d')와 같다.
+
+
+아래의 예제는 Country라는 함수가 생성자로 실행되는 내용이다.
+
+
+``` javascript
+function Country(name, traveled) {  
+   this.name = name ? name : 'United Kingdom';
+   this.traveled = Boolean(traveled); // boolean으로 타입 변환
+}
+Country.prototype.travel = function() {  
+  this.traveled = true;
+};
+// Constructor invocation
+var france = new Country('France', false);  
+// Constructor invocation
+var unitedKingdom = new Country;
+
+france.travel(); // Travel to France  
+```
+
+
+```new Country('France', false)```은 Country 함수의 생성자 실행이다. 이것의 실행 결과는 France라는 이름을 가진 새로운 객체다.
+만약 생성자에 아무런 매개 변수 없이 실행 된다면, ```new Country```처럼 괄호가 생략되어도 된다. 
+
+
+ECMAScript 6에서는 생성자를 class라는 키워드로 정의할 수 있게 해준다.
+
+
+``` javascript
+class City {  
+  constructor(name, traveled) {
+    this.name = name;
+    this.traveled = false;
+  }
+  travel() {
+    this.traveled = true;
+  }
+}
+// 생성자 실행
+var paris = new City('Paris', false);  
+paris.travel();  
+```
+
+
+new City('Paris')은 생성자 실행이다. 이 객체에서 초기 값은 constructor라는 특수 메소드로 설정할 수 있다. 이 메소드 내에서의 this는 새로 만들어지는 객체를 바라보게 된다.
+
+
+생성자 호출은 생성자의 프로토타입으로부터 속성을 상속받는 새로운 빈 객체를 만든다. 생성자 함수의 역할은 객체를 초기화하는 것이다. 
+이미 알고 있을지도 모르지만, 이 타입에서 this는 인스턴스를 가리킨다. 
+
+
+myObject.myFunction와 같은 속성 접근자가 new 키워드 뒤에 오게되면, 자바스크립트는 메소드 실행이 아닌 생성자 실행으로 계산한다.
+예를 들어 new myObject.myFunction()의 경우, 첫 번째로 extractedFunction = myObject.myFunction와 같이 함수가 추출되고, 그 다음으로 new extractedFunction()와 같이 생성자 실행으로 새로운 객체가 만들어진다.
+
+
+## 4.1 생성자 실행에서의 this
+> 생성자 실행에서의 this는 새롭게 만들어진 객체이다.
+
+
+생성자 실행에서의 문맥은 새롭게 만들어진 객체다. 생성자 실행은 객체에 초기값을 셋팅하기 위해 사용된다. 초기값 셋팅의 예로는 생성자 함수의 매개 변수로 받은 데이터, 속성을 위한 환경 변수, 이벤드 핸들러 등이 있다.
+
+
+아래 예제를 통해 문맥을 체크해보자.
+
+
+``` javascript
+function Foo () {  
+  console.log(this instanceof Foo); // => true
+  this.property = 'Default Value';
+}
+// 생성자 실행
+var fooInstance = new Foo();  
+fooInstance.property; // => 'Default Value'  
+```
+
+
+new Foo()은 생성자 실행이다. 여기서의 문맥은 Foo의 인스턴스가 된다. Foo의 내부에서는 초기값이 셋팅되었다. this.property는 default value라는 값을 가진다.
+
+
+ES6에서 사용 가능한 class 문법 역시 같은 형식이다. 초기값 셋팅은 오직 생성자 메소드에서 할 수 있다.
+
+
+``` javascript
+class Bar {  
+  constructor() {
+    console.log(this instanceof Bar); // => true
+    this.property = 'Default Value';
+  }
+}
+// Constructor invocation
+var barInstance = new Bar();  
+barInstance.property; // => 'Default Value'  
+```
+
+
+new Bar()가 실행되면서, 자바스크립트는 생성자 메소드를 통해 문맥을 설정한 빈 객체를 만든다. this.property = 'Default Value'와 같이 ```this``` 키워드를 통해 객체에 속성 값을 추가할 수 있다.
+
+
+## 4.2 실수: new 깜빡할 때
+Some JavaScript functions create instances not only when invoked as constructors, but also when invoked as functions. For example RegExp:
+몇몇 자바스크립트 함수는 생성자 실행 형식이 아니더라도 인스턴스를 생성한다. 예를 들어 RegExp
+
+
+``` javascript
+var reg1 = new RegExp('\\w+');  
+var reg2 = RegExp('\\w+');
+
+reg1 instanceof RegExp;      // => true  
+reg2 instanceof RegExp;      // => true  
+reg1.source === reg2.source; // => true  
+```
+
+new RegExp('\\w+')와 RegExp('\\w+')가 실행될 때, 자바스크립트는 동일한 정규식 객체를 생성한다.
+
+
+ Using a function invocation to create objects is a potential problem (excluding factory pattern), because some constructors may omit the logic to initialize the object when new keyword is missing. 
+The following example illustrates the problem:
+
+객체 생성을 위해 함수 실행을 사용하는 것은 팩토리 패턴을 제외하고, 잠재적 문제를 만들게 된다. 왜냐하면 new 키워드가 생략되었을 때 생성자 함수는 객체를 초기화하는 로직을 생략할지도 모른다. 
+
+
+``` javascript
+function Vehicle(type, wheelsCount) {  
+  this.type = type;
+  this.wheelsCount = wheelsCount;
+  return this;
+}
+// Function invocation
+var car = Vehicle('Car', 4);  
+car.type;       // => 'Car'  
+car.wheelsCount // => 4  
+car === window  // => true  
+```
+
+
+Vehicle은 타입과 바퀴개수 속성을 가지는 객체를 만들어주는 함수다. 
+Vehicle('Car', 4)를 실행하게 되면 객체가 반환된다. 이 객체는 올바른 속성을 가지고 있다. car.type으로 'Car'를, car.wheelCount로 4를 나타낸다. 아마도 초기값을 가진 새로운 객체가 잘 생성되었으리라 예상할 것이다.
+하지만 여기서의 this는 함수 실행이 되므로 window 객체를 가리키게 된다. 그리고 Vehicle('Car', 4)은 속성을 window 객체에 추가한다. 잘못된 사용이다. 새로운 객체가 만들어지지 않았다.
+
+
+생성자를 호출할 때에는 꼭 new 연산자를 사용해야 한다.
+
+
+``` javascript
+function Vehicle(type, wheelsCount) {  
+  if (!(this instanceof Vehicle)) {
+    throw Error('Error: Incorrect invocation');
+  }
+  this.type = type;
+  this.wheelsCount = wheelsCount;
+  return this;
+}
+// 생성자 실행
+var car = new Vehicle('Car', 4);  
+car.type               // => 'Car'  
+car.wheelsCount        // => 4  
+car instanceof Vehicle // => true
+
+// 함수 실행. 잘못된 방식.
+var brokenCar = Vehicle('Broken Car', 3);  
+```
+
+
+new Vehicle('Car', 4)은 정상 동작한다. 초기 값을 가진 새로운 객체가 생성되었다. 왜냐하면 생성자 실행 앞에 new 키워드를 썼기 때문이다. 
+검증하는 방법은 생성자 함수에 추가되어 있다. ```this instanceof Vehicle```로 실행 문맥으로 올바른 객체 타입이 맞는지 체크한다. 만약 여기서의 this가 Vehicle이 아니라면 에러가 발생한다. 이와 같은 경우 만약 Vehicle('Broken Car', 3)가 new 키워드 없이 실행된다면, 올바른 실행이 아니라는 에러 메세지를 반환하게 된다.
