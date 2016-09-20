@@ -18,7 +18,7 @@
 이제 헷갈려하는 부분에 대해 알아보자.
 
 ## Development(개발모드) VS Production(배포모드)
- 첫번째 주의할 점으로 Webpack은 기능의 톤(종류라고생각 :  tons of features)을 가지고 있다. 몇몇은 “개발용”, 또 몇몇은 “배포용” 그외 또다른 사람은 “배포-개발용”에 대한 것입니다.
+ 첫번째 주의할 점으로 Webpack은 수천가지의 기능을 가지고 있다. 몇몇은 “개발용”, 또 몇몇은 “배포용” 그외 또다른 사람은 “배포-개발용”에 대한 것입니다.
 
 ![A sample dev v/s prod Webpack files](https://d262ilb51hltx0.cloudfront.net/max/1600/1*WCAdMi04IFEWdngK8bkFcw.png)
 
