@@ -58,7 +58,7 @@ increment.call() 와 increment.apply()는 모두 10이라는 숫자 매개 변�
 
 
 ## 5.1. 간접 실행에서의 this
-간접 실행인 .call() 그리고 .apply() 메소드에서는 첫 번째 매개 변수로 this를 받는다.
+> 간접 실행인 .call() 그리고 .apply() 메소드에서는 첫 번째 매개 변수로 this를 받는다.
 
 
 아래의 예제를 보자.
@@ -131,7 +131,7 @@ multiply.bind(2)은 double이라는 새로운 함수 객체를 반환한다. 이
 
 
 ## 6.1. 바인딩 함수에서의 this
-.bind() 메소드의 첫 번째 인자 this는 바인딩 함수가 실행될 때의 문맥을 의미한다.
+> .bind() 메소드의 첫 번째 인자 this는 바인딩 함수가 실행될 때의 문맥을 의미한다.
 
 
 .bind()의 역할은 새로운 함수를 만든다. 이 함수의 실행 문맥은 .bind()의 첫 번째 인자로 받은 게 된다. 바인딩 함수는 미리 정의해둔 this 값으로 함수를 생성할 수 있기 때문에 강력한 기술이다.
@@ -163,7 +163,7 @@ numbers.getNumbers 함수는 바인딩 없이 simpleGetNumbers라는 변수에 �
 
 .bind() 메소드는 문맥을 강제로 지정하고, 그 문맥을 항상 유지시켜 준다. 바인딩 함수는 .call() 혹은 .apply()를 적용시켜서 또 다른 문맥을 지정하는 게 불가능하다. 하더라도 영향이 전혀 없다.
 
-Only the constructor invocation of a bound function can change that, however this is not a recommended approach (for constructor invocation use normal, not bound functions). 
+오직 바인딩 함수에 new를 붙여 생성자 실행 형태로 해야 문맥을 바꿀 수 있다. 하지만 이 방법은 생성자 실행을 할 때 올바른 접근 방법이 아니다.
 
 아래의 예제는 바인딩 함수를 정의하고, 미리 정의된 문맥을 변경해보는 내용이다.
 
@@ -190,7 +190,6 @@ new one(); // => Object
 
 
 ## 7. 화살표 함수
-Arrow function is designed to declare the function in a shorter form and lexically bind the context. 
 화살표 함수는 함수를 정의할 때 간단한 형태로, 그리고 문맥을 바인드하기 위해 개발되었다. 
 
 아래와 같은 형태로 사용된다.
@@ -206,8 +205,9 @@ hello('World'); // => 'Hello World'
 ```
 
 
-Arrow functions bring a lighter syntax, excluding the verbose keyword function. You could even omit the return, when the function has only 1 statement.
-화살표 함수는 function이라는 키워드를 사용하지 않기 때문에 짧게 사용할 수 있는 가벼운 문법이다. 심지어 함수에 코드가 1줄만 있으면 return을 생략해도 된다.
+화살표 함수는 function이라는 키워드를 사용하지 않기 때문에 짧게 사용할 수 있는 가벼운 문법이다. 
+
+심지어 함수에 코드가 1줄만 있으면 return을 생략해도 된다.
 
 
 화살표 함수는 익명 함수다. 그렇기 때문에 화살표 함수의 name 속성은 '' 빈 스트링이다. 그렇기 때문에 이 화살표 함수는 이름을 가지지 않는다. 그래서 재귀 함수를 만들거나, 이벤트 핸들러를 붙일 때 유용하다.
@@ -226,10 +226,9 @@ sumArguments(5, 5, 6); // => 16
 
 
 ## 7.1. 화살표 함수에서의 this
-여기서의 this는 화살표 함수가 정의된 인근 문맥과 동일하다.
+> 여기서의 this는 화살표 함수가 정의된 인근 문맥과 동일하다.
 
 
-The arrow function doesn't create its own execution context, but takes this from the outer function where it is defined. 
 화살표 함수는 자채 실행 문맥을 가지지 않기 때문에 외부 함수의 this를 상속 받는다.
 
 아래의 예제는 문맥의 직관성을 보여준다.
@@ -355,7 +354,7 @@ walkPeriod.format()은 walkPeriod 객체를 문맥으로 가리키는 메소드 
 > this가 어디로부터 오는가?
 
 
-올바른 사고 방식은 아래와 같다.
+올바른 사고 방식은 다음과 같다.
 
 
 > 함수가 어떻게 실행되는가?
@@ -364,7 +363,7 @@ walkPeriod.format()은 walkPeriod 객체를 문맥으로 가리키는 메소드 
 화살표 함수의 경우에는 이렇게 생각해야 한다.
 
 
-> 화살표 함수가 정의된 곳의 문맥은 어떤 건가?
+> 화살표 함수가 정의된 곳의 문맥은?
 
 
 이러한 사고 방식은 복잡한 this 개념을 다룰 때 도움된다. 
