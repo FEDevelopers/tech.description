@@ -41,16 +41,18 @@ Java, PHP와 같은 언어에서 this는 클래스로부터 생성되는 인스�
 
 
 각각의 타입은 서로 다른 각각의 문맥을 가진다. 이 부분에서 개발자들의 예상과 다른 부분이 생긴다.
+
 더욱이 [엄격 모드](https://developer.mozilla.org/ko/docs/Web/JavaScript/Reference/Strict_mode) 역시 실행 문맥에 영향을 미친다.
 
 
 this 키워드를 이해할 수 있는 방법은 함수 실행, 함수 실행이 문맥에 어떤 영향을 미치는지에 대해 확실히 이해하는 것이다.
+
 이 글은 실행에 대한 설명에 초점을 맞췄다. 그리고 함수 호출이 this에 어떤 영향을 미치는지, 그리고 문맥을 식별하는 과정에서 저지르는 일반적인 실수들을 보여줄 것이다.
 
 
 시작하기 전에 아래의 용어들과 친숙해지자.
 
-- 실행이란, 함수 내부에 있는 코드를 실행하는 것이다. (쉽게 말해 함수 호출이라고 보면 됨) 예를 들어 parInt라는 함수는 parseInt('15')로 실행한다.
+- 실행이란, 함수 내부에 있는 코드를 수행하는 것이다. (쉽게 말해 함수 호출이라고 보면 됨) 예를 들어 parInt라는 함수는 parseInt('15', 10)로 실행된다.
 - 실행 시점에서의 문맥은 함수 내부에서의 값이다.
 - 함수의 스코프는 변수, 객체, 내부 함수들의 집합이다.
 
@@ -58,6 +60,7 @@ this 키워드를 이해할 수 있는 방법은 함수 실행, 함수 실행이
 ## 2. 함수 실행
 
 함수 실행은 함수 객체로 계산 될 표현식이 열림 괄호, 콤마로 구분되는 인자들, 그리고 닫힘 괄호와 함께 수행된다. parseInt('18')가 함수 실행의 예제다.
+
 이 표현식은 myObject.myFunction와 같이 메소드를 실행하기 위해 사용하는 속성 접근자가 될 수 없다. 예를 들어 [1,5].join(',')는 함수 실행이 아니라 메소드 호출이다.
 
 
@@ -99,6 +102,7 @@ console.log(message) // => 'Hello World!'
 
 
 함수 실행에서의 실행 문맥은 전역 객체다.
+
 아래의 함수 예제를 통해 문맥을 체크해보자.
 
 
@@ -128,7 +132,7 @@ console.log(window.myString); // => 'Hello World!'
 ```
 
 
-``` javascrtipt
+``` html
 <!-- In an html file -->  
 <script type="text/javascript">  
    console.log(this === window); // => true
@@ -210,6 +214,8 @@ strictSum(8, 12); // => 20
 
 ## 2.3. 실수: 내부 함수에서의 this를 사용할 때
 함수를 실행할 때 흔히 하는 실수가 외부 함수에서의 this와 내부 함수에서의 this를 동일하게 생각하는 것이다.
+
+
 사실 내부 함수의 문맥은 외부 함수의 문맥에 의존되는 게 아니라 오직 실행 환경에 좌우된다. 
 기대하는 되로 this가 동작되려면 수정이 필요하다. (call이라 apply 메소드를 사용하는 간접 실행, 또는 바인딩 함수를 적용)
 
@@ -235,12 +241,13 @@ numbers.sum(); // NaN, 엄격 모드였으면 TypeError
 ```
 
 
-nubers.sum()은 객체 내에 있는 메소드를 실행하는 것이다. 그래서 sum 메소드 내의 문맥은 numbers 객체다. calculate 함수는 sum 내부에 정의되어있다. 그래서 아마도 calculate() 역시 this를 numbers 객체로 바라보고 있을 거라고 예상한다.
+numbers.sum()은 객체 내에 있는 메소드를 실행하는 것이다. 그래서 sum 메소드 내의 문맥은 numbers 객체다. calculate 함수는 sum 내부에 정의되어있다. 그래서 아마도 calculate() 역시 this를 numbers 객체로 바라보고 있을 거라고 예상한다.
 하지만 calculate()은 메소드 실행이 아닌 함수 실행이다. 그리고 이 함수에서의 this는 전역 객체인 window다. (만약, 엄격 모드였다면 undefined) 비록 외부 함수의 문맥이 numbers 객체지만, calculate 함수에는 영향을 미치지 않는다.
+
 numbers.sum()의 실행 결과는 NaN, 혹은 엄격 모드에서 numberA 속성이 undefined이므로 접근할 수 없어서 TypeError다. calculate 함수는 제대로 실행되지 않았기 때문에 실행 결과는 기대한대로 5 + 10 = 15가 되지 않는다.
 
 
-- 이 문제를 해결하기 위해, calculate 함수 역시 sum method와 동일한 문맥으로 되어야 한다. 그래야 numberA와 numberB 속성에 접근할 수 있기 때문이다. 해결책 중 하나로 .call 메소드를 사용하는 것이다.
+이 문제를 해결하기 위해, calculate 함수 역시 sum method와 동일한 문맥으로 되어야 한다. 그래야 numberA와 numberB 속성에 접근할 수 있기 때문이다. 해결책 중 하나로 .call 메소드를 사용하는 것이다.
 
 
 ``` javascript
@@ -307,11 +314,11 @@ isNaN(0);            // 함수 실행
 
 
 # 3.1 메소드 실행에서의 this
-this is the object that owns the method in a method invocation
-this는 객체다 소유하고 있는 메소드를 메소드 실행에서
+this는 메소드 실행에서 메소드를 소유하고 있는 객체다 
 
 
 객체 내에 있는 메소드를 실행할 때, 여기서의 this는 객체 자신이다.
+
 숫자를 증가하는 메소드를 가진 객체를 하나 만들어보자.
 
 
@@ -522,8 +529,7 @@ new Bar()가 실행되면서, 자바스크립트는 생성자 메소드를 통�
 
 
 ## 4.2 실수: new 깜빡할 때
-Some JavaScript functions create instances not only when invoked as constructors, but also when invoked as functions. For example RegExp:
-몇몇 자바스크립트 함수는 생성자 실행 형식이 아니더라도 인스턴스를 생성한다. 예를 들어 RegExp
+몇몇 자바스크립트 함수는 생성자 실행 형태로 실행됐을 때 뿐만 아니라 함수 실행으로도 인스턴스를 생성한다. 예를 들어 RegExp가 있다.
 
 
 ``` javascript
@@ -538,10 +544,9 @@ reg1.source === reg2.source; // => true
 new RegExp('\\w+')와 RegExp('\\w+')가 실행될 때, 자바스크립트는 동일한 정규식 객체를 생성한다.
 
 
- Using a function invocation to create objects is a potential problem (excluding factory pattern), because some constructors may omit the logic to initialize the object when new keyword is missing. 
-The following example illustrates the problem:
+객체 생성을 위해 함수 실행을 사용하는 것(팩토리 패턴을 제외)은 잠재적 문제를 만들게 된다. 왜냐하면 new 키워드가 생략되었을 때 생성자 함수는 객체를 초기화하는 로직을 생략할지도 모른다. 
 
-객체 생성을 위해 함수 실행을 사용하는 것은 팩토리 패턴을 제외하고, 잠재적 문제를 만들게 된다. 왜냐하면 new 키워드가 생략되었을 때 생성자 함수는 객체를 초기화하는 로직을 생략할지도 모른다. 
+아래는 해당 문제점이 나타나는 예제다.
 
 
 ``` javascript
@@ -559,7 +564,9 @@ car === window  // => true
 
 
 Vehicle은 타입과 바퀴개수 속성을 가지는 객체를 만들어주는 함수다. 
+
 Vehicle('Car', 4)를 실행하게 되면 객체가 반환된다. 이 객체는 올바른 속성을 가지고 있다. car.type으로 'Car'를, car.wheelCount로 4를 나타낸다. 아마도 초기값을 가진 새로운 객체가 잘 생성되었으리라 예상할 것이다.
+
 하지만 여기서의 this는 함수 실행이 되므로 window 객체를 가리키게 된다. 그리고 Vehicle('Car', 4)은 속성을 window 객체에 추가한다. 잘못된 사용이다. 새로운 객체가 만들어지지 않았다.
 
 
@@ -587,4 +594,5 @@ var brokenCar = Vehicle('Broken Car', 3);
 
 
 new Vehicle('Car', 4)은 정상 동작한다. 초기 값을 가진 새로운 객체가 생성되었다. 왜냐하면 생성자 실행 앞에 new 키워드를 썼기 때문이다. 
+
 검증하는 방법은 생성자 함수에 추가되어 있다. ```this instanceof Vehicle```로 실행 문맥으로 올바른 객체 타입이 맞는지 체크한다. 만약 여기서의 this가 Vehicle이 아니라면 에러가 발생한다. 이와 같은 경우 만약 Vehicle('Broken Car', 3)가 new 키워드 없이 실행된다면, 올바른 실행이 아니라는 에러 메세지를 반환하게 된다.
