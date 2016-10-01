@@ -1,14 +1,22 @@
 > 이 문서는 http://exploringjs.com/es6/ch_async.html 를 번역한 내용입니다.
 
-1. [자바스크립트 호출 스택(call stack)](https://github.com/FEDevelopers/tech.description/wiki/_new#1-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%ED%98%B8%EC%B6%9C-%EC%8A%A4%ED%83%9Dcall-stack)
-2. [브라우저 이벤트 루프(event loop)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84event-loop)
- 1. [타이머(Timers)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-1-%ED%83%80%EC%9D%B4%EB%A8%B8timers)
- 2. [DOM 변경 표시(Displaying DOM changes)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-2-dom-%EB%B3%80%EA%B2%BD-%ED%91%9C%EC%8B%9C-displaying-dom-changes)
- 3. [Run-to-completion 의미(해석하기 애매한 고유 용어)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EC%95%A0%EB%A7%A4%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4)
- 4. [이벤트 루프 블락(Blocking the event loop)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-4-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84-%EB%B8%94%EB%9D%BDblocking-the-event-loop)
- 5. [블럭킹 피하기(Avoiding blocking)](https://github.com/FEDevelopers/tech.description/wiki/_new#2-5-%EB%B8%94%EB%9F%AD%ED%82%B9-%ED%94%BC%ED%95%98%EA%B8%B0avoiding-blocking)
-3. [비동기적 결과 수신(Receiving results asynchronously)](https://github.com/FEDevelopers/tech.description/wiki/_new#3-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-%EA%B2%B0%EA%B3%BC-%EC%88%98%EC%8B%A0receiving-results-asynchronously)
-
+1. [자바스크립트 호출 스택(call stack)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#1-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%ED%98%B8%EC%B6%9C-%EC%8A%A4%ED%83%9Dcall-stack)
+2. [브라우저 이벤트 루프(event loop)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84event-loop)
+ 1. [타이머(Timers)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-1-%ED%83%80%EC%9D%B4%EB%A8%B8timers)
+ 2. [DOM 변경 표시(Displaying DOM changes)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-2-dom-%EB%B3%80%EA%B2%BD-%ED%91%9C%EC%8B%9C-displaying-dom-changes)
+ 3. [Run-to-completion 의미(해석하기 애매한 고유 용어)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EC%95%A0%EB%A7%A4%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4)
+ 4. [이벤트 루프 블럭(Blocking the event loop)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-4-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84-%EB%B8%94%EB%9D%BDblocking-the-event-loop)
+ 5. [블럭킹 피하기(Avoiding blocking)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-5-%EB%B8%94%EB%9F%AD%ED%82%B9-%ED%94%BC%ED%95%98%EA%B8%B0avoiding-blocking)
+3. [비동기적 결과 수신(Receiving results asynchronously)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-%EA%B2%B0%EA%B3%BC-%EC%88%98%EC%8B%A0receiving-results-asynchronously)
+ 1. events를 통한 비동기 결과(Asynchronous results via events)
+  1. 암시적 요청(Implicit requests)
+  2. events는 하나의 결과는 잘 작동하지 않는다.(Events don’t work well for single results)
+ 2. callbacks를 통한 비동기 결과(Asynchronous results via callbacks)
+ 3. Continuation-passing style
+ 4. Composing code in CPS
+ 5. Pros and cons of callbacks
+4. Looking ahead
+5. Further reading
 
 #Asynchronouse programming (Background)
  이 챕터는 자바스크립트의 비동기 프로그래밍(asynchronous programming) 기본에 대한 이야기입니다. 또한 이번 챕터는 **ES6 Promise**을 위한 기본 배경 지식이기도 합니다.
