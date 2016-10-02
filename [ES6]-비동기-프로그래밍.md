@@ -1,5 +1,6 @@
 > 이 문서는 http://exploringjs.com/es6/ch_async.html 를 번역한 내용입니다.
 
+#목차
 1. [자바스크립트 호출 스택(call stack)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#1-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%ED%98%B8%EC%B6%9C-%EC%8A%A4%ED%83%9Dcall-stack)
 2. [브라우저 이벤트 루프(event loop)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84event-loop)
  1. [타이머(Timers)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-1-%ED%83%80%EC%9D%B4%EB%A8%B8timers)
@@ -8,15 +9,15 @@
  4. [이벤트 루프 블럭(Blocking the event loop)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-4-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84-%EB%B8%94%EB%9D%BDblocking-the-event-loop)
  5. [블럭킹 피하기(Avoiding blocking)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-5-%EB%B8%94%EB%9F%AD%ED%82%B9-%ED%94%BC%ED%95%98%EA%B8%B0avoiding-blocking)
 3. [비동기적 결과 수신(Receiving results asynchronously)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%A0%81-%EA%B2%B0%EA%B3%BC-%EC%88%98%EC%8B%A0receiving-results-asynchronously)
- 1. events를 통한 비동기 결과(Asynchronous results via events)
-  1. 암시적 요청(Implicit requests)
-  2. events는 하나의 결과는 잘 작동하지 않는다.(Events don’t work well for single results)
- 2. callbacks를 통한 비동기 결과(Asynchronous results via callbacks)
- 3. Continuation-passing style
- 4. CPS안에 코드 작성(Composing code in CPS)
- 5. 콜백의 장단점(Pros and cons of callbacks)
-4. 다음에 할 내용(Looking ahead)
-5. 추가로 읽을 거리(Further reading)
+ 1. [events를 통한 비동기 결과(Asynchronous results via events)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-1-events%EB%A5%BC-%ED%86%B5%ED%95%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EA%B2%B0%EA%B3%BCasynchronous-results-via-events)
+  1. [암시적 요청(Implicit requests)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-1-1-%EC%95%94%EC%8B%9C%EC%A0%81-%EC%9A%94%EC%B2%ADimplicit-requests)
+  2. [events는 하나의 결과는 잘 작동하지 않는다.(Events don’t work well for single results)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-1-2-events%EB%8A%94-%ED%95%98%EB%82%98%EC%9D%98-%EA%B2%B0%EA%B3%BC%EB%8A%94-%EC%9E%98-%EC%9E%91%EB%8F%99%ED%95%98%EC%A7%80-%EC%95%8A%EC%8A%B5%EB%8B%88%EB%8B%A4events-dont-work-well-for-single-results)
+ 2. [callbacks를 통한 비동기 결과(Asynchronous results via callbacks)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-2-callbacks%EB%A5%BC-%ED%86%B5%ED%95%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EA%B2%B0%EA%B3%BCasynchronous-results-via-callbacks)
+ 3. [Continuation-passing style](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-3-continuation-passing-style%EC%97%AD%EC%9E%90%EC%A3%BC-%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EC%95%A0%EB%A7%A4%ED%95%9C-%EA%B3%A0%EC%9C%A0%EB%AA%85%EC%82%AC-%EB%B3%B4%ED%86%B5-cps%EB%9D%BC%EA%B3%A0-%EB%B6%88%EB%A6%BC)
+ 4. [CPS안에 코드 작성(Composing code in CPS)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-4-cps%EC%95%88%EC%97%90-%EC%BD%94%EB%93%9C-%EC%9E%91%EC%84%B1composing-code-in-cps)
+ 5. [콜백의 장단점(Pros and cons of callbacks)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#3-5-%EC%BD%9C%EB%B0%B1%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90pros-and-cons-of-callbacks)
+4. [다음에 할 내용(Looking ahead)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#4-%EB%8B%A4%EC%9D%8C%EC%97%90-%ED%95%A0-%EB%82%B4%EC%9A%A9looking-ahead)
+5. [추가로 읽을 거리(Further reading)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#5-%EC%B6%94%EA%B0%80%EB%A1%9C-%EC%9D%BD%EC%9D%84-%EA%B1%B0%EB%A6%ACfurther-reading)
 
 #Asynchronouse programming (Background)
  이 챕터는 자바스크립트의 비동기 프로그래밍(asynchronous programming) 기본에 대한 이야기입니다. 또한 이번 챕터는 **ES6 Promise**을 위한 기본 배경 지식이기도 합니다.
