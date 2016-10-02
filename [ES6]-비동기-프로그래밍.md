@@ -13,10 +13,10 @@
   2. events는 하나의 결과는 잘 작동하지 않는다.(Events don’t work well for single results)
  2. callbacks를 통한 비동기 결과(Asynchronous results via callbacks)
  3. Continuation-passing style
- 4. Composing code in CPS
- 5. Pros and cons of callbacks
-4. Looking ahead
-5. Further reading
+ 4. CPS안에 코드 작성(Composing code in CPS)
+ 5. 콜백의 장단점(Pros and cons of callbacks)
+4. 다음에 할 내용(Looking ahead)
+5. 추가로 읽을 거리(Further reading)
 
 #Asynchronouse programming (Background)
  이 챕터는 자바스크립트의 비동기 프로그래밍(asynchronous programming) 기본에 대한 이야기입니다. 또한 이번 챕터는 **ES6 Promise**을 위한 기본 배경 지식이기도 합니다.
@@ -169,3 +169,173 @@ Second
 
 ## 3. 비동기적 결과 수신(Receiving results asynchronously)
 > 비동기적 결과를 수신하기 위한 2가지 패턴 : **events** 와 **callback**
+
+### 3-1 events를 통한 비동기 결과(Asynchronous results via events)
+ 결과를 비동기적으로 수신받기 위해서는, 각 요청 별 객체를 생성하고, 생성 객체와 함께 **이벤트 핸들러**(events handlers)를 등록 합니다.(:성공적인 연산작업을 위하거나, 에러를 핸들링하기 위해서)
+아래 코드는 `XMLHttpRequest` API가 어떻게 작동하는지 보여주는 코드입니다.
+
+```` javascript
+var req = new XMLHttpRequest();
+req.open('GET', url);
+
+req.onload = function () {
+    if (req.status == 200) {
+        processData(req.response);
+    } else {
+        console.log('ERROR', req.statusText);
+    }
+};
+
+req.onerror = function () {
+    console.log('Network Error');
+};
+
+req.send(); // Add request to task queue
+````
+
+마지막 라인은 실제로 요청을 수행 하지 않고, **task queue** 에 추가 됩니다. 그러므로 `onload` , `onerror` 가 세팅 되기전에, `open()` 메서드를 후에 수행 할 수 있습니다. 자바스크립트 **run-to-completion** 때문에 같게 작동합니다.(Things would work the same, due to JavaScript’s run-to-completion semantics.)
+
+### 3-1-1 암시적 요청(Implicit requests)
+ 브라우저 API인 **IndexedDB는 약간 특이한 스타일인 이벤트 처리(event handling)을 가지고 있습니다.
+
+```` javascript
+var openRequest = indexedDB.open('test', 1);
+
+openRequest.onsuccess = function (event) {
+    console.log('Success!');
+    var db = event.target.result;
+};
+
+openRequest.onerror = function (error) {
+    console.log(error);
+};
+````
+
+첫번째로 요청 객체를 만들고, 결과를 통지받기 위한 이벤트리스너를 등록합니다. 그러나 당신은 명시적으로 요청에 대해 대기할 필요가 없습니다. 그것은 `open()`메서드에 의해 완료됩니다. **IndexedDB**는 현재 작업이 끝난 후에 실행 됩니다. 이것이 왜 `open()` 메서드 호출 이후에 이벤트 핸들러를 등록해야 하는지 이유 입니다.
+
+만약 당신이 **멀티스레드**(multi-thread)프로그래밍 언어를 사용 한다면, 아마도 이 핸들링 요청 스타일은 낯설 것 입니다. 그것은 마치 **race condition**(경쟁상태)와 같은 것 처럼 보일 것 입니다. 그러나 **run-to-completion** 때문에 항상 안전 할 것입니다.
+
+### 3-1-2 events는 하나의 결과는 잘 작동하지 않습니다.(Events don’t work well for single results)
+ 만약 여러번 결과를 수신 받을 경우, 비동기 연산 결과 처리하는 것(handling)은 OK입니다. 그러나 하나의 결과는 다음의 다변적인 문제를 일으킵니다. 그 사례로 콜백은 매우 인기가 많아지게 되었습니다.(For that use case, callbacks have become popular.)(애매한 문장)
+
+### 3-2 callbacks를 통한 비동기 결과(Asynchronous results via callbacks)
+ 만약 당신이 비동기 결과를 콜백을 통하여 처리 한다면, 당신은 비동기 함수, 메서드 호출 을 콜백 함수로써 매개변수에 전달 합니다.
+
+아래 **Node.js** 예제를 봅시다. 우리는 `fs.readFile()`을 비동기로 호출하여 text 파일 내용을 읽습니다. 
+
+```` javascript
+// Node.js
+fs.readFile('myfile.txt', { encoding: 'utf8' },
+    function (error, text) { // (A)
+        if (error) {
+            // ...
+        }
+        console.log(text);
+    });
+````
+
+만약 `readFile()`이 성공하면 A라인안에 **text** 파라미터를 통하여 결과를 수신 받을 수 있습니다. 만약 성공하지 못하면 첫번째 파라미터로 error 를 받게 됩니다.
+
+아래는 전통적인 함수형 프로그래밍 스타일로 만든 위 예제와 같은 코드 입니다.
+
+```` javascript
+// Functional
+readFileFunctional('myfile.txt', { encoding: 'utf8' },
+    function (text) { // success
+        console.log(text);
+    },
+    function (error) { // failure
+        // ...
+    });
+````
+
+### 3-3 Continuation-passing style(역자주: 해석하기 애매한 고유명사 보통 CPS라고 불림)
+콜백을 사용하는 프로그래밍 스타일(특히 이전에 보여준 함수적인 방식)은 또한 *Continuation-passing-style*(CPS)라고 부릅니다. 왜냐하면 다음 스텝으로 명시적인 파라미터(콜백)로서 전달 합니다. 이는 다음 스텝에 무엇을, 그리고 언제 발생할지 함수 호출을 더 효율적으로 제어 할 수 있습니다.
+아래 CPS를 표현한 코드를 봅시다.
+
+```` javascript
+console.log('A');
+identity('B', function step2(result2) {
+    console.log(result2);
+    identity('C', function step3(result3) {
+       console.log(result3);
+    });
+    console.log('D');
+});
+console.log('E');
+
+// Output: A E B D C
+
+function identity(input, callback) {
+    setTimeout(function () {
+        callback(input);
+    }, 0);
+}
+````
+
+아래 각 절차는 콜백 안에서 프로그램이 진행 하는 제어 흐름입니다. 이 중첩된 함수는 떄떄로 콜백지옥(callback hell)  이라고 불리 웁니다. 그러나 당신은 중첩을 피할 수 있습니다. 왜냐하면 자바스크립트 함수는 호이스팅(hoisted:스코프 최상단으로 위치시키는 것을 의미함)하기 떄문입니다. 이 말은 당신이 먼저 호출 하고, 함수 정의 는 나중에 한다는 걸 의미 합니다. 아래 호이스팅을 사용한 예제를 확인해봅시다.
+
+```` javascript
+console.log('A');
+identity('B', step2);
+function step2(result2) {
+    // The program continues here
+    console.log(result2);
+    identity('C', step3);
+    console.log('D');
+}
+function step3(result3) {
+   console.log(result3);
+}
+console.log('E');
+````
+
+[More information on CPS is given in [3]](http://www.2ality.com/2012/06/continuation-passing-style.html)
+
+### 3-4 CPS안에 코드 작성(Composing code in CPS)
+ 일반적인 자바스크립트 스타일은 코드 조각 들의 조합입니다.
+
+- 하나 뒤에 하나를 놓는것, 일반적인 스타일은 순차적인 조합으로 코드를 잇는것이 우리자신에게 좋을 것입니다.(This is blindingly obvious, but it’s good to remind ourselves that concatenating code in normal style is sequential composition)
+- `map()`, `filter()`,`forEach()`와 같은 배열 메소드  
+- for`,`while`과 같은 루프
+
+[Async.js](https://github.com/caolan/async) 라이브러리는 **Node.js** 콜백스타일과 함께 **CPS** 비슷한 것을 할 수 있게 제공합니다. 그것은 아래 예제 코드와 같습니다. 3개의 파일의 컨텐츠를 불러오고 배열에 이름을 저장하는 예제 입니다.
+
+```` javascript
+var async = require('async');
+
+var fileNames = [ 'foo.txt', 'bar.txt', 'baz.txt' ];
+async.map(fileNames,
+    function (fileName, callback) {
+        fs.readFile(fileName, { encoding: 'utf8' }, callback);
+    },
+    // Process the result
+    function (error, textArray) {
+        if (error) {
+            console.log(error);
+            return;
+        }
+        console.log('TEXTS:\n' + textArray.join('\n----\n'));
+    });
+````
+
+### 3-5 콜백의 장단점(Pros and cons of callbacks)
+ 콜백 결과를 사용하는 **CPS**는 근본적으로 다른 프로그래밍 스타일입니다. CPS는 주요한 이점을 가지고 있습니다. 그것은 기본적인 메커니즘을 쉽게 이해할 수 있게 도와줍니다. 그러나 단점도 있습니다.
+
+- 에러처리가 복잡합니다. : 여기 에러를 수집하는 두가지 방법이 있습니다. - 콜백, 예외를 통하여. 당신은 두가지를 조합하는 것에 대해 유의할 필요가 있습니다.
+- 덜 우아한 시그니쳐 : 동기 함수는, 입력(파라미터)과 출력(함수결과)간의 관심을 분명하게 분리합니다. 콜백을 사용하는 비동기 함수는, 관심을 믹스합니다. : 함수의 결과는 문제가 없고, 몇몇 파라미터는 입력으로 사용되고, 다른 것은 출력을 위하여 사용됩니다.
+- 구성은 더 복잡합니다. : 왜냐하면 출력은 파라미터로 보여주기 때문에, 조합을 통하여 코드를 구성하는것은 매우 복잡합니다.(Because the concern “output” shows up in the parameters, it is more complicated to compose code via combinators.)
+
+**Node.js** 콜백스타일은 3가지 단점을 가지고 있습니다.(함수 스타일과 비교)
+
+- 에러를 처리하기 위한 if문이 많다.
+- 에러 핸들러를 재사용하기 힘들다.
+- 또한 기본 에러 핸들러를 제공하는게 어렵다. 기본 에러 핸들러는 당신이 함수를 호출 할때 자신만의 핸들러를 작성하지 않을 때 유용합니다. 또한 만약 caller가 특정한 핸들러를 지정하지 않는다면 함수에 의해 사용될 수도 있다.
+
+##4. 다음에 할 내용(Looking ahead)
+ 다음 챕터는 **Promise**와 **ES6 Promise** API을 다룹니다. **Promise**는 콜백보다 더 복잡 합니다. 중요한 이점을 제공 함으로써 콜백의 단점을 제거 합니다.
+
+##5. 추가로 읽을 거리(Further reading)
+[1] “[Help i’m stuck in an event-loop](http://vimeo.com/96425312)” by Philip Roberts (video). <br>
+[2] “[Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)” in the HTML Specification <br>
+[3] “[Asynchronous programming and continuation-passing style in JavaScript](http://www.2ality.com/2012/06/continuation-passing-style.html)” by Axel Rauschmayer.
