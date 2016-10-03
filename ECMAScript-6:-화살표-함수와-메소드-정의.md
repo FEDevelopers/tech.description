@@ -4,31 +4,7 @@
 자바스크립트에서 메소드 안에서 함수를 만드는 부분은 올바르게 사용하기 어렵다. 특별한 변수인 ```this``` 때문이다. ES6에서는 ```화살표 함수```와 ```메소드 정의``` 두 가지의 개념을 소개함으로써, 이러한 부분을 쉽게 해준다. 이 글은 이 2가지가 어떤 것들이며 어떻게 우리를 도와줄 수 있는지 알려준다.
 
 
-## 용어 소개
-이 글에서는 두 가지 개념을 구분한다.
-- 서브루틴은 자신 그 자체로 존재하며 직접 호출된다. 일반적으로 "함수"가 더 나은 단어이지만, 자바스크립트에서 함수라는 의미는 다양한 의미를 가지고 있다. 그래서 자바스크립트 개발자들이 흔히 말하는 "메소드가 아닌 함수"는 서브루틴이라고 한다. 이 글에서는 함수라는 말 대신 서브루틴이라는 용어를 사용할 것이다. 왜냐하면 서브루틴이라는 단어보다 더 나은 걸 찾지 못했기 때문이다. (콜백, 프로시저도 서브루틴과 비슷한 맥락)
-- 메소드는 객체의 한 부분이고, 객체를 통해 호출된다. 
-
-
-자바스크립트에서 서브루틴과 메소드는 함수라는 키워드로 수행된다. 예를 들어
-
-
-``` javascript
-    var obj = {
-        myMethod: function () {
-            setTimeout(function () { ... }, 0);
-        }
-    }
-```
-
-
-여기서 myMethod는 메소드고, setTimeout()의 첫 번째 인수는 서브루틴이다. 두 가지는 함수로 실행된다. 이들의 영향에 대해 설명하기 이전에, 더 많은 정의를 만들어볼 필요가 있다. 함수가 호출될 때마다 두 가지의 스코프(=문맥)를 가진다. Its dynamic scopes are the function that called it, the function that called that function, etc. 중첩된 구조에서는 모두 발생한다. 자유 변수는 함수 내부에 정의되지 않은 변수다. 만약 자유 변수를 호출하거나 수정한다면, 자바스크립트는 외부 lexical 스코프를 통해 변수를 탐색한다.
-
-
-자바스크립트에서 메소드 안에서 함수를 만드는 부분은 올바르게 사용하기 어렵다. 특별한 변수인 ```this``` 때문이다. ES6에서는 ```화살표 함수```와 ```메소드 정의``` 두 가지의 개념을 소개함으로써, 이러한 부분을 쉽게 해준다. 이 글은 이 2가지가 어떤 것들이며 어떻게 우리를 도와줄 수 있는지 알려준다.
-
-
-## 용어 소개
+## 1. 용어 소개
 이 글에서는 두 가지 개념을 구분한다.
 - 서브루틴은 자신 그 자체로 존재하며 직접 호출된다. 일반적으로 "함수"가 더 나은 단어이지만, 자바스크립트에서 함수라는 의미는 다양한 의미를 가지고 있다. 그래서 자바스크립트 개발자들이 흔히 말하는 "메소드가 아닌 함수"는 서브루틴이라고 한다. 이 글에서는 함수라는 말 대신 서브루틴이라는 용어를 사용할 것이다. 왜냐하면 서브루틴이라는 단어보다 더 나은 걸 찾지 못했기 때문이다. (콜백, 프로시저도 서브루틴과 비슷한 맥락)
 - 메소드는 객체의 한 부분이고, 객체를 통해 호출된다. 
@@ -144,7 +120,7 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 ```
 
 
-## 2.1 화살표 함수에서의 ```lexical this```
+### 2.1 화살표 함수에서의 ```lexical this```
 화살표 함수에서의 ```lexical this```로 실행된다.
 
 
@@ -164,7 +140,7 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 위의 함수 표현식은 두 개의 함수를 생성한다. 첫 번째로 매개변수 x와 dynamic this가 있는 익명 함수가 생성된다. 두 번째로 이 익명 함수에 this가 결합된 바인딩 함수다. 반면에 화살표 함수는 마치 bind를 붙여서 생성한 것처럼 동작한다. 그리고 상대적으로 메모리를 덜 먹는다. 단지 하나의 엔티티, this가 외부 함수의 this를 가리키고 있는 함수, 가 생성된다. 
 
 
-## 화살표 함수 vs 일반 함수
+### 2.2 화살표 함수 vs 일반 함수
 
 
 화살표 함수는 일반 함수와 3가지 측면에서 다르다. 첫째로 화살표 함수는 항상 바인딩 된 this를 가진다. 둘째로 화살표 함수는 생성자로 사용할 수 없다. 왜냐하면 [[Construct]](new 키워드와 일반 함수가 함께 실행될 수 있게 해줌)라는 내부 메소드와 prototype 속성이 없기 때문이다. 그러므로 new (() => {}) 는 에러를 반환한다. 셋째로 화살표 함수는 ES6의 새로운 구조이기 때문에 새로운 방식의 인수 조작([기본 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:parameter_default_values), [나머지 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:rest_parameters) 등등)이 가능하고, 더이상 arguments 키워드를 지원하지 않는다. 새로운 방식의 인수 조작으로 arguments로 했던 모든 것들이 가능하기 때문에 더이상 필요할 일이 없기 때문이다.
@@ -182,7 +158,7 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 ```
 
 
-## 논쟁 중인 구문 변화
+## 3. 논쟁 중인 구문 변화
 아래의 구문 변화는 여전히 논쟁 중이며 아마도 ES6에 추가되지 않을 것이다.
 
 - **매개변수 생략**:
@@ -239,7 +215,7 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 ```
 
 
-## 3.1 화살표 함수 해석
+### 3.1 화살표 함수 해석
 대부분의 자바스크립트 파서는 two-token look-ahead를 가진다. 파서는 아래의 두 표현식을 어떻게 구분할까?
 
 
@@ -302,7 +278,7 @@ To parse both of the above with a limited look-ahead, one uses a trick called co
 optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을까? 간단해 보이는 두 가지 접근방법이 있지만, 동작하지는 않는다.
 
 
-## 4.1 해결책 아님: dynamic this와 lexical this간의 전환
+### 4.1 해결책 아님: dynamic this와 lexical this간의 전환
 함수가 어떻게 실행되느냐에 따라 dynamic this 혹은 lexical this를 사용한다. 만약 함수가 메소드로 실행된다면, dynamic this를 사용한다. 만약 서브루틴으로 실행된다면, lexical this를 사용한다. 이러한 방식은 함수가 잘못된 방식으로 실행되는 문제를 야기한다. 만약 함수가 서브루틴으로 실행되어야 하는데 메소드로 실행된다면 함수의 lexical context의 this에 대한 참조를 잃어버리게 된다. 만약 메소드로 실행해서 인스턴스에 접근하려고 의도했는데 함수로 실행된다면, 의도와는 다르게 외부 함수의 this에 접근하게 된다. ECMAScript 5의 엄격모드는 에러를 반환함으로써 이 이슈를 해결한다. 만약 메소드가 서브루틴으로 실행된다면, 여기서의 this는 undefined이기 때문에 속성에 접근하자마자 에러를 반환한다. 그리고 서브루틴은 바인딩 함수가 되기 이전에는 그 this로 아무것도 할 수 없게 된다. this는 결코 바뀌지 않는다. ES6에서도 동일하게 동작하지만, 잘못된 함수 사용을 방지해준다. 화살표 함수는 기본적으로 서브루틴이 될 것이고, 이는 고정된 lexical this를 가지게 된다. 메소드 정의(아래 코드 참고)는 기본적으로 메소드가 될 것이고 반드시 객체를 통해서만 실행이 될 수 있다. 객체로부터 추출되어 사용되는 메소드를 제외한다.
 
 
@@ -345,11 +321,11 @@ optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을�
 ```
 
 
-## 4.2 해결책 아님: call이나 apply 메소드로 this를 결합
+### 4.2 해결책 아님: call이나 apply 메소드로 this를 결합
 이건 문제가 많다. 왜냐하면 call 또는 apply는 lexical this를 참조하는 화살표 함수를 뜻하지 않게 깰 수 있기 때문이다. 따라서 이 방법은 불안정한 해결책이다.
 
 
-## 4.3 Arguing in favor of simplicity
+### 4.3 Arguing in favor of simplicity
 나는 화살표 함수에 optional dynamic this가 필요하지 않다고 생각한다. 이것은 부분적으로 화살표 함수의 단순함을 파괴하게 된다. 더욱이, dynamic this 사용이 가능한 메소드는 객체 지향의 철학에 반대된다. API가 인수로 this를 서브루틴에게 전달할 때마다 API는 진짜 매개변수를 대신 소개해야 한다. 이미 제이쿼리에서 each 메소드에서는 이 방법을 사용할 수 있도록 해놨다. 
 
 ``` javascript
@@ -395,7 +371,7 @@ curryThis는 아래와 같이 실행될 수 있다.
 두 번째 방법이 최선의 방법은 아니다. 메소드를 정의할 때 function 키워드를 고려하는 것은 오해를 사기 쉽다. 그리고 여전히 이 두 종류의 함수에 대해 생각해봐야 한다. 사람들은 아마도 메소드를 정의하기 위해 실수로 화살표 함수를 사용할 수도 있다. (이 경우 this에 접근하자마자 에러를 반환한다) 이러한 이슈를 해결하기 위해 ES6에서는 메소드를 정의하는 구문을 별도로 제공한다. 이건 메소드를 정의하는 더욱 간편한 방법이다. 또한, 메소드 정의는 ES6의 또 다른 기능인 [super 참조](http://www.2ality.com/2011/11/super-references.html)를 가능하게 해준다. 이를 위해 함수는 자신이 어떤 객체에 저장 되어있는지 알 필요가 있다. 메소드 정의는 자동으로 이 정보를 함수에 추가해준다. 메소드 정의는 두 가지 문맥에서 사용될 수 있다: 클래스 정의와 객체 리터럴 방법
 
 
-## 클래스 정의에 사용되는 메소드 정의
+### 5.1 클래스 정의에 사용되는 메소드 정의
 One proposal that is currently being discussed for ECMAScript.next is called “maximally minimal classes” – minimal syntactic sugar for current practices (background on the class discussion: [7]). An example:
 현재 maximally minimal classes라는 개념을 다루는 제안 건이 논쟁 중이다. 예를 들어
 
@@ -417,7 +393,7 @@ One proposal that is currently being discussed for ECMAScript.next is called “
 만약 이 제안이 수용된다면 클래스 정의는 더 좋아질 것이다. 또한 자바스크립트 프레임워크끼리 코드 공유하는 것을 더 쉽게 만들어 줄 것이다. (현재는 서로 다른 상속 API를 사용함) 생성자 함수 부분이 먼저 해석되는 기본 개념은 클래스 정의에서도 바뀌지 않았다. dist는 Point.prototype.dist와 같은 의미를 가지는 메소드 정의다. 보다시피 메소드 정의는 기존 방법에 비해 훨씬 글자 수가 줄어들었고, 화살표 함수를 사용하고픈 잘못된 생각이 떠오르지 않게 해준다.
 
 
-## 객체 리터럴에 사용되는 메소드 정의
+### 5.2 객체 리터럴에 사용되는 메소드 정의
 The first step towards having dedicated syntax for methods are class declarations, as explained above. The next step is to also provide method syntax for object literals. For example:
 메소드 정의가 사용되는 첫 번째는 위에서 보여준 클래스 정의에서였다. 다음으로는 객체 리터럴에서도 메소드 정의를 사용할 수 있다. 예를 들어: 
 
