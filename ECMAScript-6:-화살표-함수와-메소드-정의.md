@@ -22,13 +22,13 @@
 ```
 
 
-여기서 myMethod는 메소드고, setTimeout()의 첫 번째 인수는 서브루틴이다. 두 가지는 함수로 실행된다. 이들의 영향에 대해 설명하기 이전에, 더 많은 정의를 만들어볼 필요가 있다. 함수가 호출될 때마다 두 가지의 스코프(=문맥)를 가진다. Its dynamic scopes are the function that called it, the function that called that function, etc. 중첩된 구조에서는 모두 발생한다. 자유 변수는 함수 내부에 정의되지 않은 변수다. 만약 자유 변수를 호출하거나 수정하려고 하면, 자바스크립트는 lexical scopes를 통해 변수를 탐색한다.
+여기서 myMethod는 메소드고, setTimeout()의 첫 번째 인수는 서브루틴이다. 서브루틴과 메소드는 함수로 실행된다. 이들의 영향에 대해 설명하기 이전에 더 많은 정의를 만들어볼 필요가 있다. 함수는 호출될 때마다 두 가지 스코프(=문맥)를 가진다. 여기서의 dynamic scope는 호출되는 함수를 가리킨다. 중첩된 구조에서는 각각의 dynamic scope가 모두 발생한다는 것을 알아야 한다. 자유 변수는 함수 내부에 정의되지 않은 변수다. 만약 자유 변수를 호출하거나 수정하려고 하면, 자바스크립트는 lexical scopes를 통해 변수를 탐색한다.
 
 
 함수는 메소드 실행으로도 잘 동작한다. 함수는 ```this```라 불리는 특별한 변수를 가진다. ```this```는 메소드를 호출되는 객체를 참조한다. 다른 자유 변수들과는 다르게 ```this```는 둘러싸인 코드의 ```lexical scopes```를 탐색하지 않는다. ```this```는 실행되는 시점을 통해 함수로 전달된다. 함수는 ```this```를 동적으로 전달 받기 때문에 여기서의 this는 ```dynamic this```으로 불린다.
 
 
-함수는 서브루틴 실행으로는 잘 동작하지 않는다. 왜냐하면 함수의 this는 동적이기 때문이다. 서브루틴 호출은 this를 전역 객체로 가지거나 [엄격 모드](http://www.2ality.com/2011/01/javascripts-strict-mode-summary.html)에서는 undefined로 셋팅된다. 서브루틴은 본인의 this를 사용할 수 없기 때문에 좋지 않다. but it shadows the this of the surrounding method, making it inaccessible. 예를 들어
+함수는 서브루틴 실행으로는 잘 동작하지 않는다. 왜냐하면 함수의 this는 동적이기 때문이다. 서브루틴 호출은 this를 전역 객체로 가지거나 [엄격 모드](http://www.2ality.com/2011/01/javascripts-strict-mode-summary.html)에서는 undefined로 셋팅된다.  That is unfortunate, because the subroutine has no use for its own this, but it shadows the this of the surrounding method, making it inaccessible. 예를 들어
 
 
 ``` javascript
@@ -282,7 +282,7 @@ optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을�
 함수가 어떻게 실행되느냐에 따라 dynamic this 혹은 lexical this를 사용한다. 만약 함수가 메소드로 실행된다면, dynamic this를 사용한다. 만약 서브루틴으로 실행된다면, lexical this를 사용한다. 이러한 방식은 함수가 잘못된 방식으로 실행되는 문제를 야기한다. 만약 함수가 서브루틴으로 실행되어야 하는데 메소드로 실행된다면 함수의 lexical context의 this에 대한 참조를 잃어버리게 된다. 만약 메소드로 실행해서 인스턴스에 접근하려고 의도했는데 함수로 실행된다면, 의도와는 다르게 외부 함수의 this에 접근하게 된다. ECMAScript 5의 엄격모드는 에러를 반환함으로써 이 이슈를 해결한다. 만약 메소드가 서브루틴으로 실행된다면, 여기서의 this는 undefined이기 때문에 속성에 접근하자마자 에러를 반환한다. 그리고 서브루틴은 바인딩 함수가 되기 이전에는 그 this로 아무것도 할 수 없게 된다. this는 결코 바뀌지 않는다. ES6에서도 동일하게 동작하지만, 잘못된 함수 사용을 방지해준다. 화살표 함수는 기본적으로 서브루틴이 될 것이고, 이는 고정된 lexical this를 가지게 된다. 메소드 정의(아래 코드 참고)는 기본적으로 메소드가 될 것이고 반드시 객체를 통해서만 실행이 될 수 있다. 객체로부터 추출되어 사용되는 메소드를 제외한다.
 
 
-두 종류 this의 전환에는 보안에 관련된 또다른 문제점이 있다. 함수가 어떻게 작성 되었던 간에 그 함수를 사용하는 사용자를 제어할 수 없다. (opening the door to inadvertently exposed secrets) 예제: 얇은 화살표 함수(->로 정의됨)가 있다고 가정하자. 이 표기법은 dynamic this와 lexical this간의 전환을 가능하게 해준다.
+두 종류 this의 전환에는 보안에 관련된 또다른 문제점이 있다. 함수가 어떻게 작성 되었던 간에 우연히 그 버그가 알려지기 전까지는 그 함수를 사용하는 사용자를 통제할 수 없다. 예제: 얇은 화살표 함수(->로 정의됨)가 있다고 가정하자. 이 표기법은 dynamic this와 lexical this간의 전환을 가능하게 해준다.
 
 
 ``` javascript
@@ -325,16 +325,15 @@ optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을�
 이건 문제가 많다. 왜냐하면 call 또는 apply는 lexical this를 참조하는 화살표 함수를 뜻하지 않게 깰 수 있기 때문이다. 따라서 이 방법은 불안정한 해결책이다.
 
 
-### 4.3 Arguing in favor of simplicity
-나는 화살표 함수에 optional dynamic this가 필요하지 않다고 생각한다. 이것은 부분적으로 화살표 함수의 단순함을 파괴하게 된다. 더욱이, dynamic this 사용이 가능한 메소드는 객체 지향의 철학에 반대된다. API가 인수로 this를 서브루틴에게 전달할 때마다 API는 진짜 매개변수를 대신 소개해야 한다. 이미 제이쿼리에서 each 메소드에서는 이 방법을 사용할 수 있도록 해놨다. 
+### 4.3 축약형에 대한 변론
+나는 화살표 함수에 optional dynamic this가 필요하지 않다고 생각한다. optional dynamic this 기능은 부분적으로 화살표 함수의 단순함을 파괴하게 된다. 더욱이, dynamic this 사용이 가능한 메소드는 객체 지향의 철학에 반대된다. API가 인수로 this를 서브루틴에게 전달할 때마다 API는 진짜 매개변수를 대신 소개해야 한다. 이미 제이쿼리에서 each 메소드에서는 이 방법을 사용할 수 있도록 해놨다. 
 
 ``` javascript
     $(".someCssClass").each(function (i, ele) { console.log(ele) });
 ```
 
 
-Another option is to use a normal function. Or you can wrap a normal function around an arrow function and pass this from the former to the latter, as an additional (prefixed) parameter. In the following code, method curryThis performs such wrapping.
-또다른 방법으로는 일반 함수를 사용하는 것이다. 또는 화살표 함수를 일반 함수로 감싸서 마치 미리 정의된 추가 매개변수처럼 this를 전달하는 것이다. 아래의 코드에서 curryThis 메소드는 감싸는 역할을 한다.
+또다른 방법으로는 일반 함수를 사용하는 것이다. 또는 화살표 함수를 일반 함수로 감싸고, 앞에서 뒤로 this를 전달과 동시에 미리 정의된 매개변수를 전달하는 것이다. 아래의 코드에서 curryThis 메소드는 감싸는 역할을 한다.
 
 
 ``` javascript
@@ -344,7 +343,7 @@ Another option is to use a normal function. Or you can wrap a normal function ar
 ```
 
 
-curryThis는 아래와 같이 실행될 수 있다.
+curryThis는 아래와 같이 구현될 수 있다.
 
 
 ``` javascript
@@ -360,7 +359,7 @@ curryThis는 아래와 같이 실행될 수 있다.
 
 
 ## 5. 메소드 정의
-화살표 함수로 dynamic this와 lexical this에 대한 선택은 점점 자동화되고 있다.
+화살표 함수의 존재로 인해 dynamic this와 lexical this에 대한 선택은 점점 자동화되고 있다.
 
 
 - 서브루틴이 필요하다면? 화살표 함수를 사용해서 lexical this를 가진다.
@@ -368,12 +367,11 @@ curryThis는 아래와 같이 실행될 수 있다.
 - 메소드가 필요하다면? 일반 함수를 사용해서 dynamic this를 가진다.
 
 
-두 번째 방법이 최선의 방법은 아니다. 메소드를 정의할 때 function 키워드를 고려하는 것은 오해를 사기 쉽다. 그리고 여전히 이 두 종류의 함수에 대해 생각해봐야 한다. 사람들은 아마도 메소드를 정의하기 위해 실수로 화살표 함수를 사용할 수도 있다. (이 경우 this에 접근하자마자 에러를 반환한다) 이러한 이슈를 해결하기 위해 ES6에서는 메소드를 정의하는 구문을 별도로 제공한다. 이건 메소드를 정의하는 더욱 간편한 방법이다. 또한, 메소드 정의는 ES6의 또 다른 기능인 [super 참조](http://www.2ality.com/2011/11/super-references.html)를 가능하게 해준다. 이를 위해 함수는 자신이 어떤 객체에 저장 되어있는지 알 필요가 있다. 메소드 정의는 자동으로 이 정보를 함수에 추가해준다. 메소드 정의는 두 가지 문맥에서 사용될 수 있다: 클래스 정의와 객체 리터럴 방법
+두 번째 방법이 최선의 방법은 아니다. 메소드를 정의할 때 function 키워드를 고려하는 것은 오해를 사기 쉽다. 그리고 여전히 이 두 종류의 함수에 대해 생각해봐야 한다. 사람들은 아마도 메소드를 정의하기 위해 실수로 화살표 함수를 사용할 수도 있다. (이 경우 this가 실행되자마자 에러를 반환한다) 이러한 이슈를 해결하기 위해 ES6에서는 메소드를 정의하는 구문을 별도로 제공한다. 이건 메소드를 정의하는 더욱 간편한 방법이다. 또한, 메소드 정의는 ES6의 또 다른 기능인 [super 참조](http://www.2ality.com/2011/11/super-references.html)를 가능하게 해준다. 이를 위해 함수는 자신이 어떤 객체에 저장 되어있는지 알 필요가 있다. 메소드 정의는 자동으로 이 정보를 함수에 추가해준다. 메소드 정의는 두 가지 문맥에서 사용될 수 있다: 클래스 정의와 객체 리터럴 방법
 
 
 ### 5.1 클래스 정의에 사용되는 메소드 정의
-One proposal that is currently being discussed for ECMAScript.next is called “maximally minimal classes” – minimal syntactic sugar for current practices (background on the class discussion: [7]). An example:
-현재 maximally minimal classes라는 개념을 다루는 제안 건이 논쟁 중이다. 예를 들어
+“maximally minimal classes”라고 불리는 ES6를 위한 한 제안이 현재 논쟁 중이다. 예를 들어
 
 
 ``` javascript
@@ -394,8 +392,7 @@ One proposal that is currently being discussed for ECMAScript.next is called “
 
 
 ### 5.2 객체 리터럴에 사용되는 메소드 정의
-The first step towards having dedicated syntax for methods are class declarations, as explained above. The next step is to also provide method syntax for object literals. For example:
-메소드 정의가 사용되는 첫 번째는 위에서 보여준 클래스 정의에서였다. 다음으로는 객체 리터럴에서도 메소드 정의를 사용할 수 있다. 예를 들어: 
+메소드 구문 정의가 사용되는 첫 번째 단계는 위에서 설명한 클래스 정의에서였다. 다음으로는 객체 리터럴에서도 메소드 정의를 사용할 수 있다. 예를 들어: 
 
 
 ``` javascript
@@ -412,8 +409,7 @@ The first step towards having dedicated syntax for methods are class declaration
 ```
 
 
-Again, you don’t see that logHello is a function, underneath. It looks like a method and will have dynamic this. That leaves us with one more use case: What if you want to add methods to an existing object, say:
-다시 한 번 말하지만, 코드에서는 logHello가 function 키워드로 선언되지 않았다. 이 방법으로 메소드를 만들 수 있고, 이건 dynamic this를 가진다. 만약 이미 존재하는 객체에 새로운 메소드를 추가해야할 때에는 어떻게 해야할까?
+다시 한 번 말하지만, 코드에서는 logHello가 function 키워드로 선언되지 않았다. 이건 메소드 처럼 보이고 dynamic this를 가진다. 만약 이미 존재하는 객체에 새로운 메소드를 추가해야할 때에는 어떻게 해야할까?
 
 
 ``` javascript
@@ -453,8 +449,7 @@ Again, you don’t see that logHello is a function, underneath. It looks like a 
 - 객체 리터럴에 있고, this를 참조하지 않는 함수 표현식은 AFCs다. 이 경우 함수를 감싸고 있는 객체는 네임스페이스 역할을 한다.
 
 
-Many functions with (dynamic) this are probably about adding methods to an existing object. They could then be handled by ECMAScript.next’s Object.assign. Furthermore, as the survey was only to provide a rough estimate and the additional parsing effort was not worth it, the category “functions with this” in the table includes functions with a bound this, such as
-dynamic this를 다루는 많은 함수는 아마도 객체에 추가된 메소드일 것이다. 이제부터 이 방법은 ES6에 있는 Object.assign을 통해서도 가능하다. 더욱이 이 조사는 오직 
+dynamic this를 다루는 많은 함수는 아마도 존재하는 객체에 추가된 메소드일 것이다. 이제부터 이 방법은 ES6에 있는 Object.assign을 통해서도 가능하다. 뿐만 아니라, 이 설문조사는 단지 대략적인 견적을 알아보기 위함이었기 때문에 추가 분석 노력은 가치가 없었다. 표에 있는 “functions with this” 카테고리는 this가 바인딩된 함수를 포함한다. 예를 들어
 
 
 ``` javascript
@@ -462,10 +457,10 @@ dynamic this를 다루는 많은 함수는 아마도 객체에 추가된 메소�
 ```
 
 
-Obviously, those are actually AFCs.
+명백히, 이것들은 AFCs다.
 
 
-These findings mean that JavaScript most urgently needs easy ways to define subroutines (with lexical this) and methods. ECMAScript.next therefore makes the right choices. Another implication is that arrow functions with dynamic this are not that important, even for current JavaScript code. Lastly, having to parenthesize an object literal in an expression body is rarely an issue: only 0.14% of the function expressions return one.
+이 자료는 자바스크립트에서 서브루틴(lexical this 사용)과 메소드를 각각 정의하는 쉬운 방법이 필요하다는 것을 의미한다. 그렇기 때문에 ES6에서는 옳은 결정을 했다. 또 다른 의미로 dynamic this가 적용된 화살표 함수는 그렇게 중요하지 않다. 마지막으로 expression body에서 객체 리터럴을 괄호로 묶는 형식은 거의 문제가 안 된다. 겨우 0.14%의 함수 표현식이 객체 리터럴을 반환한다.
 
 
 ## 7. 결론
