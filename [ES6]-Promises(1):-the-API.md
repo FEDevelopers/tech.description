@@ -1,7 +1,8 @@
 > 이 문서는 http://www.2ality.com/2014/10/es6-promises-api.html 를 번역한 내용입니다.
 
 #목차
-
+1. [Promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)
+2. [첫번째 예제]()
 > 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다. 2개의 비동기 프로그래밍 포스트중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는것이 좋을 것입니다.
 
 #1. Promises
