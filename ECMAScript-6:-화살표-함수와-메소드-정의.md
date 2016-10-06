@@ -228,7 +228,7 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 첫 번째 표현식은 괄호 내에 있는 세 개의 변수에 적용되어 있는 쉼표 연산자다. 두 번째 표현식은 화살표 함수다. 만약 이 두 개를 구별하고 싶다면, 화살표가 있는지 없는지를 체크하면 된다.
 
 
-To parse both of the above with a limited look-ahead, one uses a trick called cover grammar: One creates a grammar rule that covers both use cases, parses and then performs post-processing. If an arrow follows the closing parenthesis, some previously parsed things will raise an error and the parsed construct is used as the formal parameter list of an arrow function. If no arrow follows, other previously parsed things will raise an error and the parsed construct is an expression in parentheses. Some things can only be done in a parenthesized expression:
+위의 두 개를 분석하기 위해서는 분석 도구는 cove grammer라고 불리는 트릭을 사용한다. 분석 도구는 두 가지 케이스를 모두 적용할 수 있는 문법 규칙을 만든다. 그리고 분석을 한 후 post-processing 방식으로 코드를 실행한다. 만약 닫힘 괄호 뒤에 화살표가 붙었다면, 앞서 분석된 구문은 오류를 발생하고, 앞서 분석된 구문은 화살표 함수의 매개변수로 사용될 것이다. 만약 화살표가 없다면, 이미 분석된 구문은 오류를 발생하고, 앞서 분석된 구문은 괄호 속 표현식이 된다. 아래와 같이 몇몇 코드는 괄호 표현식으로 실행될 수 있다.
 
 
 ``` javascript
