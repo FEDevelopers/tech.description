@@ -1,6 +1,9 @@
 > 이 문서는 http://www.2ality.com/2012/04/arrow-functions.html 를 번역한 내용입니다.
 
 
+> **역자주**: 해당 문서는 2012년에 작성되었고, 다음 버전 자바스크립트를 ECMAScript.next라고 표기했는데 이 번역 문서에서는 ECMAScript6 라고 표기했습니다.
+
+
 자바스크립트에서 메소드 안에서 함수를 만드는 부분은 올바르게 사용하기 어렵다. 특별한 변수인 ```this``` 때문이다. ES6에서는 ```화살표 함수```와 ```메소드 정의``` 두 가지의 개념을 소개함으로써, 이러한 부분을 쉽게 해준다. 이 글은 이 2가지가 어떤 것들이며 어떻게 우리를 도와줄 수 있는지 알려준다.
 
 
@@ -137,13 +140,13 @@ ES6의 [화살표 함수](http://wiki.ecmascript.org/doku.php?id=strawman:arrow_
 ```
 
 
-위의 함수 표현식은 두 개의 함수를 생성한다. 첫 번째로 매개변수 x와 dynamic this가 있는 익명 함수가 생성된다. 두 번째로 이 익명 함수에 this가 결합된 바인딩 함수다. 반면에 화살표 함수는 마치 bind를 붙여서 생성한 것처럼 동작한다. 그리고 상대적으로 메모리를 덜 먹는다. 단지 하나의 엔티티, this가 외부 함수의 this를 가리키고 있는 함수, 가 생성된다. 
+위의 함수 표현식은 두 개의 함수를 생성한다. 첫 번째로 매개변수 x와 dynamic this가 있는 익명 함수가 생성된다. 두 번째로 이 익명 함수에 this가 결합된 바인딩 함수다. 반면에 화살표 함수는 마치 bind를 붙여서 생성한 것처럼 동작한다. 그리고 상대적으로 메모리를 덜 먹는다. 단지 하나의 엔티티(this가 외부 함수의 this를 가리키고 있는 함수)가 생성된다. 
 
 
 ### 2.2 화살표 함수 vs 일반 함수
 
 
-화살표 함수는 일반 함수와 3가지 측면에서 다르다. 첫째로 화살표 함수는 항상 바인딩 된 this를 가진다. 둘째로 화살표 함수는 생성자로 사용할 수 없다. 왜냐하면 [[Construct]](new 키워드와 일반 함수가 함께 실행될 수 있게 해줌)라는 내부 메소드와 prototype 속성이 없기 때문이다. 그러므로 new (() => {}) 는 에러를 반환한다. 셋째로 화살표 함수는 ES6의 새로운 구조이기 때문에 새로운 방식의 인수 조작([기본 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:parameter_default_values), [나머지 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:rest_parameters) 등등)이 가능하고, 더이상 arguments 키워드를 지원하지 않는다. 새로운 방식의 인수 조작으로 arguments로 했던 모든 것들이 가능하기 때문에 더이상 필요할 일이 없기 때문이다.
+화살표 함수는 일반 함수와 3가지 측면에서 다르다. 첫째로 화살표 함수는 항상 바인딩 된 this를 가진다. 둘째로 화살표 함수는 생성자로 사용할 수 없다. 왜냐하면 Construct(new 키워드와 일반 함수가 함께 실행될 수 있게 해줌)라는 내부 메소드와 prototype 속성이 없기 때문이다. 그러므로 new (() => {}) 는 에러를 반환한다. 셋째로 화살표 함수는 ES6의 새로운 구조이기 때문에 새로운 방식의 인수 조작([기본 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:parameter_default_values), [나머지 매개변수](http://wiki.ecmascript.org/doku.php?id=harmony:rest_parameters) 등등)이 가능하고, 더이상 arguments 키워드를 지원하지 않는다. 새로운 방식의 인수 조작으로 arguments로 했던 모든 것들이 가능하기 때문에 더이상 필요할 일이 없기 때문이다.
 
 
 이런 점을 제외하고, 화살표 함수와 일반 함수의 외적 차이는 없다. 예를 들어, typeof와 instanceof는 예전처럼 사용할 수 있다.
@@ -343,7 +346,7 @@ optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을�
 ```
 
 
-curryThis는 아래와 같이 구현될 수 있다.
+[curryThis](http://www.2ality.com/2011/11/uncurrying-this.html)는 아래와 같이 구현될 수 있다.
 
 
 ``` javascript
@@ -371,7 +374,7 @@ curryThis는 아래와 같이 구현될 수 있다.
 
 
 ### 5.1 클래스 정의에 사용되는 메소드 정의
-“maximally minimal classes”라고 불리는 ES6를 위한 한 제안이 현재 논쟁 중이다. 예를 들어
+“(maximally minimal classes)[http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes]”라고 불리는 ES6를 위한 한 제안이 현재 [논쟁](http://www.2ality.com/2011/11/javascript-classes.html) 중이다. 예를 들어
 
 
 ``` javascript
