@@ -78,5 +78,158 @@
 ![promise state](http://4.bp.blogspot.com/-iiX2B0bNZe4/VDEiVTNrpqI/AAAAAAAAA4Q/selZM4dBM7k/s1600/promise_states_simple.jpg)
 
 `new Promise()`의 파라미터는( (A)라인 시작점 ) 집행자(**executor** 모호한 단어라 이하 영문표기로 명칭)라고 부릅니다.
-- 만약 연산가 잘 되었다면, **executor**는 `resolve()` 통해 결과를 전송 합니다. 보통 **promise** 성공(fulfills)을 말합니다.(promise가 resolve였지만 실제로 아닐 경우 뒤에 설명하겠습니다.)
-- 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 항상 **promise**는 거절(reject)합니다.
+- 만약 연산이 잘 되었다면, **executor**는 `resolve()` 통해 결과를 전송 합니다. 보통 **promise** 성공(fulfills)을 말합니다.(promise가 resolve였지만 실제로 아닐 경우 뒤에 설명하겠습니다.)
+- 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 **promise**는 거절(reject) 상태입니다.
+
+##3.2 promise의 사용(Consuming a promise)
+**promise** 소비자(consumer)로써, 당신은 `then()` 메서드에 등록한 콜백을 통해 성공 또는 거절 상태 알림을 받게 됩니다.
+
+```` javascript
+    promise.then(
+        function (value) { /* fulfillment */ },
+        function (reason) { /* rejection */ }
+    );
+````
+
+**promise** 상태가 설정되면 더이상 어느것도 변하지 않게 됩니다. 그래서 **promise**는 비동기함수를 위하여(일회성 결과) 유용하게 만들어졌습니다. 게다가 **promise**는 경쟁상태(race condition)를 일으키지 않습니다. 왜냐면 `then()` 을 **promise** 전이나 상태가 세팅된 후에 실행하든 중요하지 않기 때문입니다.
+- 전자의 경우, **promise** 상태가 세팅된 직후 호출 됩니다.
+- 후자의 경우, **promise** 결과(성공 또는 거절의 결과값)는 캐시돼고, 적절한 반응을 즉시 다룰 수 있게 됩니다.(task 큐와 같이), the promise result (fulfillment value or rejection value) is cached and handed to the appropriate reaction “immediately” (queued as a task).
+
+##3.3 성공 또는 거절만 처리(Only handling fulfillments or rejections)
+ 만약 당신이 성공에만 관심 있다면, `then()`의 2번째 파라미터를 생략 할 수 있습니다.
+
+```` javascript
+    promise.then(
+        function (value) { /* fulfillment */ }
+    );
+````
+
+만약 당신이 거절에만 관심있다면, 1번째 파라미터를 생략 할 수 있습니다. `catch()`메서드는 동일한 작동을 하게 해주는 더 적합한 방법입니다. 
+
+```` javascript
+    promise.then(
+        null,
+        function (reason) { /* rejection */ }
+    );
+    
+    // Equivalent:
+    promise.catch(
+        function (reason) { /* rejection */ }
+    );
+````
+
+`catch()`메서드를 사용하는 것은 성공 상태를 배제하고 오류만 잡기 위하여 `then()`을 사용할 때 추천 하는 방식 입니다. 왜냐하면 catch는 나이스한 콜백 식별자이며, 또 동시간대에 여러개 **promise**의 거절상태를 처리 할 수 있습니다. (어떻게 하는지 나중에 설명)
+
+#4. 예제(Examples)
+> 몇가지 예제를 통하여 기본적인 빌딩 블록(코드블록's)을 사용해봅시다.
+
+##4.1 예제:promisifying XMLHttpRequest
+ 이벤트 기반인 **XMLHttpRequest API** 통해 HTTP GET 메서드를 수행하는 **promise**기반 함수 입니다.
+
+```` javascript
+    function httpGet(url) {
+        return new Promise(
+            function (resolve, reject) {
+                var request = new XMLHttpRequest();
+                request.onreadystatechange = function () {
+                    if (this.status === 200) {
+                        // Success
+                        resolve(this.response);
+                    } else {
+                        // Something went wrong (404 etc.)
+                        reject(new Error(this.statusText));
+                    }
+                }
+                request.onerror = function () {
+                    reject(new Error(
+                        'XMLHttpRequest Error: '+this.statusText));
+                };
+                request.open('GET', url);
+                request.send();    
+            });
+    }
+````
+
+`httpGet()` 사용방법
+
+```` javascript
+    httpGet('http://example.com/file.txt')
+    .then(
+        function (value) {
+            console.log('Contents: ' + value);
+        },
+        function (reason) {
+            console.error('Something went wrong', reason);
+        });
+````
+
+##4.2 예제: delaying an activity
+ **promise** 기반으로 `setTimeout()`을 구현한 `delay()`함수(`Q.delay()랑 비슷)
+
+```` javascript
+    function delay(ms) {
+        return new Promise(function (resolve, reject) {
+            setTimeout(resolve, ms); // (A)
+        });
+    }
+    
+    // Using delay():
+    delay(5000).then(function () { // (B)
+        console.log('5 seconds have passed!')
+    });
+````
+
+(A)라인에서 파라미터없이 `resolve`를 호출합니다.(`resolve(undefined)`를 호출하는 것과 동일). (B)라인에 성공 결과 값은 필요없습니다. 그냥 통보만할 뿐 충분 합니다.
+
+##4.3 예제: timing out a promise(promise의 시간 초과)
+```` javascript
+    function timeout(ms, promise) {
+        return new Promise(function (resolve, reject) {
+            promise.then(resolve);
+            setTimeout(function () {
+                reject(new Error('Timeout after '+ms+' ms')); // (A)
+            }, ms);
+        });
+    }
+````
+
+시간경과 이후 거절((A)라인) 요청을 취소하진 않으면,  성공 결과가 수행(return)되지 않도록 방지 할 뿐 입니다.
+
+`timeout()`메서드를 사용하면 다음과 같습니다.
+
+```` javascript
+    timeout(5000, httpGet('http://example.com/file.txt'))
+    .then(function (value) {
+        console.log('Contents: ' + value);
+    })
+    .catch(function (reason) {
+        console.error('Error or timeout', reason);
+    });
+````
+
+#5. `then()` 체이닝
+메소드 호출 결과는 새로운 **promise Q**입니다.
+
+```` javascript
+    P.then(onFulfilled, onRejected)
+````
+
+이 의미는 *Q*의 `then()`을 호출을 통해서 **promise**기반 흐름을 제어 할 수 있게 유지 한다는 것 입니다.
+- **Q**는 `onFulfilled` 또는 `onRejected` 중 하나에 의해 반환된 것으로 `resolved` 합니다.
+- **Q**는 `onFulfilled` 또는 예외를 던진 `onRejected`중 하나에 의해 `rejected` 합니다.
+
+##5.1 일반 값으로 해결(Resolving with normal values)
+ 만약 당신이 일반값으로 `then()`에 의해 반환 되는 **promise Q**를 해결(resolve) 하면, 그 다음 `then()`을 통해 일반 값을 받을 수 있습니다.
+
+```` javascript
+    asyncFunc()
+    .then(function (value1) {
+        return 123;
+    })
+    .then(function (value2) {
+        console.log(value2); // 123
+    });
+````
+
+##5.2 Resolving with thenable(thenable로 해결)
+당신은 또한 **thenable R**을 가진 `then()`을 반환 하는 **promise Q**를 해결(resolve) 할수 있습니다. **A thenable**은 **promise** 스타일 `then()`메서드를 가진 객체 입니다. 그래서 **promises**는 **thenable** 입니다. 
