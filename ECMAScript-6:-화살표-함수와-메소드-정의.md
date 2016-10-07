@@ -374,7 +374,7 @@ optional dynamic this를 사용하기 위한 간단한 해결책이 더 없을�
 
 
 ### 5.1 클래스 정의에 사용되는 메소드 정의
-“(maximally minimal classes)[http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes]”라고 불리는 ES6를 위한 한 제안이 현재 [논쟁](http://www.2ality.com/2011/11/javascript-classes.html) 중이다. 예를 들어
+[maximally minimal classes](http://wiki.ecmascript.org/doku.php?id=strawman:maximally_minimal_classes)라고 불리는 ES6를 위한 한 제안이 현재 [논쟁](http://www.2ality.com/2011/11/javascript-classes.html) 중이다. 예를 들어
 
 
 ``` javascript
