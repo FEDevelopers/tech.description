@@ -31,7 +31,7 @@
 함수는 메소드 실행으로도 잘 동작한다. 함수는 ```this```라 불리는 특별한 변수를 가진다. ```this```는 메소드를 호출되는 객체를 참조한다. 다른 자유 변수들과는 다르게 ```this```는 둘러싸인 코드의 ```lexical scopes```를 탐색하지 않는다. ```this```는 실행되는 시점을 통해 함수로 전달된다. 함수는 ```this```를 동적으로 전달 받기 때문에 여기서의 this는 ```dynamic this```으로 불린다.
 
 
-함수는 서브루틴 실행으로는 잘 동작하지 않는다. 왜냐하면 함수의 this는 동적이기 때문이다. 서브루틴 호출은 this를 전역 객체로 가지거나 [엄격 모드](http://www.2ality.com/2011/01/javascripts-strict-mode-summary.html)에서는 undefined로 셋팅된다.  That is unfortunate, because the subroutine has no use for its own this, but it shadows the this of the surrounding method, making it inaccessible. 예를 들어
+함수는 서브루틴 실행으로는 잘 동작하지 않는다. 왜냐하면 함수의 this는 동적이기 때문이다. 서브루틴 호출은 this를 전역 객체로 가지거나 [엄격 모드](http://www.2ality.com/2011/01/javascripts-strict-mode-summary.html)에서는 undefined로 셋팅된다. 불행히도 서브루틴은 서브루틴만의 this를 사용하지 않고, 그것을 둘러싸고 있는 메소드의 this를 참조한다. 그래서 자체 this에 접근이 불가능하다. 예를 들어
 
 
 ``` javascript
