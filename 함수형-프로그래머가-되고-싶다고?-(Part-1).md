@@ -112,3 +112,281 @@ And it’s the same with learning Functional Programming. You should expect that
 
 
 ## 순수
+
+
+![water](https://cdn-images-1.medium.com/max/1600/1*lHMDe_A2Cs_4InZ-E9Da9A.png)
+
+
+함수형 프로그래밍의 순수성에 대해 이야기 할 때, 순수 함수가 언급된다.
+
+
+순수 함수는 굉장히 단순한 함수다. 그저 매개변수에 따라 계산할 뿐이다.
+
+
+아래는 자바스크립트의 순수 함수에 대한 예제다.
+
+
+``` javascript
+var z = 10;
+function add(x, y) {
+    return x + y;
+}
+```
+
+
+add 함수는 z 변수를 수정하지 않는다는 것을 알아둬라. z 변수를 읽지 않고, 수정하지도 않는다. 그저 x와 y 매개변수를 읽고, 합계만 반환할 뿐이다.
+
+
+이런 게 순수 함수다. 만약 add 함수가 z 변수에 접근한다면 더이상 순수 함수라고 볼 수 없다.
+
+
+여기 또 다른 함수를 살펴보자.
+
+
+``` javascript
+function justTen() {
+    return 10;
+}
+```
+
+
+만약 justTen이라는 함수가 순수하다면, 오직 상수만 반환할 수 있다. 왜그럴까?
+
+
+왜냐하면 이 함수에는 아무런 매개변수가 없기 때문이다. 그래서 매개변수 외에 다른 것에 접근할 수 없다. 이 함수가 반환할 수 있는 오직 한 가지는 상수일 뿐이다.
+
+
+매개변수가 없는 순수 함수는 일을 안 하기 때문에 쓸모가 없다. 여기서는 그냥 10이라는 상수를 정의해서 사용하는 게 더 나을 것이다.
+
+
+> 대부분의 유용한 순수 함수는 최소 한 개의 매개변수를 가진다.
+
+
+이 함수를 살펴보자.
+
+
+``` javascript
+function addNoReturn(x, y) {
+    var z = x + y
+}
+```
+
+
+이 함수는 아무 것도 반환하지 않는다는 것을 알 수 있다. x와 y를 합쳐서 변수 z에 담지만, 아무것도 반환하지 않는다.
+
+
+자체 매개변수로만 동작을 해야 순수 함수다. 이 함수는 매개변수를 합치기는 하지만, 아무런 결과도 반환하지 않기 때문에 쓸모가 없다.
+
+
+> 유용한 모든 순수 함수는 반드시 무언가를 반환해야한다.
+
+
+첫 번째 add 함수를 다시 살펴보자.
+
+``` javascript
+function add(x, y) {
+    return x + y;
+}
+console.log(add(1, 2)); // prints 3
+console.log(add(1, 2)); // still prints 3
+console.log(add(1, 2)); // WILL ALWAYS print 3
+```
+
+
+add(1, 2)는 항상 3이라는 걸 알 수 있다. 이 함수는 순수하기 때문에 값이 바뀌지 않다는 거에 놀랄 필요가 없다. 만약 add 함수가 외부에 있는 변수를 사용했다면, 결과 값은 절대 예상할 수 없다.
+
+
+> 순수 함수는 같은 입력 값을 넣었을 때 항상 같은 출력 값을 반환한다.
+
+
+순수 함수는 외부 변수를 절대로 수정할 수 없기 때문에, 아래의 함수들은 모두 순수하지 않다.
+
+
+``` javascript
+writeFile(fileName);
+updateDatabaseTable(sqlCmd);
+sendAjaxRequest(ajaxRequest);
+openSocket(ipAddress);
+```
+
+
+위의 모든 함수들은 부작용을 가졌다. 저 함수들을 호출하게 되면, 파일과 데이터베이스의 테이블이 바뀌게 되고, 데이터를 서버로 전송하거나 소켓을 얻기 위해 OS를 호출하게 된다. 위의 함수들은 입력 값을 실행하는 것 외에 다른 작업들을 더 한다. 그리고나서야 출력 값을 반환한다. 그러므로 이 함수들이 어떤 것을 반환할지 절대 예상 할 수 없다. 
+
+
+> 순수 함수는 부작용이 없다.
+
+
+자바스크립트, 자바, 씨샵과 같은 명령형 프로그래밍 언어에서는 어디에서나 부작용이 존재한다. 이건 디버깅을 어렵게 한다. 왜냐하면 변수 값이 바뀔 수 있기 때문이다. 그래서 변수가 잘못된 값으로 바뀌어서 바뀌어서 버그가 발생할 때, 어디를 봐야할까? 소스 코드 모든 곳을 봐야할까? 그 방법은 썩 좋지 못하다.
+
+
+이 시점에서 아마도 생각이 날 것이다. "대체 순수 함수로 어쩌라는거야?"
+
+
+함수형 프로그래밍은 단순히 순수 함수를 작성하는 게 아니다.
+
+
+함수형 프로그래밍은 부작용을 제거할 수 없다. 단지 그 부작용을 제어할 수 있을 뿐이다. 왜냐하면 프로그램은 실제 세계와 맞닿는 부분이 존재하기 때문에 몇몇 부분은 비 순수할 수 밖에 없다. 목표는 비 순수한 코드를 최소한으로 줄이는 것이고, 그것들을 순수 함수로부터 도려내서 별도 공간에 분리시키는 것이다.
+
+
+## 불변성
+
+
+![immutablity](https://cdn-images-1.medium.com/max/1600/1*wKAhKZPXmcSwnq2AcLN-9Q.jpeg)
+
+
+아래 코드를 처음봤던 때를 기억하는가?
+
+
+``` javascript
+var x = 1;
+x = x + 1;
+```
+
+
+그리고 수학 시간에 배웠던 것을 잊으라며 당신을 가르친 적 있는가? 수학에서 x는 x+1과 절대로 동일할 수 없다.
+
+
+하지만 명령형 프로그래밍에서는 x라는 변수에 1을 더해서 그 결과 값을 x에서 저장한다는 것을 의미한다.
+
+
+함수형 프로그래밍에서는 x = x + 1 가 불가능하다. 그렇기 때문에 수학 시간에 잊었던 것들을 다시 기억해야 한다.
+
+
+> 함수형 프로그래밍에서는 변수가 없다.
+
+
+Stored values are still called variables because of history but they are constants, i.e. once x takes on a value, it’s that value for life.
+
+
+Don’t worry, x is usually a local variable so its life is usually short. But while it’s alive, it can never change.
+
+
+아래는 함수형 프로그래밍 언어인 Elm에서의 상수 변수에 대한 다른 예제다. 
+
+
+``` javascript
+addOneToSum y z =
+    let
+        x = 1
+    in
+        x + y + z
+```
+
+
+아마 ML-Style의 구문과 친숙하지 않다면, 내가 설명해줄 수 있다. addOneToSum은 y와 z라는 2개의 매개변수를 받는 함수다.
+
+
+let이 선언된 block 안에서 x는 1로 정의 되었다. 즉, 이 값은 계속 1과 동일할 것이다. 이것의 생명 주기는 함수 실행이 끝나면 종료될 것이다.
+
+
+in이 선언된 block에서는 let block, viz에서 정의된 값들이 포함될 수 있다. x + y + z가 계산된 후의 결과는 반환된다.
+
+
+다시 한 번 "대체 변수 없이 어떻게 하라는 거야" 라는 소리가 들린다.
+
+
+우리가 변수를 수정하고 싶었던 당시를 생각해보자. 보통 2가지의 일반적인 경우가 있다. 다중 속성 수정(예: 객체나 레코드의 값 수정)와 단일 속성 수정(예: 반복문의 카운터)가 있다.
+
+
+함수형 프로그래밍은 수정된 변수가 있는 레코드 복사본을 하나 더 만듦으로써 레코드 내 변수 수정을 가능하게 한다. 레코드의 모든 것을 복사할 필요가 없기 때문에 효율적이다.
+
+
+함수형 프로그래밍은 "값을 복사"하는 위와 동일한 방법으로 단일 속성 수정도 해결한다. 
+
+
+반복문 없이 말이다.
+
+
+"변수도 없는데 반복문까지 없다고?!"
+
+
+잠시만. 그렇다고 해서 반복하는 행위 자체를 못하는 게 아니다. 단지 for, while, do, repeat과 같은 반복문 구조를 사용하지 않는 것이다.
+
+
+> 함수형 프로그래밍은 반복을 하기 위해 재귀 함수를 사용한다.
+
+
+자바스크립트에서는 반복을 하기 위해 2가지가 있다.
+
+
+``` javascript
+// simple loop construct
+var acc = 0;
+for (var i = 1; i <= 10; ++i)
+    acc += i;
+console.log(acc); // prints 55
+// without loop construct or variables (recursion)
+function sumRange(start, end, acc) {
+    if (start > end)
+        return acc;
+    return sumRange(start + 1, end, acc + start)
+}
+console.log(sumRange(1, 10, 0)); // prints 55
+```
+
+
+재귀 함수가 어떻게 for loop와 동일한 값을 얻는지 보자. 새로운 start 값(start + 1)과 새로운 accumulator 값(acc + start)으로 자신을 호출한다. 이 방식은 기존 값을 수정하지 않는다. 대신에 기존 값으로 새로운 값을 계산해서 사용한다.
+
+
+함수형 프로그래밍에 시간을 조금 투자해도 자바스크립트에서는 불행히도 재귀함수를 거의 찾아볼 수 없다. 거기에는 두 가지의 이유가 있다. 첫째로 자바스크립트의 구문은 다소 noisy하다. 둘째로 재귀함수로 개발할 생각을 해본 적이 없기 때문일지도 모른다.
+
+
+Elm에서는 훨씬 가독성이 좋다. 그래서 이해하기에도 쉽다.
+
+
+``` javascript
+sumRange start end acc =
+    if start > end then
+        acc
+    else
+        sumRange (start + 1) end (acc + start) 
+```
+
+
+이렇게 실행된다.
+
+
+``` javascript
+sumRange 1 10 0 =      -- sumRange (1 + 1)  10 (0 + 1)
+sumRange 2 10 1 =      -- sumRange (2 + 1)  10 (1 + 2)
+sumRange 3 10 3 =      -- sumRange (3 + 1)  10 (3 + 3)
+sumRange 4 10 6 =      -- sumRange (4 + 1)  10 (6 + 4)
+sumRange 5 10 10 =     -- sumRange (5 + 1)  10 (10 + 5)
+sumRange 6 10 15 =     -- sumRange (6 + 1)  10 (15 + 6)
+sumRange 7 10 21 =     -- sumRange (7 + 1)  10 (21 + 7)
+sumRange 8 10 28 =     -- sumRange (8 + 1)  10 (28 + 8)
+sumRange 9 10 36 =     -- sumRange (9 + 1)  10 (36 + 9)
+sumRange 10 10 45 =    -- sumRange (10 + 1) 10 (45 + 10)
+sumRange 11 10 55 =    -- 11 > 10 => 55
+55
+```
+
+
+아마도 for을 이용한 반복문이 훨씬 쉽다고 생각할 것이다. 논쟁의 여지가 있고, 친숙함에 대한 문제이기도 하지만, 비 재귀 함수 반복은 "변함(Mutability)"을 요구한다. 그렇기 때문에 좋지 않다.
+
+
+여기에서는 불변의 장점에 대해 설명하지 않았지만, [이 글](https://medium.com/@cscalfani/why-programmers-need-limits-3d96e1a0a6db#.q1vlp8xso)의 Global Mutable State section을 참고해라.
+
+
+불변에 대한 한 가지 명확한 장점은 만약 프로그램 내 변수에 접근을 해야할 일이 있을 때, 읽기 권한만 가진다는 것이다. 무슨 말이냐면, 아무도 그 값을 수정할 수 없다는 뜻이다. 그렇기 때문에 실수로 값이 바뀔 일이 없다.
+
+
+또한, 만약 프로그램이 멀티 쓰레드 기반이라면, 다른 쓰레드가 그 값을 수정할 수 없다. 그 값은 상수일 뿐이고, 만약 다른 쓰레드에서 그 값을 수정하려고 하면 기존 값으로부터 새로운 값을 만들어야 한다.
+
+
+90년대 중반에 나는 [Creature Crunch](https://www.youtube.com/watch?v=uIOYSjBRORM)라는 게임 엔진을 개발했었다. 그리고 거기에는 멀티 쓰레드 때문에 발생하는 엄청난 버그가 있었다. 그때 당시 불변에 대해 알았더라면 그 실수를 하지 않았을 것이다. 하지만 그때의 나는 시디롬의 속도가 게임의 속도에 어떤 영향을 미치는지에 대해서 엄청 고민하고 있었다.
+
+
+> 불변성은 코드를 간단하게 만들어주고 안전하게 해준다.
+
+
+## 아이고 머리야
+
+
+![brain](https://cdn-images-1.medium.com/max/1600/1*IK5485-iZaHeZRfP8aWmYg.png)
+
+
+오늘은 이걸로 충분하다.
+
+
+다음 문서부터는 고차 함수, Functional Composition, 커링 등에 대해서 다뤄 볼 것이다.
