@@ -46,8 +46,7 @@
 두 번째 언어를 배울 때, 이런 질문을 한다. “모듈을 어떻게 만들지? 배열을 어떻게 찾지? substring 함수에서 매개변수는 어떤 거지?”
 
 
-You’re confident that you can learn to drive this new language because it reminds you of your old language with maybe a few new things to hopefully make your life easier.
-너는 이 새로운 언어를 다루기 위해 배울 수 있다고 확신한다. 왜냐하면 저것들은 아마도 너를 예전 언어에서 편하게 사용했던 것들을 상기시킬 것이다.
+예전 언어에서 편하게 사용했던 메소드나 개념들이 떠오르기 때문에 우리는 새로운 언어를 쉽게 배울 수 있다고 확신한다.
 
 
 ## 첫 번째 우주선
@@ -65,11 +64,10 @@ You’re confident that you can learn to drive this new language because it remi
 우주선 운전은 매우 다르고 기계 장치도 굉장히 다를 거라는 생각으로 연습을 시작할 것이다. 
 
 
-물리학적 법칙은 변하지 않았다. 그냥 우주 안에서 항해하면 된다.
+물리학적 법칙은 다르지 않다. 그냥 우주 안에서 항해하면 된다.
 
 
-And it’s the same with learning Functional Programming. You should expect that things will be very different. And that much of what you know about programming will not translate.
-그리고 이건 함수형 프로그래밍을 배우는 거랑 똑같다. 아마도 몇몇은 매우 다를 거라고 기대할 것이다. 
+그리고 이건 함수형 프로그래밍을 배우는 거랑 똑같다. 아마도 몇몇은 매우 다를 거라고 생각할 수도 있다. And that much of what you know about programming will not translate.
 
 
 일반적인 프로그래밍은 그냥 생각하면 되는 것이고, 함수형 프로그래밍은 기존과 다르게 생각하는 방법을 알려줄 것이다. 그렇기 때문에 당신은 아마도 예전 방식으로 절대 돌아가지 않을 것이다. (함수형 프로그램을 알게 된다면)
@@ -255,10 +253,10 @@ x = x + 1;
 > 함수형 프로그래밍에서는 변수가 없다.
 
 
-Stored values are still called variables because of history but they are constants, i.e. once x takes on a value, it’s that value for life.
+저장된 값(stored value)은 여전히 변수로 불리어진다. 하지만 그것들은 상수다. 즉, x에 한 번 값이 할당되었다면 그 값으로 계속 유지된다.
 
 
-Don’t worry, x is usually a local variable so its life is usually short. But while it’s alive, it can never change.
+걱정하지마라. x는 보통 지역변수이기 때문에 생명주기는 보통 짧다. 하지만 살아있는 동안에도 값은 변하지 않는다.
 
 
 아래는 함수형 프로그래밍 언어인 Elm에서의 상수 변수에 대한 다른 예제다. 
