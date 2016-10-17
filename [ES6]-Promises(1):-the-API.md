@@ -100,7 +100,7 @@
 
 비동기 함수를 위한 **promise**가 어떤 점에서 좋냐면, **promise**상태가 한 번 설정되면 더이상 어느 것도 변하지 않게 된다는 점이다.  게다가 비동기 함수들은 경쟁상태(race condition)가 절대 되지 않는다. 왜냐하면 `then()`을 실행하는 게 **promise**가 처리되기 전이냐 후냐는 중요하지 않기 때문이다. (**promise**는 어차피 *resolve*와 *reject*에 의해 진행되므로)
 - 전자의 경우, **promise** 상태가 세팅된 직후 호출됩니다.
-- 후자의 경우, **promise** 결과(**fulfillment** 또는 **rejection** 값)는 캐시 되고, 적절하게 원하는 타이밍에 즉시 `then()` 다룰수 있게 해준다.(task로 큐에 저장이 되어지고) 
+- 후자의 경우, **promise** 결과(**fulfillment** 또는 **rejection** 값)는 캐시 되고, 적절하게 원하는 타이밍에 즉시 `then()` 다룰수 있게 해줍니다.(task로 큐에 저장이 되어지고) 
 
 ##3.3 성공 또는 거절만 처리(Only handling fulfillments or rejections)
  만약 당신이 성공에만 관심 있다면, `then()`의 2번째 파라미터를 생략할 수 있습니다.
