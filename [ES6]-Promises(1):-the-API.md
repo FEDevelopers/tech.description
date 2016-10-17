@@ -81,8 +81,7 @@
 - 성공(Fulfilled) : 성공적으로 완료되었다.
 - 거절(rejected) : 처리되는 동안 실패가 발생하였다.
 
-**promise**는 성공(fulfilled)이나 거절(rejected) 중 하나로 고정됩니다.(연산이 끝났을 때) (A promise is settled (the computation it represents has finished) if it is either fulfilled or rejected.)
-**promise** 상태는 한 번만 지정되며, 그 후 상태를 유지합니다. 그 후에 상태를 바꾸려고 해도 아무 변화가 없습니다.
+**promise**는 연산이 끝난 뒤 fulfilled 혹은 rejected 상태로 처리(settle)된다. promise는 한 번 처리되면 그 처리 상태로 유지된다. 
 
 ![promise state](http://4.bp.blogspot.com/-iiX2B0bNZe4/VDEiVTNrpqI/AAAAAAAAA4Q/selZM4dBM7k/s1600/promise_states_simple.jpg)
 
