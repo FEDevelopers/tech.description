@@ -19,7 +19,7 @@
 > 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다. 2개의 비동기 프로그래밍 포스트 중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는 것이 좋을 것입니다.
 
 #1. Promises
- **Promises**는 비동기 프로그래밍의 한 부분을 도와주는 패턴입니다.(함수 또는 메서드를 비동기적으로 결과를 받는 것) 이런 기능을 구현하기 위해선 promise 를 반환해야 합니다. **promise**는 결과를 위해 지정해놓은 객체를 의미합니다. <br>함수 호출자는 연산된 결과를 알려주는 **promise**와 함께 콜백을 등록합니다.(The caller of the function registers callbacks with the promise to be notified once the result has been computed) 이 함수는 **promise**를 통해 결과를 전송합니다.<br><br>
+ **Promises**는 비동기 프로그래밍의 한 부분을 도와주는 패턴입니다.(함수 또는 메서드를 비동기적으로 결과를 받는 것) 이런 기능을 구현하기 위해선 promise 를 반환해야 합니다. **promise**는 결과를 위해 지정해놓은 객체를 의미합니다. <br>함수 호출자는 결과 계산이 완료되었다는 것을 알림 받기 위해 콜백을 **promise**로 등록합니다.<br><br>
 자바스크립트 **promises**의 사실상 표준은 [**Promises/A+**](https://promisesaplus.com/) 이라고 부릅니다. ECMAScript6 **promise** API는 표준을 따릅니다.
 
 #2. 첫번째 예제
