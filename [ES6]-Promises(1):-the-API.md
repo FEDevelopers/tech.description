@@ -99,7 +99,7 @@
     );
 ````
 
-**promise** 상태가 설정되면 더는 어느 것도 변하지 않게 됩니다. 그래서 **promise**는 비동기함수를 위하여(일회성 결과) 유용하게 만들어졌습니다. 게다가 **promise**는 경쟁상태(race condition)를 일으키지 않습니다. 왜냐면 `then()` 을 **promise** 전이나 상태가 세팅된 후에 실행하든 중요하지 않기 때문입니다.
+비동기 함수를 위한 **promise**가 어떤 점에서 좋냐면, **promise**상태가 한 번 설정되면 더이상 어느 것도 변하지 않게 된다는 점이다.  게다가 비동기 함수들은 경쟁상태(race condition)가 절대 되지 않는다. 왜냐하면 `then()`을 실행하는 게 **promise**가 처리되기 전이냐 후냐는 중요하지 않기 때문이다. (**promise**는 어차피 *resolve*와 *reject*에 의해 진행되므로)
 - 전자의 경우, **promise** 상태가 세팅된 직후 호출됩니다.
 - 후자의 경우, **promise** 결과(성공 또는 거절의 결과값)는 캐시 되고, 적절한 반응을 즉시 다룰 수 있게 됩니다.(task 큐와 같이), the promise result (fulfillment value or rejection value) is cached and handed to the appropriate reaction “immediately” (queued as a task).
 
