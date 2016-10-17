@@ -23,7 +23,7 @@
 자바스크립트 **promises**의 사실상 표준은 [**Promises/A+**](https://promisesaplus.com/) 이라고 부릅니다. ECMAScript6 **promise** API는 표준을 따릅니다.
 
 #2. 첫번째 예제
- 첫번째 예제를 봅시다, to give you a taste of what working with promises is like.<br>
+ 아래의 첫 번째 예제는 promise로 어떻게 동작하는지 보여주기 위함이다.<br>
 **Node-js**스타일 콜백으로 비동기적으로 파일 읽는 법은 다음과 같습니다.
  
 ```` javascript
