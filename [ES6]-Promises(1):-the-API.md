@@ -90,8 +90,7 @@
 - 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 **promise**는 거절(reject) 상태입니다.
 
 ##3.2 promise의 사용(Consuming a promise)
-**promise** 소비자(consumer)로서, 당신은 `then()` 메서드에 등록한 콜백을 통해 성공 또는 거절 상태 알림을 받게 됩니다.
-
+**promise** 소비자(consumer)로서, 당신은 `fulfillment` 혹은 `rejection` 이라는 반환 상태에 따라 `then()` 메소드에 등록한 콜백 함수로부터 알림을 받게 된다.
 ```` javascript
     promise.then(
         function (value) { /* fulfillment */ },
