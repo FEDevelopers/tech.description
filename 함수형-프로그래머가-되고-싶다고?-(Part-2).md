@@ -47,7 +47,7 @@ function validatePhone(phone) {
 ```
 
 
-예전부터 이런 코드를 계속 써왔다. 그리고 아마도 진하게 표시된 곳을 제외하면 같은 기능을 하고 있다는 걸 인식할 수 있을 것이다.
+우리는 예전부터 이런 코드를 계속 써왔다. 그리고 두 가지 모두 같은 기능을 하고 있다는 걸 인식할 수 있을 것이다.
 
 
 validateSsn 함수와 validatePhone 함수를 각각 복사, 붙여넣기로 만다는 것보다 매개변수를 이용해서 하나의 함수로 만들어야 한다.
@@ -78,7 +78,7 @@ function validateValue(value, regex, type) {
 마지막으로, 메세지 부분인 ‘SSN’ 과 ‘Phone Number’ 은 type 변수로 재활용되었다.
 
 
-두 개, 세 개의 함수보다 한 개의 함수로 줄이는 방법이 훨씬 낫다. 이런 방식이 코드를 깔끔하게 만들어주고 유지보수에도 더 도움된다.
+두 개, 세 개의 함수를 중복 사용하는 것보다 한 개의 함수로 줄이는 방법이 훨씬 낫다. 이런 방식은 코드를 깔끔하게 만들어주고 유지보수에도 도움이 된다.
 
 
 예를 들어, 만약에 버그가 발생했을 때 함수가 복사, 붙여넣기로 파편화되어 있다면 모든 곳을 뒤져야 하지만 하나의 함수로 구성되어 있다면 그곳만 수정하면 된다.
@@ -103,7 +103,7 @@ function validateName(name) {
 ```
 
 
-여기에 있는 parseAddress 와 parseFullName 함수는 스트링 값을 받아서 참 거짓을 구분해준다.
+여기에 있는 parseAddress 와 parseFullName 함수는 스트링 값을 입력 받아서 참 거짓을 구분해준다.
 
 
 어떻게 리팩토링 할까?
@@ -180,7 +180,7 @@ validateValueWithFunc('Joe Mama', parseName, 'Name');
 훨씬 낫다. 이제 phone number를 분석할 때 정규식을 일일이 복사하지 않아도 된다.
 
 
-하지만 parseSsn와 parsePhone 외에 분석해야 할 더 많은 정규식이 있을 상황을 가정보자. 매번 생성해야한다. 정규식 파서를 만들어야한다. 그리고 그 정규식 끝 부분에는 .exec 를 붙여야한다. 사실 이런건 실수로 까먹을 수도 있다.
+하지만 parseSsn와 parsePhone 외에 분석해야 할 더 많은 정규식이 있을 상황을 가정보자. 매번 정규식 파서를 만들때마다 그 정규식 끝 부분에는 .exec 를 붙여야한다. 사실 이런건 실수로 까먹을 수도 있다.
 
 
 exec 함수를 리턴하는 고차함수를 만듦으로써 이 실수를 미연에 방지할 수 있다.
@@ -207,7 +207,7 @@ makeRegexParser 함수는 정규식(문자열)을 입력받고 exec 함수를 �
 parseSsn와 parsePhone는 이전과 정확히 동일하다. 입력받은 정규식을 실행하는 함수다.
 
 
-사실, 이건 미미한 향상이지만, 고차함수라는 것이 함수를 반환하는 예제를 보여주기 위함이다. 
+사실, 이건 미미한 향상이지만, 고차함수가 함수를 반환하다는 것을 예제를 보여주기 위함이다. 
 
 
 하지만, 만약 makeRegexParser가 훨씬 복잡하다면 이러한 것의 장점을 알 수 있다. 
@@ -228,7 +228,7 @@ function makeAdder(constantValue) {
 여기 상수를 입력받고 가산기를 반환하는 makeAdder라는 함수가 있다. 생성된 함수는 저장된 상수에 입력받은 값을 더한다.
 
 
-아래는 어떻게 사용되는지에 대한 예제다.
+아래는 어떻게 사용 되는지에 대한 예제다.
 
 
 ``` javascript
@@ -245,7 +245,7 @@ console.log(add10(40)); // prints 50
 makeAddr의 결과가 반환된 이후에 생성된 가산기 함수는 상수 10에 접근할 수 있는 점을 주목해라. 가산기가 생성될 때의 스코프에 상수가 존재했기 때문이다.
 
 
-만약 이런 개념이 없다면, 함수를 반환하는 함수가 그닥 유용하지 않게된다. 그래서 이 개념이 어떻게 동작하는지 이해하는 것은 매우 중요하다.
+만약 이런 개념이 없다면, 함수를 반환하는 함수가 그닥 유용하지 않게된다. 그래서 이 개념이 어떻게 동작 하는지에 대해 이해하는 것은 매우 중요하다.
 
 
 이 개념이 바로 클로저다.
@@ -300,19 +300,16 @@ console.log(childFunc(111, 222)); // prints 738
 grandParent가 parent를 반환하는 시점부터 parentFunc는 parent의 스코프를 보관한다.
 
 
-마찬가지로, parentFunc가 child를 반환하는 시점부터 childFunc는 child의 스코프를 보관한다.
+마찬가지로 parentFunc가 child를 반환하는 시점부터 childFunc는 child의 스코프를 보관한다.
 
 
-함수가 생성될 때, 함수의 스코프 내에 존재하는 모든 변수는 함수의 생명 기간(lifetime)에 접근이 가능하다. 함수는 참조가 남아있는 한 계속 존재한다. 예를들어, child의 스코프는 childFunc가 계속 참조하는 한 존재한다.
+함수가 생성될 때, 함수의 스코프 내에 존재하는 모든 변수는 함수의 생명 기간(lifetime)에 접근이 가능하다. 함수는 참조가 남아있는 한 계속 존재한다. 예를 들어, child의 스코프는 childFunc가 계속 참조하는 한 존재한다.
 
 
-> A closure is a function’s scope that’s kept alive by a reference to that function.
-클로저는 함수의 스코프다. 그 스코프는 함수에 대한 참조로 계속 살아있다.
+> 클로저라는 것은 함수에 대한 참조로 인해 계속 살아있는 함수의 스코프다.
 
 
-Note that in Javascript, closures are problematic since the variables are mutable, i.e. they can change values from the time they were closed over to the time the returned function is called.
-자바스크립트에서 클로저는 문제가 있다. 왜냐하면 변수가 변할 수(mutable) 있기 때문이다. 참고로 
+자바스크립트에서 클로저는 문제가 있다. 왜냐하면 변수가 변할 수(mutable) 있기 때문이다. 참고로 클로저는 closed 되는 시점부터 반환되는 함수가 호출되는 동안 값이 변경될 수 있다.
 
 
-Thankfully, variables in Functional Languages are Immutable eliminating this common source of bugs and confusion.
-고맙게도 함수형 언어에서의 변수는 변할 수 없기(immutable) 때문에 버그와 혼동을 없애준다.
+고맙게도 함수형 언어에서의 변수는 변하지 않기(immutable) 때문에 그러한 버그와 혼동을 없애준다.
