@@ -73,7 +73,7 @@
 > 이번 섹션은 새로운 것을 생성하기 위해 기존 **promises**를 구성 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)<br>
 추가적으로 `Promise.all()`과 `Promise.race()`로 **promises**를 구성하는 법을 제공합니다.
 
-#7-1 `Promise.all()` 에 의한 `map()`
+##7-1 `Promise.all()` 에 의한 `map()`
  **Promises**가 한가지 좋은 것은 promise기반 함수는 결과를 반환 해주므로, 많은 동기로 작동하는 도구(:라이브러리 tools)가 여전히 작동한다는 것 입니다. 예를 들어, 배열이 제공하는 `map()` 메서드를 다음과 같이 사용 할 수 있습니다.
 
 ```` javascript
@@ -98,3 +98,28 @@
     });
 ````
 
+##7-2 `Promise.race()`를 통한 Timing out
+`Promise.race()`는 promises 배열을 받으며, 새로운 promise **P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)  만약 첫번째 Promise가 성공또는 거절로 설정되면 그 Promise를 반환되어집니다. 
+
+아래 timeout을 확장한 `Promise.race()` 예제를 봅시다.
+```` javascript
+    Promise.race([
+        httpGet('http://example.com/file.txt'),
+        delay(5000).then(function () {
+            throw new Error('Timed out')
+        });
+    ])
+    .then(function (text) { ... })
+    .catch(function (reason) { ... });
+````
+
+#8. 항상 비동기인 Promises
+promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적인 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.
+그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다. 
+`then()` 메서드를 위해 [requirement](https://promisesaplus.com/#point-34) 를 따르기를 권장 합니다. (It states so via the following requirement (2.2.4) for the then() method:)
+
+> 실행컨텍스트 스택은 플랫폼 코드를 포함하기 전까지 `onFulfilled` 또는 `onRejected` 를 호출 할 수 없습니다.
+
+이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다. 
+and that chaining promises won’t starve other tasks of processing time
+그리고 promises 체이닝은 다른  **tasks**의 프로세스 시간을 
