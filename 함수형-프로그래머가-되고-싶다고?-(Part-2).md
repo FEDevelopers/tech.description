@@ -313,3 +313,15 @@ grandParent가 parent를 반환하는 시점부터 parentFunc는 parent의 스�
 
 
 고맙게도 함수형 언어에서의 변수는 변하지 않기(immutable) 때문에 그러한 버그와 혼동을 없애준다.
+
+
+## 아이고 머리야
+
+
+![brain](https://cdn-images-1.medium.com/max/1600/1*IK5485-iZaHeZRfP8aWmYg.png)
+
+
+오늘은 이걸로 충분하다.
+
+
+다음 문서부터는 합성 함수, 커링, 함수형 함수(map, filter, fold 등), 기타 등등에 대해 이야기 할 예정이다.
