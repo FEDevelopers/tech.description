@@ -121,5 +121,19 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
 > 실행컨텍스트 스택은 플랫폼 코드를 포함하기 전까지 `onFulfilled` 또는 `onRejected` 를 호출 할 수 없습니다.
 
 이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다. 
-and that chaining promises won’t starve other tasks of processing time
-그리고 promises 체이닝은 다른  **tasks**의 프로세스 시간을 
+그리고 promises 체이닝은 다른  **tasks**의 프로세스 시간을 갈망하지 않습니다. (and that chaining promises won’t starve other tasks of processing time)
+
+#9. Cheat sheet: the ECMAScript 6 promise API
+ 이번 섹션은 이 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명된바와 같이  ECMAScript6 promise API 개요를 둘러봅니다.
+
+##9.1 Glossary(어휘)
+The promise API is about delivering results asynchronously. A promise object (short: promise) is a stand-in for the result, which is delivered via that object.
+**Promise API**는 비동기로 결과를 전달합니다. *promise* 객체는(짧게 promise로 대체함)
+
+상태:
+- promise는 항상 3개중에 1개의 상호배타적인 상태를 가집니다.
+ - 결과가 준비되기전에는 promise는 *pending* 상태입니다.
+ - 만약 결과가 준비됬으면, promise는 *fulfilled* 상태입니다.
+ - 만약 에러가 발생하면, promise 는 *rejected* 입니다.
+- 만약 어떤행위가 끝났다라는 것은 promise 상태가 설정됬다는 것입니다.(만약 *fulfilled* 또는 *rejected* 이던지간에..)
+- promise가 한번 설정되면, 더이상 변하지 않습니다.
