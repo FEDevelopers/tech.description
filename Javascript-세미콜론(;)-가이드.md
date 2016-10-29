@@ -27,11 +27,11 @@ alert("hi");                  // function call
 ````
 
 위 statements는 `;`와 함께 종료 할수 있습니다. 그러나 그것들 중에 `;`이 없을수도 있습니다.<br>
-`;`를 통해 각 statement를 종료 하게 해주는 좋은 습관에 대해 고려해봅시다. - 당신의 코드를 조금은 쉽게 파싱하고 압축하게 만들어준다. 만약 당신이 줄바꿈을 제거하는 경우, 같은 줄에 분리되지 않은 몇몇 statements에 대해 걱정할 필요가 없습니다.(if you remove line breaks you needn’t worry about several statements ending up unseparated on the same line. 역자주:갑자기 이 문장이 나오는게 이해가안됌)
+`;`를 통해 각 statement를 종료 하게 해주는 좋은 습관에 대해 고려하십시오. - 당신의 코드를 조금은 쉽게 파싱하고 압축하게 만들어준다. 만약 당신이 줄바꿈을 제거하는 경우, 같은 줄에 분리되지 않은 몇몇 statements에 대해 걱정할 필요가 없습니다.(if you remove line breaks you needn’t worry about several statements ending up unseparated on the same line. 역자주:갑자기 이 문장이 나오는게 이해가안됌)
 
 #Avoid!
 ##1. {}가 닫힌 후에
- 당신은 `}` 이 닫힌 이후에 세미콜론을 사용하면 안됀다. `var obj={};`와 같은 할당문은 예외이다.(위 참조)
+ 당신은 `}` 이 닫힌 이후에 세미콜론을 사용하면 안됩니다. `var obj={};`와 같은 할당문은 예외입니다.(위 참조)
 ```` javascript
 // NO semicolons after }:
 if  (...) {...} else {...}
@@ -46,7 +46,7 @@ function (arg) { /*do this*/ } // NO semicolon after }
 ````
 
 ##2. `if, for, while, switch`의 괄호(`)`) 후에 statement
-`if` statement의 `{ }`이 후에 세미콜론을 사용해도 상관없습니다.(그것은 무시되어지고, 불필요하다고 warning을 보게됩니다.) 그러나 세미콜론이 속하지 않는 경우(`if, for, while, switch` statement의 `()`의 후와 같이)에는 좋은 생각이 아닙니다. 
+`if` statement의 `{ }`이 후에 세미콜론을 사용해도 상관없습니다.(그것은 무시되어지고, 불필요하다고 warning을 보게됩니다.) 그러나 세미콜론이 속하지 않는 (`if, for, while, switch` statement의 `()`의 후와 같은)경우에는 좋은 생각이 아닙니다. 
 
 ```` javascript
 if (0 === 1); { alert("hi") }
@@ -57,7 +57,7 @@ if (0 === 1) /*do nothing*/ ;
 alert ("hi");
 ````
 
-위 코드는 `alert "hi"` 를 실행 되어지지만, `0 === 1` 은 다릅니다. 이는 세미콜론 때문에 작동 할 수 있는 겁니다.<br>
+위 코드는 `alert "hi"` 가 실행 되지만, `0 === 1` 은 다릅니다. 이는 세미콜론 때문에 작동 할 수 있는 겁니다.<br>
 자바스크립트는 당신이 비어있는 statment를 사용한 것이라고 생각하고, 그리고 오른쪽에 있는 모든 것은 더이상 `if` 조건에 속하지 않고 독립적으로 처리됩니다.
 
 #물론 예외는 있습니다..
