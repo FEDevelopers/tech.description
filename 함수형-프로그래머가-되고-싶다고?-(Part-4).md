@@ -1,4 +1,4 @@
-> 이 문서는 https://medium.com/@cscalfani/so-you-want-to-be-a-functional-programmer-part-3-1b0fd14eb1a7#.ii6um685m 를 번역한 내용입니다.
+> 이 문서는 https://medium.com/@cscalfani/so-you-want-to-be-a-functional-programmer-part-4-18fbe3ea9e49#.iddazh5wz 를 번역한 내용입니다.
 
 
 ![functinoal](https://cdn-images-1.medium.com/max/800/1*AM83LP9sGGjIul3c5hIsWg.png)
