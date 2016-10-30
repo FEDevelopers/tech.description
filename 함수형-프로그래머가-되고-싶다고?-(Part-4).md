@@ -101,6 +101,7 @@ mult5AfterAdd10 =
 ``` javascript
 bracket str =
     "{" ++ str ++ "}"
+
 doubleBracket str =
     "{{" ++ str ++ "}}"
 ```
