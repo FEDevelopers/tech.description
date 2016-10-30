@@ -26,8 +26,8 @@ var fun = function() {...};   // var decl., assignmt, and func. defin.
 alert("hi");                  // function call
 ````
 
-위 statements는 `;`와 함께 종료 할수 있습니다. 그러나 그것들 중에 `;`이 없을수도 있습니다.<br>
-`;`를 통해 각 statement를 종료 하게 해주는 좋은 습관에 대해 고려하십시오. - 당신의 코드를 조금은 쉽게 파싱하고 압축하게 만들어준다. 만약 당신이 줄바꿈을 제거하는 경우, 같은 줄에 분리되지 않은 몇몇 statements에 대해 걱정할 필요가 없습니다.(if you remove line breaks you needn’t worry about several statements ending up unseparated on the same line. 역자주:갑자기 이 문장이 나오는게 이해가안됌)
+위의 모든 statements은 세미콜론으로 종료될 수 있습니다. 하지만 위의 코드 모두 꼭 세미콜론을 붙일 필요는 없습니다. <br>
+몇몇은 모든 statements의 종료마다 세미콜론을 써주는 것을 좋은 습관이라고 고려합니다. 그러한 습관은 당신 코드를 해석하기 쉽게 만들어주고, 쉽게 압축할 수 있게 해줍니다.(세미콜론을 사용해서 코드의 종료를 명확하게 하면) 코드에서 줄바꿈(br이나 \n)을 제거하더라도 몇몇 statements이 같은 줄에서 불완전하게 끝나는 것에 대해 걱정할 필요가 없습니다.
 
 #Avoid!
 ##1. {}가 닫힌 후에
