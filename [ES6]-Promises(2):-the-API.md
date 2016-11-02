@@ -149,7 +149,7 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
  - 일반값(*thenable*이 아닌)으로 해결(*Resolving*) 하면 promise를 충족(*fulfills*) 시킵니다.
  - *thenable* **T**를 가진 promise **P**를 해결(*Resovling*)하는 것은 더이상 promise **P**는 사용할수 없고, *fulfillment* 또는 *rejection* 값을 가진 **T**의 상태를 따르게 됩니다. 적절한 **P**반응은 **T**가 해결되면 즉시 다시 호출 되는 것입니다.
 
-##9.1 생성자
+##9.2 생성자
  promise 생성자는 다음과 같은 시그니쳐를 따릅니다.
 
 ```` javascript
