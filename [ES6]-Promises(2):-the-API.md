@@ -127,13 +127,37 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
  이번 섹션은 이 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명된바와 같이  ECMAScript6 promise API 개요를 둘러봅니다.
 
 ##9.1 Glossary(어휘)
-The promise API is about delivering results asynchronously. A promise object (short: promise) is a stand-in for the result, which is delivered via that object.
-**Promise API**는 비동기로 결과를 전달합니다. *promise* 객체는(짧게 promise로 대체함)
-
+**Promise API**는 결과를 비동기적으로 제공하는 것에 대한 내용입니다. *promise* 객체는(짧게 promise로 대체함) 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
+<br><br>
 상태:
 - promise는 항상 3개중에 1개의 상호배타적인 상태를 가집니다.
  - 결과가 준비되기전에는 promise는 *pending* 상태입니다.
  - 만약 결과가 준비됬으면, promise는 *fulfilled* 상태입니다.
  - 만약 에러가 발생하면, promise 는 *rejected* 입니다.
-- 만약 어떤행위가 끝났다라는 것은 promise 상태가 설정됬다는 것입니다.(만약 *fulfilled* 또는 *rejected* 이던지간에..)
+- 만약 어떤행위가 끝났다는건 promise 상태가 설정됬다는 것입니다.(만약 *fulfilled* 또는 *rejected* 이던지간에..)
 - promise가 한번 설정되면, 더이상 변하지 않습니다.
+
+<br>
+상태 변화 반응:
+- *Promise 반응*은 *fulfillment* 또는 *rejection*을 알림 받기 위해 promise의 `then()` 메서드를 등록한 콜백입니다.
+- *thenable*은 **promise**스타일의 `then()` 메서드를 가진 객체입니다. 이 **API**는 promise가 설정됬다는 알림을 받는 것만 관심있을 뿐 아니라 오로지 *thenables*만 요구 할 뿐입니다.
+
+<br>
+변경 상태: promise 상태를 변경하는데는 2가지 기능이 있습니다. 당신이 한번에 둘중 하나를 실행 한 후에는, 추가 호출은 아무 영향도 미치지 않습니다.
+- promise가 거부(*Rejecting*)됬다는 것은 promise가 거절(*rejected*)된다는 것을 의미합니다.
+- promise가 해결(*Resolving*)됬다는 것은 당신이 어떤 값을 가지고 있냐에 따라 영향을 미칩니다.
+ - 일반값(*thenable*이 아닌)으로 해결(*Resolving*) 하면 promise를 충족(*fulfills*) 시킵니다.
+ - *thenable* **T**를 가진 promise **P**를 해결(*Resovling*)하는 것은 더이상 promise **P**는 사용할수 없고, *fulfillment* 또는 *rejection* 값을 가진 **T**의 상태를 따르게 됩니다. 적절한 **P**반응은 **T**가 해결되면 즉시 다시 호출 되는 것입니다.
+
+##9.1 생성자
+ promise 생성자는 다음과 같은 시그니쳐를 따릅니다.
+
+```` javascript
+    var p = new Promise(executor(resolve, reject));
+````
+
+이는 콜백 실행자(executor)에 의해 결정된 행동의 **promise** 를 생성합니다. 생성자 파라미터를 사용하여 `var p`를 해결(*resolve*)하거나 거절(*reject*) 하는데 사용할 수 있습니다.:
+- `x`를 통해 `p`를 해결하는 `resolve(x)`:
+ - 만약 `x`가 *thenable*이라면, 그 설정은 `p`로 전달 됩니다.(`then()`을 통해 등록된 트리거 반응을 포함하여)
+ - 그렇지 않으면, `p`는 `x`로 처리(*fulfilled*) 됩니다.
+- `reject(e)` 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(종종  `Error` 대신에)
