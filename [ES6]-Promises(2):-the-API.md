@@ -257,16 +257,15 @@ then(some_module=>{
 ##10.2 단점
 *Promises*는 단일 비동기 처리에 유리합니다. 하지만 다음은 적합하지 않습니다.
 - 반복적인 이벤트 : 만약 당신이 관심이 있다면, *reactive programming*를 보길 바랍니다.(일반적인 이벤트 처리 체이닝을 현명하게 추가하는 방법)
-- 데이서 스트림 : 현재 데이터 스트림을 제공하기 위해 [표준](https://streams.spec.whatwg.org/)을 개발중입니다.
+- 데이터 스트림 : 현재 데이터 스트림을 제공하기 위해 [표준](https://streams.spec.whatwg.org/)을 개발중입니다.
 
 ECMAScript6 *promise*는 가끔 유용할 수 있는 2가지 특징이 없습니다.
 - 당신은 *promise*를 취소 할 수 없습니다.
 - 당신은 *promise*가 얼만큼 진행 됬는지 질의 할수 없습니다.(예를들어 클라이언트 UI 에서 progress bar를 표시해주는것)
 
-**Q** promise 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**로 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
+**Q promise** 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**로 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
 
 #11. Promises와 generators
-With the help of a utility function such as Q.spawn(), you can use promise-based functions inside shallow coroutines, implemented via generators
 `Q.spawn()`같은 유틸리티 함수의 도움으로, 당신은 *generators*통해 구현된 *shallow* 코루틴내에서 promise기반 함수를 사용 할수 있습니다. 이는 코드가 동기적으로 보여지고, `try-catch`같은 동기적인 메카니즘을 수행 할 수 있는 중요한 장점을 가지고 있습니다.
 
 ```` javascript
