@@ -156,8 +156,34 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
     var p = new Promise(executor(resolve, reject));
 ````
 
-이는 콜백 실행자(executor)에 의해 결정된 행동의 **promise** 를 생성합니다. 생성자 파라미터를 사용하여 `var p`를 해결(*resolve*)하거나 거절(*reject*) 하는데 사용할 수 있습니다.:
+이는 콜백 실행자(executor)에 의해 결정된 행동의 **promise** 를 생성합니다. 생성자 파라미터를 사용하여 `var p`를 해결(*resolve*)하거나 거절(*reject*)할 수 있습니다.:
 - `x`를 통해 `p`를 해결하는 `resolve(x)`:
  - 만약 `x`가 *thenable*이라면, 그 설정은 `p`로 전달 됩니다.(`then()`을 통해 등록된 트리거 반응을 포함하여)
  - 그렇지 않으면, `p`는 `x`로 처리(*fulfilled*) 됩니다.
 - `reject(e)` 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(종종  `Error` 대신에)
+
+##9.3 정적 메소드
+ **Promise**의 모든 정적메소드는 *subclassing* 을 제공합니다.: *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 그리고 또한 *subclassing*을 통해 다른 정적메소드에 접근하게 됩니다.(`this.resolve(...) VS `Promise.resolve(...))
+
+###Promises 생성
+*recevier*의 인스턴스를 생성하기 위해 2가지 메서드를 다음과 같이 따릅니다.(*subclassing*의 this)
+
+- Promise.resolve(x):
+ - 만약 `x`가 *thenable* 이면, *promise*로 변환됩니다.(receiver의 인스턴스)
+ - 만약 `x`가 *promise* 이면, 변경되지 않은채로 반환됩니다.
+ - 그렇지않으면, `x`가 처리된 새로운 *receiver* 인스턴스를 반홥니다.
+- Promise.reject(reason): 어떤 값의 이유와 함께 거절된 새로운 *promise*를 생성합니다. 
+
+###Promises 합성
+ 직관적으로, 정적메소드인 `Promise.all()`과 `Promise.race()`는 하나의 *promise*에 반복 가능한 *promises*로 구성합니다. <br>
+그것은 즉:
+- 그것들은 **iterable**를 줍니다. **iterable**의 요소들은 `this.resolve()`를 통해 *promises*로 변환됩니다.
+- 그것들은 새로운 *promise*를 반환합니다. 그 *promise*는 *receiver*의 새로운 인스턴스입니다.
+
+Method 들 :
+- Promise.all(iterable): *promise* 반환
+ - 만약 *iterable* 요소들이 모두 처리(*fulfilled*)되면, *promise.all*은 처리(*fulfilled*)되어집니다. **Fulfillment** 값: 처리(*fulfillment*)값들의 배열
+ - 만약 *iterable* 요소중 어느 하나라도 거절(*rejected*)되면 *promise.all*은 거절(*rejected*)됩니다. **Rejection** 값 : 첫번째 거절(*rejection*)값
+- Promise.race(iterable): 해결(*settled*)된 *iterable* 첫번째 요소는 다음 반환되어지는 *promise*를 해결하기 위해 사용됩니다. 
+
+##9.4 prototype 메서드들 인스턴스
