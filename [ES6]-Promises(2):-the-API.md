@@ -35,7 +35,7 @@
 11. [Promises와 generators](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#11-promises%EC%99%80-generators)
 
 #6. 에러 처리
- 앞서 언급했듯이, 에러 처리에서 무엇을 반환하든 fulfillment 값이 될 것입니다.(rejection 값이 아닌) 이는 실패 할 경우에 사용 할 수 있는 기본값을 지정 할 수 있다는 걸 의미 합니다.
+ 앞서 언급했듯이, 에러 처리에서 반환하는 것은 *fulfillment* 값이 될 것입니다.(*rejection* 값이 아닌) 따라서 오류발생시 기본값을 지정 할 수 있습니다.
 
 ```` javascript
  retrieveFileName()
@@ -49,7 +49,7 @@
 ````
 
 ##6-1 예외를 잡자(Catching exceptions)
- **executor** 안에 예외(Exceptions)는 다음 에러 처리자 에게 전달 되어 집니다.
+ **executor**의 예외(Exceptions)는 다음 에러 핸들러(*handler*) 에게 전달 되어 집니다.
 
 ```` javascript
     new Promise(function (resolve, reject) {
@@ -60,7 +60,7 @@
     });
 ````
 
-**then**'s 매개변수 중 하나에서 발생하는 예외는 다음과 같습니다.
+**then**'s 매개변수 중에서 발생하는 예외는 다음과 같습니다.
 
 ```` javascript
     asyncFunc()
@@ -73,7 +73,7 @@
 ````
 
 ##6-2 에러's 체이닝(Chaining errors)
- 아래 예제를 보면 에러처리를 제공 하지 않는 `then()`메서드를 한개 또는 여러 개를 체이닝 하여 사용 할 수 있습니다. 그러면 에러는 에러처리기가 있는 곳 까지 전달 되어집니다.
+ 아래 예제를 보면 에러 핸들러를 제공 하지 않는 `then()`메서드는 한개 또는 여러개의 체이닝을 사용 할 수 있습니다. 그러면 에러는 에러 핸들러가 있는 곳 까지 전달 됩니다.
 
 ```` javascript
     asyncFunc1()
@@ -85,11 +85,11 @@
 ````
 
 #7.Composition
-> 이번 섹션은 새로운 것을 생성하기 위해 기존 **promises**를 구성 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)<br>
+> 이번 섹션은 새로운 것을 만들기 위해 기존 **promises**를 구성 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)<br>
 추가적으로 `Promise.all()`과 `Promise.race()`로 **promises**를 구성하는 법을 제공합니다.
 
 ##7-1 `Promise.all()` 에 의한 `map()`
- **Promises**가 한가지 좋은 것은 promise기반 함수는 결과를 반환 해주므로, 많은 동기로 작동하는 도구(:라이브러리 tools)가 여전히 작동한다는 것 입니다. 예를 들어, 배열이 제공하는 `map()` 메서드를 다음과 같이 사용 할 수 있습니다.
+ **Promises**가 한가지 좋은 것은 promise기반 함수는 결과를 반환 하기 때문에, 많은 동기적으로 작동하는 도구(:라이브러리 tools)가 여전히 잘 작동한다는 것 입니다. 예를 들어, 배열이 제공하는 `map()` 메서드를 다음과 같이 사용 할 수 있습니다.
 
 ```` javascript
     var fileUrls = [
@@ -114,9 +114,10 @@
 ````
 
 ##7-2 `Promise.race()`를 통한 Timing out
-`Promise.race()`는 promises 배열을 받으며, 새로운 promise **P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)  만약 첫번째 Promise가 성공또는 거절로 설정되면 그 Promise를 반환되어집니다. 
+`Promise.race()`는 *promises* 배열을 받으며, 새로운 **promise P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)<br>만약 첫번째 **Promise**가 성공 또는 거절로 설정되면 그 Promise를 반환되어집니다. 
 
-아래 timeout을 확장한 `Promise.race()` 예제를 봅시다.
+아래 `Promise.race()`로 구현한 *timeout* 예제를 봅시다.
+
 ```` javascript
     Promise.race([
         httpGet('http://example.com/file.txt'),
@@ -129,17 +130,17 @@
 ````
 
 #8. 항상 비동기인 Promises
-promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적인 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.
-그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다. 
+promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적으로 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.
+그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다.<br> 
 `then()` 메서드를 위해 [requirement](https://promisesaplus.com/#point-34) 를 따르기를 권장 합니다. (It states so via the following requirement (2.2.4) for the then() method:)
 
 > 실행컨텍스트 스택은 플랫폼 코드를 포함하기 전까지 `onFulfilled` 또는 `onRejected` 를 호출 할 수 없습니다.
 
 이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다. 
-그리고 promises 체이닝은 다른  **tasks**의 프로세스 시간을 갈망하지 않습니다. (and that chaining promises won’t starve other tasks of processing time)
+그리고 promises 체이닝은 다른  **tasks**의 프로세스를 처리하지 않을 것입니다.(and that chaining promises won’t starve other tasks of processing time)
 
 #9. Cheat sheet: the ECMAScript 6 promise API
- 이번 섹션은 이 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명된바와 같이  ECMAScript6 promise API 개요를 둘러봅니다.
+ 이번 섹션은 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명 된대로  *ECMAScript6 promise API* 에 대한 개요를 설명합니다.
 
 ##9.1 Glossary(어휘)
 **Promise API**는 결과를 비동기적으로 제공하는 것에 대한 내용입니다. *promise* 객체는(짧게 promise로 대체함) 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
@@ -149,13 +150,13 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
  - 결과가 준비되기전에는 promise는 *pending* 상태입니다.
  - 만약 결과가 준비됬으면, promise는 *fulfilled* 상태입니다.
  - 만약 에러가 발생하면, promise 는 *rejected* 입니다.
-- 만약 어떤행위가 끝났다는건 promise 상태가 설정됬다는 것입니다.(만약 *fulfilled* 또는 *rejected* 이던지간에..)
+- 만약 어떤 행위가 끝났다는건 promise 상태가 설정됬다는 것입니다.(*fulfilled* 또는 *rejected*던지간에..)
 - promise가 한번 설정되면, 더이상 변하지 않습니다.
 
 <br>
-상태 변화 반응:
-- *Promise 반응*은 *fulfillment* 또는 *rejection*을 알림 받기 위해 promise의 `then()` 메서드를 등록한 콜백입니다.
-- *thenable*은 **promise**스타일의 `then()` 메서드를 가진 객체입니다. 이 **API**는 promise가 설정됬다는 알림을 받는 것만 관심있을 뿐 아니라 오로지 *thenables*만 요구 할 뿐입니다.
+상태 변화 반응(*Reacting*):
+- *Promise* 반응(*reactions*)은 *fulfillment* 또는 *rejection*을 알림 받기 위해 promise의 `then()` 메서드를 등록한 콜백입니다.
+- *thenable*은 **promise**스타일의 `then()` 메서드를 가진 객체입니다. 이 **API**는 promise가 설정됬다는 알림을 받는 것에 관심있을 뿐 아니라 *thenables*만 요구 할 뿐입니다.
 
 <br>
 변경 상태: promise 상태를 변경하는데는 2가지 기능이 있습니다. 당신이 한번에 둘중 하나를 실행 한 후에는, 추가 호출은 아무 영향도 미치지 않습니다.
