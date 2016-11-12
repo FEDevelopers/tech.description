@@ -284,4 +284,4 @@
     })
 ````
 
-> 이어서 2번째 챕터에서 계속 이어집니다.
+> 이어서 [2번째 챕터](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API)에서 계속 이어집니다.
