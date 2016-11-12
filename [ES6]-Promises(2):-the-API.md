@@ -144,8 +144,8 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
 
 ##9.1 Glossary(어휘)
 **Promise API**는 결과를 비동기적으로 제공하는 것에 대한 내용입니다. *promise* 객체는(짧게 promise로 대체함) 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
-<br><br>
-상태:
+
+####상태:
 - promise는 항상 3개중에 1개의 상호배타적인 상태를 가집니다.
  - 결과가 준비되기전에는 promise는 *pending* 상태입니다.
  - 만약 결과가 준비됬으면, promise는 *fulfilled* 상태입니다.
@@ -153,17 +153,17 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
 - 만약 어떤 행위가 끝났다는건 promise 상태가 설정됬다는 것입니다.(*fulfilled* 또는 *rejected*던지간에..)
 - promise가 한번 설정되면, 더이상 변하지 않습니다.
 
-<br>
-상태 변화 반응(*Reacting*):
+####상태 변화 반응(*Reacting*):
 - *Promise* 반응(*reactions*)은 *fulfillment* 또는 *rejection*을 알림 받기 위해 promise의 `then()` 메서드를 등록한 콜백입니다.
 - *thenable*은 **promise**스타일의 `then()` 메서드를 가진 객체입니다. 이 **API**는 promise가 설정됬다는 알림을 받는 것에 관심있을 뿐 아니라 *thenables*만 요구 할 뿐입니다.
 
-<br>
-변경 상태: promise 상태를 변경하는데는 2가지 기능이 있습니다. 당신이 한번에 둘중 하나를 실행 한 후에는, 추가 호출은 아무 영향도 미치지 않습니다.
+####변경 상태: 
+*promise*는 상태를 변경하기 위해 2가지 방법이 있습니다. 당신이 한번에 두번 이상 호출 한 후에는, 더이상 영향을 주지 않습니다.
+
 - promise가 거부(*Rejecting*)됬다는 것은 promise가 거절(*rejected*)된다는 것을 의미합니다.
-- promise가 해결(*Resolving*)됬다는 것은 당신이 어떤 값을 가지고 있냐에 따라 영향을 미칩니다.
- - 일반값(*thenable*이 아닌)으로 해결(*Resolving*) 하면 promise를 충족(*fulfills*) 시킵니다.
- - *thenable* **T**를 가진 promise **P**를 해결(*Resovling*)하는 것은 더이상 promise **P**는 사용할수 없고, *fulfillment* 또는 *rejection* 값을 가진 **T**의 상태를 따르게 됩니다. 적절한 **P**반응은 **T**가 해결되면 즉시 다시 호출 되는 것입니다.
+- promise가 해결(*Resolving*)됬다는 것은 당신이 어떤 값을 가지고 있냐에 따라 다른 영향을 끼칩니다.
+ - 일반적인 값(*thenable*이 아닌)으로 해결(*Resolving*)하면 그 값으로 충족(*fulfills*)됩니다.
+ - *thenable* **T**를 가진 promise **P**를 해결(*Resovling*)하는 것은 더이상 promise **P**는 사용할수 없고, *fulfillment* 또는 *rejection* 값을 가진 **T**의 상태를 따르게 됩니다. 적절한 **P**의 반응(*reactions*)은 **T**가 해결되면 즉시 재호출 되는 것입니다.
 
 ##9.2 생성자
  promise 생성자는 다음과 같은 시그니쳐를 따릅니다.
@@ -176,22 +176,24 @@ promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 �
 - `x`를 통해 `p`를 해결하는 `resolve(x)`:
  - 만약 `x`가 *thenable*이라면, 그 설정은 `p`로 전달 됩니다.(`then()`을 통해 등록된 트리거 반응을 포함하여)
  - 그렇지 않으면, `p`는 `x`로 처리(*fulfilled*) 됩니다.
-- `reject(e)` 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(종종  `Error` 대신에)
+- `reject(e)`의 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(`Error` 대신에)
 
 ##9.3 정적 메소드
- **Promise**의 모든 정적메소드는 *subclassing* 을 제공합니다.: *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 그리고 또한 *subclassing*을 통해 다른 정적메소드에 접근하게 됩니다.(`this.resolve(...) VS `Promise.resolve(...))
+> **Promise**의 모든 정적메소드는 *subclassing* 을 제공합니다.
+
+ *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 그리고 또한 *subclassing*을 통해 다른 정적메소드에 접근하게 됩니다.(`this.resolve(...) VS `Promise.resolve(...))
 
 ###Promises 생성
-*recevier*의 인스턴스를 생성하기 위해 2가지 메서드를 다음과 같이 따릅니다.(*subclassing*의 this)
+아래 2개 메서드는 새로운  *receiver* 인스턴스를 생성합니다.(*subclassing*의 this)
 
 - Promise.resolve(x):
  - 만약 `x`가 *thenable* 이면, *promise*로 변환됩니다.(receiver의 인스턴스)
  - 만약 `x`가 *promise* 이면, 변경되지 않은채로 반환됩니다.
  - 그렇지않으면, `x`가 처리된 새로운 *receiver* 인스턴스를 반홥니다.
-- Promise.reject(reason): 어떤 값의 이유와 함께 거절된 새로운 *promise*를 생성합니다. 
+- Promise.reject(reason): 어떤 값-*reason* 과 통해 거절(*rejected*)된 새로운 *promise*를 생성합니다. 
 
 ###Promises 합성
- 직관적으로, 정적메소드인 `Promise.all()`과 `Promise.race()`는 하나의 *promise*에 반복 가능한 *promises*로 구성합니다. <br>
+ 정적메소드인 `Promise.all()`과 `Promise.race()`는 하나의 *promise*에 반복 가능한 *promise's*로 구성됩니다. <br><br>
 그것은 즉:
 - 그것들은 **iterable**를 줍니다. **iterable**의 요소들은 `this.resolve()`를 통해 *promises*로 변환됩니다.
 - 그것들은 새로운 *promise*를 반환합니다. 그 *promise*는 *receiver*의 새로운 인스턴스입니다.
@@ -203,9 +205,9 @@ Method 들 :
 - Promise.race(iterable): 해결(*settled*)된 *iterable* 첫번째 요소는 다음 반환되어지는 *promise*를 해결하기 위해 사용됩니다. 
 
 ##9.4 인스턴스 프로토타입 메서드's
-*Promise.prototype.then(onFulfilled, onRejected)*:<br>
+####*Promise.prototype.then(onFulfilled, onRejected)*:
 
-- *onFulfilled* 와 *onRejected* 콜백은 반응(reactions)이라고 합니다.
+- *onFulfilled* 와 *onRejected* 콜백을 반응(reactions)이라고 말합니다.
 - *onFulfilled*는 promise가 이미 처리(*fulfilled*) 되었을 경우 즉시 호출되고 또는 그것이 실현되자마자 즉시 호출됩니다. 마찬가지로 *onRejected*는 거절에 관한 정보를 받습니다.
 - `then()`은 새로운 `promise Q`를 반환합니다.(*receiver* 생성자를 통해 생성된..):
  - 만약 반응(*reactions*)중 하나라도 값을 반환하면, *Q*는 값으로 해결(*resolved*)됩니다.
@@ -225,13 +227,14 @@ Method 들 :
     }
 ````
 
-*Promise.prototype.catch(onRejected)*:<br>
+####*Promise.prototype.catch(onRejected)*:<br>
 - `then(null, onRejected)`와 동일
 
 #10. promises의 장단점
 ##10.1 장점
 ###통합 비동기 API
-*promise*의 한가지 중요한 이점이 있습니다. *promise*는 점점 비동기식 브라우저 APIs에 사용될 것이고, 현재 다양하고 호환되지 않은 패턴과 규칙들을 통합 할 것입니다. 다가오고 있는 2가지 promise 기반 APIs를 봅시다.<br><br>
+*promise*는 한가지 중요한 장점이 있습니다. *promise*는 점점 비동기식 브라우저 APIs에 사용될 것이고, 현재 다양하고 호환되지 않은 패턴과 규칙들을 통합 할 것입니다.<br>
+아래 2가지 promise 기반 API's를 봅시다.<br><br>
 *fetch* API는 *XMLHttpRequest* 대신에 선택할 수 있는 promise 기반 API입니다. 
 
 ```` javascript
@@ -240,8 +243,9 @@ fetch(url)
 .then(str=>...)
 ````
 
-`fetch()`는 실제 요청(*request*) 하는 *promise*를 반환하고, `text()`는 문자열 컨텐츠 *promise*를 반환합니다.<br>
-모듈 프로그래밍 방식인 [ECMAScript 6 API](http://www.2ality.com/2014/09/es6-modules-final.html#the_ecmascript_6_module_loader_api) 는 *promise* 기반입니다.
+`fetch()`는 실제 요청(*request*) 하는 *promise*를 반환하고, `text()`는 문자열 컨텐츠 *promise*를 반환합니다.<br><br>
+
+모듈 프로그래밍 방식인 `Sytem.import`는 [ECMAScript 6 API](http://www.2ality.com/2014/09/es6-modules-final.html#the_ecmascript_6_module_loader_api)에 *promise* 기반입니다.
 
 ```` javascript
 Sytem.import('some_module.js')
@@ -251,7 +255,7 @@ then(some_module=>{
 ````
 
 ###Promises VS events
- *events*에 비해, *promise*는 일회성 결과를 다루기 위해 더 낫습니다. *promise*가 연산되어지는 전이든 후든, 그 결과를 등록했는지 여부는 중요하지 않습니다. 언제 등록 했는지에 상관없이 당신은 결과를 얻을 수 있습니다. 이러한 *promise* 자연에 본질적인 장점이 있습니다. (This advantage of promises is fundamental in nature)<br> 반면에, 당신은 반복 이벤트를 다루기 위해서는 사용할 수 없습니다. 체이닝은 *promise*의 또다른 장점이지만, 하나의 이벤트 처리기에 등록되어집니다.
+ *events*에 비해, 일회성 결과를 다루기에는 *promise*가 더 낫습니다. *promise*가 연산되어지는 전이든 후든, 그 결과를 등록했는지 여부는 중요하지 않습니다. 언제 등록 했는지에 상관없이 당신은 결과를 얻을 수 있습니다. 이런 *promise*장점은 자연에 본질적입니다. (This advantage of promises is fundamental in nature)<br> 반면에, 당신은 반복 이벤트를 다룰때는 사용할 수 없습니다. 체이닝은 *promise*의 또다른 장점이지만, 하나의 이벤트 처리기에 등록되어집니다.
 
 ###Promise VS callbacks
 *callbacks*와 비교하자면, *promise*는 보다 깨끗한 함수(또는 메서드) 시그니쳐를 가지고 있습니다. <br>
@@ -261,7 +265,7 @@ then(some_module=>{
     fs.readFile(name, opts?, function (err, data))
 ````
 
-*promise*는  모든 매개변수는 입력으로써 사용합니다.:
+*promise*의 모든 매개변수는 입력으로써 사용됩니다.:
 
 ```` javascript
     readFilePromisified(name, opts?)
@@ -275,14 +279,14 @@ then(some_module=>{
 - 반복적인 이벤트 : 만약 당신이 관심이 있다면, *reactive programming*를 보길 바랍니다.(일반적인 이벤트 처리 체이닝을 현명하게 추가하는 방법)
 - 데이터 스트림 : 현재 데이터 스트림을 제공하기 위해 [표준](https://streams.spec.whatwg.org/)을 개발중입니다.
 
-ECMAScript6 *promise*는 가끔 유용할 수 있는 2가지 특징이 없습니다.
+ECMAScript6 *promise*는 유용할 수 있는 2가지 특성이 없습니다.
 - 당신은 *promise*를 취소 할 수 없습니다.
-- 당신은 *promise*가 얼만큼 진행 됬는지 질의 할수 없습니다.(예를들어 클라이언트 UI 에서 progress bar를 표시해주는것)
+- 당신은 *promise*가 얼만큼 진행 됬는지 질의(*query*) 할수 없습니다.(예를들어 클라이언트 UI 에서 progress bar를 표시해주는것)
 
-**Q promise** 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**로 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
+**Q promise** 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**는 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
 
 #11. Promises와 generators
-`Q.spawn()`같은 유틸리티 함수의 도움으로, 당신은 *generators*통해 구현된 *shallow* 코루틴내에서 promise기반 함수를 사용 할수 있습니다. 이는 코드가 동기적으로 보여지고, `try-catch`같은 동기적인 메카니즘을 수행 할 수 있는 중요한 장점을 가지고 있습니다.
+`Q.spawn()`같은 유틸리티 함수의 도움으로, 당신은 *generators*통해 구현된 *shallow coroutine*내에서 promise기반 함수를 사용 할수 있습니다. 이는 코드가 동기적으로 보여지고, `try-catch`같은 동기적인 메카니즘을 수행 할 수 있는 중요한 장점을 가지고 있습니다.
 
 ```` javascript
     Q.spawn(function* () {
