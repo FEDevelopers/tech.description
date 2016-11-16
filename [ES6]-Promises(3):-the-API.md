@@ -86,12 +86,178 @@
     });
 ````
 
-다음 다이어그램은 어떻게 우리의 첫번째 **DemoPromise** 가 작동하는지 보여줍니다.
+다음 다이어그램은 첫번째 **DemoPromise** 가 어떻게 작동하는지 알려줍니다.
+
 ![다이어그램](http://1.bp.blogspot.com/-YtdGXGH__gk/VDEiTAXcqtI/AAAAAAAAA3s/3IwMMkVJSps/s1600/promise1_simple.jpg)
 
 첫번째로 2가지 경우를 처리하는 `then()`에 대해 설명하겠습니다. 
 
-- If the promise is still pending, it queues invocations of onFulfilled and onRejected, to be used when the promise is settled.
-- 
-- If the promise is already fulfilled or rejected, onFulfilled or onRejected can be invoked right away.
+- 만약 *promise*가 아직도 *pending* 상태라면, *promise*가 결정(*settled*)될때 사용되는 *onFulfilled* 와 *onRejected* 호출을 큐에 삽입합니다.
+- 만약 이미 *fulfilled* 또는 *rejected*상태 라면, *onFulfilled* 또는 *onRejected*는 곧바로 호출 할 수 있습니다.
 
+```` javascript
+
+    DemoPromise.prototype.then = function (onFulfilled, onRejected) {
+        var self = this;
+        var fulfilledTask = function () {
+            onFulfilled(self.promiseResult);
+        };
+        var rejectedTask = function () {
+            onRejected(self.promiseResult);
+        };
+        switch (this.promiseState) {
+            case 'pending':
+                this.fulfillReactions.push(fulfilledTask);
+                this.rejectReactions.push(rejectedTask);
+                break;
+            case 'fulfilled':
+                addToTaskQueue(fulfilledTask);
+                break;
+            case 'rejected':
+                addToTaskQueue(rejectedTask);
+                break;
+        }
+    };
+    function addToTaskQueue(task) {
+        setTimeout(task, 0);
+    }
+````
+
+`resolve()`는 다음과 같이 작동합니다. : <br>
+만약 이미 *promise*가 해결(*settled*)되었다면, *promise*는 아무것도 하지 않습니다.(*promise*는 오로지 한번만 결정됩니다.) 그렇지 않으면, *promise* 상태는 *fulfilled*로 변경되고, 결과는 `this.promiseResult`에 캐시됩니다. 지금 까지 큐에 추가 되었던 모든 *fulfillment* 반응(*reactions*)들은 바로 실행 될 것입니다.
+
+```` javascript
+
+    Promise.prototype.resolve = function (value) {
+        if (this.promiseState !== 'pending') return;
+        this.promiseState = 'fulfilled';
+        this.promiseResult = value;
+        this._clearAndEnqueueReactions(this.fulfillReactions);
+        return this; // enable chaining
+    };
+    Promise.prototype._clearAndEnqueueReactions = function (reactions) {
+        this.fulfillReactions = undefined;
+        this.rejectReactions = undefined;
+        reactions.map(addToTaskQueue);
+    };
+````
+
+`reject()`는 `resolve()`랑 비슷합니다.
+
+##13.2 체이닝
+The next feature we implement is chaining:
+다음으로 체이닝을 구현 해봅시다.:
+
+- `then()`은 *onFulfilled*나 *onRejected* 이던간에 해결된 *promise*를 반환합니다.
+- 만약 *onFulfilled* 또는 *onRejected*가 놓쳤어도, 어쨋든 그들은  `then()`에 의해 반환된 *promise*를 받았을 것입니다. 
+
+![체이닝](http://2.bp.blogspot.com/-pZ2agjPL54Y/VDEiTUClecI/AAAAAAAAA30/3zAmth5qnrE/s1600/promise2_chaining.jpg)
+
+분명하게 `then()`만 변경됩니다.
+
+```` javacript
+    DemoPromise.prototype.then = function (onFulfilled, onRejected) {
+        var returnValue = new DemoPromise(); // (A)
+        var self = this;
+    
+        var fulfilledTask;
+        if (typeof onFulfilled === 'function') {
+            fulfilledTask = function () {
+                var r = onFulfilled(self.promiseResult);
+                returnValue.resolve(r); // (B)
+            };
+        } else {
+            fulfilledTask = function () {
+                returnValue.resolve(self.promiseResult); // (C)
+            };
+        }
+    
+        var rejectedTask;
+        if (typeof onRejected === 'function') {
+            rejectedTask = function () {
+                var r = onRejected(self.promiseResult);
+                returnValue.resolve(r); // (D)
+            };
+        } else {
+            rejectedTask = function () {
+                // Important: we must reject here!
+                // Normally, result of `onRejected` is used to resolve
+                returnValue.reject(self.promiseResult); // (E)
+            };
+        }
+        ...
+        return returnValue; // (F)
+    };
+````
+
+`then()`은 `new promise`를 생성하여 반환합니다.((A),(F)라인) 게다가, `fulflledTask`와 `rejectedTask`는 다르게 설정되었습니다. 
+- *onFulfilled* 결과는 `returnValue`를 해결 하는데 사용됩니다.((B)라인)
+ - 만약 *onFulfilled*가 누락된 경우, `returnValue`를 해결하는데 *fulfullment*를 사용합니다.((C)라인)
+- *onRejected*의 결과는 `returnValue`를 해결하는데 사용됩니다.(거절이 아닌(*reject*))((D)라인)
+ - 만약 *onRejected*가 누락된 경우, `returnValue`를 해결하는데 거절(*rejection*) 값을 사용합니다.
+
+##13.3 Flattening(편평한)
+> 역자주 : Flattening 은 해석하기 애매한 단어 임으로, 영어로 표기
+
+**Flattening** is mostly about making chaining more convenient: Normally, returning a value from a reaction passes it on to the next then(). 
+**Flattening** 은 체이닝을 좀더 편리하게 만드는 것입니다. : 일반적으로, 반응(*reaction*) 통해서 값을 반환하면 다음 `then()`으로 전달 됩니다. 만약 우리가 *promise*를 반환하면, 그것이 우리를 위해서 풀리지 않았다면, 그것은 아래 예제와 같이 좋을 것입니다. (If we return a promise, it would be nice if it could be “unwrapped” for us, like in the following example:)
+
+```` javascript
+    asyncFunc1()
+    .then(function (value1) {
+        return asyncFunc2(); // (A)
+    })
+    .then(function (value2) {
+        // value2 is fulfillment value of asyncFunc2() promise
+        console.log(value2);
+    });
+````
+
+우리는 라인(A)에서 *promise*를 반환했습니다. 그리고 현재 메서드에서 중첩된 `then()`을 호출 하지 않았습니다. 우리는 메서드 결과에 `then()`을 호출합니다. 따라서, `then()`은 더이상 중첩되지 않고, 모든것이 편평(*flat*)하게 유지됩니다.<br><br>
+우리는 `resolve()`가 *flattening*을 수행 할 수 있도록 구현하겠습니다.
+
+- *promise Q*로 *promise P*를 해결(*Resolving*)하는 것은 *Q's*의 해결,결정(*settlement*)은 *P's*의 반응(*reactions*)으로 전달되는 것을 의미합니다.
+- *P*는 *Q*에 가둬집니다. :  더이상 해결 할수 없습니다.(*rejected*포함). 그리고 그 상태와 결과는 *Q's*와 항상 같습니다.
+
+우리가 만약 *Q*가 `thenable`이 되도록 허락 한다면, 좀더 제네릭하게 만들 수 있습니다.(*promise*를 대신하여)
+
+![플래튼](http://2.bp.blogspot.com/-yuykRwpwHFw/VDEiT1k2s9I/AAAAAAAAA34/AN8IZI5uoGw/s1600/promise3_flattening.jpg)
+
+위에 말한 것처럼 가두기를(*locking-in*) 구현하기 위해 우리는 새로운 `boolean flag`인 `this.alreadyResolved`를 소개합니다. 일단 flag가 `true`가 되면, `this`는 갇히게 되고, 더이상 해결(*resolve*) 할 수 없습니다. `this`는 여전히 `pending` 상태인것을 기억하십시오. 왜냐하면 그 상태는 지금 *promise*에 고정 된 것과 같기 때문입니다. 
+
+```` javascript
+    DemoPromise.prototype.resolve = function (value) {
+        if (this.alreadyResolved) return;
+        this.alreadyResolved = true;
+        this._doResolve(value);
+        return this; // enable chaining
+    };
+````
+
+이제 실제 해결은 private 메서드인 `_doResolve()`에서 발생합니다.
+
+```` javascript
+    DemoPromise.prototype._doResolve = function (value) {
+        var self = this;
+        // Is `value` a thenable?
+        if (value !== null && typeof value === 'object'
+            && 'then' in value) {
+            addToTaskQueue(function () { // (A)
+                value.then(
+                    function onFulfilled(value) {
+                        self._doResolve(value);
+                    },
+                    function onRejected(reason) {
+                        self._doReject(reason);
+                    });
+            });
+        } else {
+            this.promiseState = 'fulfilled';
+            this.promiseResult = value;
+            this._clearAndEnqueueReactions(this.fulfillReactions);
+        }
+    };
+````
+
+*flattening*은 (A)라인에서 수행됩니다. : 만약 `value`가 *fulfilled*면, 우리는 `self`가 *fulfilled*되길 원합니다. 그리고 만약 `value`가 *rejected*라면, 우리는 `self`가 *rejected* 되길 원합니다.<br>
+private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alreadyResolved`를 통해 보호받습니다. 
