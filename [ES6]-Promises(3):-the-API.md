@@ -261,3 +261,18 @@ The next feature we implement is chaining:
 
 *flattening*은 (A)라인에서 수행됩니다. : 만약 `value`가 *fulfilled*면, 우리는 `self`가 *fulfilled*되길 원합니다. 그리고 만약 `value`가 *rejected*라면, 우리는 `self`가 *rejected* 되길 원합니다.<br>
 private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alreadyResolved`를 통해 보호받습니다. 
+
+##13.4 상세한 Promise 상태
+ 체이닝 통해서 *promises* 상태는 점점 더 복잡해집니다.
+
+![머지?](http://1.bp.blogspot.com/-Nz5wt9gH8Jc/VDEiUlFWj1I/AAAAAAAAA4k/813hgpWviw0/s1600/promise_states_all.jpg)
+
+만약 당신이 *promises*만 사용하면, 당신은 일반적으로 단순한 세계관을 사용하고 가둬둔(*locking-in*) *promise*를 무시할 수 있습니다. 가장 중요한 상태-관련 개념은 **settledness**를 유지하는 것입니다. *promise*는 이행(*fulfilled*)되거나, 거절(*rejected*)되면 해결(*settled*) 됩니다.*promise*가 해결(*settled*)되면 더이상 변하지 않습니다. (상태 및 이행(*fulfillment*) 또는 거절(*rejection*) 값)
+<br><br>
+만약 당신이 *promise*를 수행하길 원한다면, 문제를 해결하기도 어렵고, 지금 그것을 이해하기는 어렵습니다.
+
+- 직관적으로 해결됨(*resolved*)은 더이상 (직접적으로)해결 할수 없다는 의미입니다. *promise*는 해결(*settled*)되었거나, 갇혀(*locked in*)있었으면, 해결(*resolved*)된것입니다. 스펙 인용 : "*promise*가 해결되지 않았으면, 항상 보류(*pending*) 상태 입니다. 해결된 *promise*는 보류(*pending*), 이행(*fulfilled*), 거절(*rejected*) 상태일 수 있습니다."
+- 해결된 *promise* 꼭 해결된(*settling*) 상태는 아닐수 있습니다. : 당신은 보류(*pending*)된 상태로 *promise*를 해결(*resolve*) 할 수 있습니다.
+- 해결은 거절된 상태입니다. : 당신은 거절(*reject*)된 *promise*로 해결(*resolving*) 함으로써 *promise*를 거절(*reject*) 할수 있습니다.
+
+##13.5 예외
