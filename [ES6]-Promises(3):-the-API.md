@@ -293,7 +293,6 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 - 해결은 거절된 상태입니다. : 당신은 거절(*reject*)된 *promise*로 해결(*resolving*) 함으로써 *promise*를 거절(*reject*) 할 수 있습니다.
 
 ##13.5 예외
-As our final feature, we’d like our promises to handle exceptions in user code as rejections. For now, “user code” means the two callback parameters of then().
 마지막으로 우리는, 거절(*rejections*)을 사용자 코드단에서 예외로 처리하고 싶습니다. 지금부터 **사용자 코드(user code)**는 `then()`의 2개 콜백 파라미터를 의미합니다.
 
 ![예외](http://2.bp.blogspot.com/-x6hBT5B_yw4/VDEiULOJwII/AAAAAAAAA4E/aUTml-VNKRk/s1600/promise4_exceptions.jpg)
