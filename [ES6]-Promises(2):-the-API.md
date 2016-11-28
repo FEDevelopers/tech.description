@@ -327,3 +327,5 @@ ECMAScript6 *promise*는 유용할 수 있는 2가지 특성이 없습니다.
         }
     }
 ````
+
+> [3번째 챕터](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API)에서 이어집니다.
