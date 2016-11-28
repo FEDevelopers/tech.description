@@ -273,6 +273,200 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 
 - 직관적으로 해결됨(*resolved*)은 더이상 (직접적으로)해결 할수 없다는 의미입니다. *promise*는 해결(*settled*)되었거나, 갇혀(*locked in*)있었으면, 해결(*resolved*)된것입니다. 스펙 인용 : "*promise*가 해결되지 않았으면, 항상 보류(*pending*) 상태 입니다. 해결된 *promise*는 보류(*pending*), 이행(*fulfilled*), 거절(*rejected*) 상태일 수 있습니다."
 - 해결된 *promise* 꼭 해결된(*settling*) 상태는 아닐수 있습니다. : 당신은 보류(*pending*)된 상태로 *promise*를 해결(*resolve*) 할 수 있습니다.
-- 해결은 거절된 상태입니다. : 당신은 거절(*reject*)된 *promise*로 해결(*resolving*) 함으로써 *promise*를 거절(*reject*) 할수 있습니다.
+- 해결은 거절된 상태입니다. : 당신은 거절(*reject*)된 *promise*로 해결(*resolving*) 함으로써 *promise*를 거절(*reject*) 할 수 있습니다.
 
 ##13.5 예외
+As our final feature, we’d like our promises to handle exceptions in user code as rejections. For now, “user code” means the two callback parameters of then().
+마지막으로 우리는, 거절(*rejections*)을 사용자 코드단에서 예외로 처리하고 싶습니다. 지금부터 **사용자 코드(user code)**는 `then()`의 2개 콜백 파라미터를 의미합니다.
+
+![예외](http://2.bp.blogspot.com/-x6hBT5B_yw4/VDEiULOJwII/AAAAAAAAA4E/aUTml-VNKRk/s1600/promise4_exceptions.jpg)
+
+The following excerpt shows how we turn exceptions inside onFulfilled into rejections – by wrapping a try-catch around its invocation in line (A).
+
+다음 발췌한 부분은 `onFulfilled` 내부 예외를 거절(*rejections*)로 변환하는 방법에 대해 보여줍니다.
+
+```` javascript
+    var fulfilledTask;
+    if (typeof onFulfilled === 'function') {
+        fulfilledTask = function () {
+            try {
+                var r = onFulfilled(self.promiseResult); // (A)
+                returnValue.resolve(r);
+            } catch (e) {
+                returnValue.reject(e);
+            }
+        };
+    } else {
+        fulfilledTask = function () {
+            returnValue.resolve(self.promiseResult);
+        };
+    }
+````
+
+##13.6 공개 생성자패턴
+만약 **DemoPromise**를 실제 **promise** 구현체로 변경하고 싶다면, 공개 생성자 패턴을 구현 해야 합니다.  
+**ES6** *Promises*는 메서드를 통해 해결(*resolved*)되거나 거절(*rejected*)되어지지 않습니다. 그러나 생성자 콜백 파라미터 실행자에  전달되어지는 함수를 통해서..(but via functions that are handed to the executor, the callback parameter of the constructor)
+
+![공개생성자패턴](http://4.bp.blogspot.com/-GTbj_y1eicI/VDEiUrwlM-I/AAAAAAAAA4I/K4EkfviNrss/s1600/promise5_everything.jpg)
+
+만약 실행자가 `then`으로 예외를 던진다면, 그것의 *promise*는 거절(*rejected*)임에 틀림없습니다.
+
+#14. 추가적인 2가지 유용한 promise 메서드's
+> 이번 섹션에서는 ES6 promises에 쉽게 추가 할 수 있는 2가지 유용한 메서드를 보고자 합니다. 많은 promise 라이브러리를 가지고 있습니다.
+
+##14.1 done()
+ 몇몇 *promise*를 여러개 체이닝 호출을 하면 에러를 조용히 삭제할 수도 있습니다.  
+예를들어:
+
+```` javascript
+    function doSomething() {
+        asyncFunc()
+        .then(f1)
+        .catch(r1)
+        .then(f2); // (A)
+    }
+````
+
+만약 (A)라인 `then()`이 거절(*rejection*)이면, 아무데서도 처리 되지 않습니다. *promise* 라이브러리 **Q**는 메서드 체인 마지막 요소에 `done()`을 사용합니다. 마지막 `then()` 을 대체합니다.(1~2개의 인자가 있슴)
+
+```` javascript
+    function doSomething() {
+        asyncFunc()
+        .then(f1)
+        .catch(r1)
+        .done(f2);
+    }
+````
+
+또는 마지막 `then()` 이후에 삽입됩니다. (0개 인수를 가짐)
+
+```` javascript
+    function doSomething() {
+        asyncFunc()
+        .then(f1)
+        .catch(r1)
+        .then(f2)
+        .done();
+    }
+````
+
+[Q 문서에 인용문](https://github.com/kriskowal/q/wiki/API-Reference#promisedoneonfulfilled-onrejected-onprogress):  
+- `done`의 황금룰과 vs `then` 의 사용은 다음과 같습니다.: 당신의 *promise*를 누군가에게 반환 하거나, 만약 체이닝이 끝이라면 제거를 위해 `done`을 호출 하십시오. 왜냐하면, `catch` 핸들러 자체적으로 에러를 던질 수 있기 때문에 `catch`로 종료하는 것은 유용하지 못합니다.
+
+**ECMAScript6**로 `done()`을 구현하는 방법
+
+```` javascript
+    Promise.prototype.done = function (onFulfilled, onRejected) {
+        this.then(onFulfilled, onRejected)
+        .catch(function (reason) {
+            setTimeout(() => { throw reason }, 0);
+        });
+    };
+````
+
+`done()`의 기능은 유용하지만, **ECMAScript6**에는 추가 되지 않습니다. 왜냐하면, 이런 일련의 과정은 미래에 디버거가 자동적으로 수행될 것 입니다.
+
+##14.2 finally()
+때론 오류가 발생하던지 말던지, 독립적인 액션을 수행하길 원할 때가 있습니다. 예를들어, 작업이 마친후 리소스를 정리를 해야합니다. 그것이 바로 `finally()` 메서드 입니다. 예외처리에서 `finally` 구문과 비슷하게 작동합니다.  
+`finally()` 는 인자가 없는 콜백을 받지만, 해결(*resolution*)인지 거절(*rejection*)인지 통보 받습니다.
+
+```` javascript
+    createResource(...)
+    .then(function (value1) {
+        // Use resource
+    })
+    .then(function (value2) {
+        // Use resource
+    })
+    .finally(function () {
+        // Clean up
+    });
+````
+
+*Domenic Denicola*가 `finally()`를 구현한 [목적](https://github.com/domenic/promises-unwrapping/issues/18)입니다.
+
+```` javascript
+    Promise.prototype.finally = function (callback) {
+        let p = this.constructor;
+        // We don’t invoke the callback in here,
+        // because we want then() to handle its exceptions
+        return this.then(
+            // Callback fulfills: pass on predecessor settlement
+            // Callback rejects: pass on rejection (=omit 2nd arg.)
+            value  => p.resolve(callback()).then(() => value),
+            reason => p.resolve(callback()).then(() => { throw reason })
+        );
+    };
+````
+
+콜백은 어떻게 수신자(this)의 확정(*settlement*)이 처리되는 방법을 결정합니다.
+
+- 콜백이 예외를 던지거나, *promise then*에 거절(*rejected*)을 반환하면, 거절 값(*rejection value*)이 됩니다.
+- 그렇지 않으면, 수신자(receiver)의 결정은 `finally()`에 반환된 *promise* 값으로 됩니다. 우리는 메서드 체인에서 `finally()`를 가져오게 됩니다.
+
+- 예제1 (by [Jake Archibald](https://gist.github.com/jakearchibald/785f79b0dea5bfe0c448)): `finally()`로 스피너를 숨기는 방법. 간단버전:
+
+```` javascript
+    showSpinner();
+    fetchGalleryData()
+    .then(data => updateGallery(data))
+    .catch(showNoDataError)
+    .finally(hideSpinner);
+````
+
+- 예제2 (by [Kris Kowal](https://github.com/domenic/promises-unwrapping/issues/18#issuecomment-27707922) ) 서버 다운 테스트
+
+```` javascript
+    var HTTP = require("q-io/http");
+    var server = HTTP.Server(app);
+    return server.listen(0)
+    .then(function () {
+        // run test
+    })
+    .finally(server.stop);
+````
+
+#15 ES6 호환되는 promise 라이브러리
+많은 promise 라이브러리가 밖에 있습니다. 다음은 *ECMAScript 6 API*에 따르며, 지금 바로 사용 할수 있으며, 쉽게 네이티브 ES6로 나중에 마이그레이션 할 수 있습니다.
+
+- [RSVP.js](https://github.com/tildeio/rsvp.js/) : Stefan Penner에 의해 만들어진 RSVP.JS는 *ES6 Promise API* 상위 집합니다.
+ - Jake Archibald의 [ES6-Promise](https://github.com/stefanpenner/es6-promise)는 RSVP.js에서 ES6 API만 뽑아낸것입니다.
+- Kyle Simpson의 [Native Promise Only](https://github.com/getify/native-promise-only)는 엄격한 스펙 정의에 가능한한 근접한 네이티브 ES6 promises를 위한 polyfill 입니다.
+-  Calvin Metcalf의 [Lie](https://github.com/calvinmetcalf/lie)는 Promises/A+ spec 을 구현한 작고 퍼포먼스있는 promise 라이브러리입니다.
+- Kris Kowal 의 [Q.Promise](https://github.com/kriskowal/q#using-qpromise)는 ES6 API입니다.
+- 마지막으로 Paul Millr의 [ES6 Shim](https://github.com/paulmillr/es6-shim)는 *Promise*를 포함합니다.
+
+#16.레거시 비동기 코드와의 인터페이스
+당신이 *promise* 라이브러리를 사용하면, 때론 *promise*기반이 아닌 비동기 코드가 필요할 때가 있습니다. 이번 섹션은 *Node-js*스타일 비동기함수와 *jQuery deferreds*가 어떻게 작동하는지 설명하고자 합니다.
+
+##16.1 Node.js 인터페이스
+*promise* 라이브러리 **Q**는 Node.js 스타일 콜백을 사용하는 함수를 promise를 반환하는 함수로 변환하기 위한 몇몇 [툴 함수](https://github.com/kriskowal/q/wiki/API-Reference#interfacing-with-nodejs-callbacks)를 가지고 있습니다.(반대 함수도 있다. promise를 반환하는 함수를 Node.js 스타일 콜백으로)  
+예를들어:
+
+```` javascript
+    var readFile = Q.denodeify(FS.readFile);
+    
+    readFile('foo.txt', 'utf-8')
+    .then(function (text) {
+        ...
+    });
+````
+
+[deonodify](https://github.com/matthew-andrews/denodeify/)는 알림기능만 제공하고 ECMAScript6 promise API를 따르는 마이크로 라이브러리 입니다. 
+
+##16.2 jQuery 인터페이스
+*jQuery*는 *promise*와 비슷한 **deferreds**를 가지고 있습니다. 그러나 호환성을 방해하는 몇몇 [다른점](https://github.com/kriskowal/q/wiki/Coming-from-jQuery)이 있습니다. **deferreds**의 `then()`은 거의 *ES6 promises*와 비슷합니다.(에러를 캐치 할 수 없는 주요한 다른점이 있습니다.) 따라서 `Promise.resolve()`로 *jQuery deferred*를 *ES6 promise*로 변환 시킬수 있습니다.
+
+```` javascript
+    Promise.resolve(
+        jQuery.ajax({
+            url: 'somefile.html',
+            type: 'GET'
+        }))
+    .then(function (data) {
+        console.log(data);
+    })
+    .catch(function (reason) {
+        console.error(reason);
+    });
+````
