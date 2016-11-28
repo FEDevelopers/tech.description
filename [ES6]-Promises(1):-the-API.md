@@ -14,22 +14,6 @@
 5. [then() 체이닝](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#5-then-%EC%B2%B4%EC%9D%B4%EB%8B%9D)
  1. [일반 값으로 해결(Resolving with normal values)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#51-%EC%9D%BC%EB%B0%98-%EA%B0%92%EC%9C%BC%EB%A1%9C-%ED%95%B4%EA%B2%B0resolving-with-normal-values)
  2. [Resolving with thenable(thenable로 해결)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#52-resolving-with-thenablethenable%EB%A1%9C-%ED%95%B4%EA%B2%B0)
-6. [에러 처리](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#6-%EC%97%90%EB%9F%AC-%EC%B2%98%EB%A6%AC)
- 1. [예외를 잡자(Catching exceptions)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#6-1-%EC%98%88%EC%99%B8%EB%A5%BC-%EC%9E%A1%EC%9E%90catching-exceptions)
- 2. [에러's 체이닝(Chaining errors)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#6-2-%EC%97%90%EB%9F%ACs-%EC%B2%B4%EC%9D%B4%EB%8B%9Dchaining-errors)
-7. [Composition](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#7composition)
- 1. [Promise.all() 에 의한 map()](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#7-1-promiseall-%EC%97%90-%EC%9D%98%ED%95%9C-map)
- 2. [Promise.race()를 통한 Timing out](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#7-2-promiserace%EB%A5%BC-%ED%86%B5%ED%95%9C-timing-out)
-8. [항상 비동기인 Promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#8-%ED%95%AD%EC%83%81-%EB%B9%84%EB%8F%99%EA%B8%B0%EC%9D%B8-promises)
-9. [Cheat sheet: the ECMAScript 6 promise API](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#9-cheat-sheet-the-ecmascript-6-promise-api)
- 1. [Glossary(어휘)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#91-glossary%EC%96%B4%ED%9C%98)
- 2. [생성자](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#92-%EC%83%9D%EC%84%B1%EC%9E%90)
- 3. [정적 메소드](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#93-%EC%A0%95%EC%A0%81-%EB%A9%94%EC%86%8C%EB%93%9C)
- 4. [인스턴스 프로토타입 메서드's](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#94-%EC%9D%B8%EC%8A%A4%ED%84%B4%EC%8A%A4-%ED%94%84%EB%A1%9C%ED%86%A0%ED%83%80%EC%9E%85-%EB%A9%94%EC%84%9C%EB%93%9Cs)
-10. [promises의 장단점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#10-promises%EC%9D%98-%EC%9E%A5%EB%8B%A8%EC%A0%90)
- 1. [장점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#101-%EC%9E%A5%EC%A0%90)
- 2. [단점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#102-%EB%8B%A8%EC%A0%90)
-11. [Promises와 generators](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#11-promises%EC%99%80-generators)
 
 
 > 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다. 2개의 비동기 프로그래밍 포스트 중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는 것이 좋을 것입니다.
