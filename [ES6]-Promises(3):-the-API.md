@@ -162,7 +162,6 @@
 `reject()`는 `resolve()`랑 비슷합니다.
 
 ##13.2 체이닝
-The next feature we implement is chaining:
 다음으로 체이닝을 구현 해봅시다.:
 
 - `then()`은 *onFulfilled*나 *onRejected* 이던간에 해결된 *promise*를 반환합니다.
@@ -172,7 +171,7 @@ The next feature we implement is chaining:
 
 분명하게 `then()`만 변경됩니다.
 
-```` javacript
+```` javascript
     DemoPromise.prototype.then = function (onFulfilled, onRejected) {
         var returnValue = new DemoPromise(); // (A)
         var self = this;
