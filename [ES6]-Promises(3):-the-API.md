@@ -71,6 +71,7 @@
 ````
 
 아래 스크린샷을 보면, 디버거는 3개 함수를 포함하고 있는 *stack trace*를 보여 줍니다. 심지어 익명 함수(A),(B)까지 포함되어져 있습니다.
+
 ![스샷](http://3.bp.blogspot.com/-kpQjy16k4xw/VDEiTaCfsaI/AAAAAAAAA4w/fqG3nssNZ5Q/s400/debugging_callbacks.png)
 
 #13. promises 의 내부
