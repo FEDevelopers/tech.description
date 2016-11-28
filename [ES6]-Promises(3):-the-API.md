@@ -470,3 +470,13 @@ The following excerpt shows how we turn exceptions inside onFulfilled into rejec
         console.error(reason);
     });
 ````
+
+#17. Further reading
+
+- [1]: “[Promises/A+](https://promisesaplus.com/)”, edited by Brian Cavalier and Domenic Denicola (the de-facto standard for JavaScript promises)
+- [2]: “[JavaScript Promises: There and back again](https://developers.google.com/web/fundamentals/getting-started/primers/promises)” by Jake Archibald  (good general intro to promises)
+- [3]: “[Promise Anti-Patterns](http://taoofcode.net/promise-anti-patterns/)” by Tao of Code (tips and techniques)
+- [4]: “[Promise Patterns](https://www.promisejs.org/patterns/)” by Forbes Lindesay
+- [5]: “[The Revealing Constructor Pattern](https://blog.domenic.me/the-revealing-constructor-pattern/)” by Domenic Denicola (this pattern is used by the Promise constructor)
+- [6]: “[Debugging Asynchronous JavaScript with Chrome DevTools](https://www.html5rocks.com/en/tutorials/developertools/async-call-stack/)” by Pearl Chen
+- [7]: [Iterators and generators in ECMAScript 6](http://www.2ality.com/2013/06/iterators-generators.html)
