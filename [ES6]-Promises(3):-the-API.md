@@ -215,7 +215,6 @@
 ##13.3 Flattening(편평한)
 > 역자주 : Flattening 은 해석하기 애매한 단어 임으로, 영어로 표기
 
-**Flattening** is mostly about making chaining more convenient: Normally, returning a value from a reaction passes it on to the next then(). 
 **Flattening** 은 체이닝을 좀더 편리하게 만드는 것입니다. : 일반적으로, 반응(*reaction*) 통해서 값을 반환하면 다음 `then()`으로 전달 됩니다. 만약 우리가 *promise*를 반환하면, 그것이 우리를 위해서 풀리지 않았다면, 그것은 아래 예제와 같이 좋을 것입니다. (If we return a promise, it would be nice if it could be “unwrapped” for us, like in the following example:)
 
 ```` javascript
