@@ -33,6 +33,22 @@
  1. [장점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#101-%EC%9E%A5%EC%A0%90)
  2. [단점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#102-%EB%8B%A8%EC%A0%90)
 11. [Promises와 generators](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#11-promises%EC%99%80-generators)
+12. [Debugging promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#12-debugging-promises)
+13. [promises 의 내부](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#13-promises-%EC%9D%98-%EB%82%B4%EB%B6%80)
+ 1. [A stand-alone promise](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#131-a-stand-alone-promise)
+ 2. [체이닝](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#132-%EC%B2%B4%EC%9D%B4%EB%8B%9D)
+ 3. [Flattening(편평한)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#133-flattening%ED%8E%B8%ED%8F%89%ED%95%9C)
+ 4. [상세한 Promise 상태](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#134-%EC%83%81%EC%84%B8%ED%95%9C-promise-%EC%83%81%ED%83%9C)
+ 5. [예외](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#135-%EC%98%88%EC%99%B8)
+ 6. [공개 생성자패턴](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#136-%EA%B3%B5%EA%B0%9C-%EC%83%9D%EC%84%B1%EC%9E%90%ED%8C%A8%ED%84%B4)
+14. [추가적인 2가지 유용한 promise 메서드's](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#14-%EC%B6%94%EA%B0%80%EC%A0%81%EC%9D%B8-2%EA%B0%80%EC%A7%80-%EC%9C%A0%EC%9A%A9%ED%95%9C-promise-%EB%A9%94%EC%84%9C%EB%93%9Cs)
+ 1. [done()](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#141-done)
+ 2. [finally()](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#142-finally)
+15. [ES6 호환되는 promise 라이브러리](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#15-es6-%ED%98%B8%ED%99%98%EB%90%98%EB%8A%94-promise-%EB%9D%BC%EC%9D%B4%EB%B8%8C%EB%9F%AC%EB%A6%AC)
+16. [레거시 비동기 코드와의 인터페이스](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#16%EB%A0%88%EA%B1%B0%EC%8B%9C-%EB%B9%84%EB%8F%99%EA%B8%B0-%EC%BD%94%EB%93%9C%EC%99%80%EC%9D%98-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4)
+ 1. [Node.js 인터페이스](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#161-nodejs-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4)
+ 2. [jQuery 인터페이스](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#162-jquery-%EC%9D%B8%ED%84%B0%ED%8E%98%EC%9D%B4%EC%8A%A4)
+17. [Further reading](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#17-further-reading)
 
 
 #12. Debugging promises
