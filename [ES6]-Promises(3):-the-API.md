@@ -297,8 +297,6 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 
 ![예외](http://2.bp.blogspot.com/-x6hBT5B_yw4/VDEiULOJwII/AAAAAAAAA4E/aUTml-VNKRk/s1600/promise4_exceptions.jpg)
 
-The following excerpt shows how we turn exceptions inside onFulfilled into rejections – by wrapping a try-catch around its invocation in line (A).
-
 다음 발췌한 부분은 `onFulfilled` 내부 예외를 거절(*rejections*)로 변환하는 방법에 대해 보여줍니다.
 
 ```` javascript
