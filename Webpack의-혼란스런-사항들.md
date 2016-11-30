@@ -3,17 +3,17 @@
 # Webpack - 헷갈리는 부분
  Webpack은 React와 Redux 앱을 위한 주요한 module bundler 이다. Angular2와 다른 프레임워크를 사용하는 사람들 또한 많이 사용하는 것 같다.
 
- 내가 처음 Webpack 설정 파일을 봤을 때, 매우 헷갈리고 외계인(alien-y) 같아 보였다. 몇시간 동안 Webpack을 둘러본 후  Webpack은 고유한 구문과 새로운 철학 때문에 혼란을 가질 수 있다고 생각 하였습니다. 또한 이러한 철학들은 책임을 가지고 있습니다. (Incidentally, these philosophies are also responsible for making it so popular.)
+ 나는 처음 Webpack 설정 파일을 봤을 때, 매우 헷갈리고 외계인 같아 보였다. 몇시간 동안 Webpack을 둘러본 후  Webpack은 처음에 혼란을 야기 할 수 있는 고유한 문법과 새로운 철학 가지고 있습니다. 부수적으로, 이러한 철학들은 널리 퍼지게 할 책임이 있습니다. 
 
- 처음 시작할 때 헷갈리기 때문에, 저는 다른 사람이 쉽게 시작 하고 파워풀한 기능을 사용할 수 있도록  포스트를 작성할 것입니다.
+ 처음 시작하기가 혼란스럽기 때문에, 다른 사람이 쉽게 시작 하고 파워풀한 기능을 사용할 수 있도록  포스트를 작성할 것입니다.
 
 ## Webpack 핵심 철학
  Webpack의 두가지 핵심 철학:
 * 모든것은 module이다.
- * JS 파일들은 모듈(modules)이 될 수 있다. 또한 다른 모든 것(CSS, Images, HTMLS..)들도 모듈(modules)가 될 수 있다. 그것은 당신은 `require(“myJSfile.js”)`  또는 `require(“myCSS.css”)` 처럼 할 수 있다. 이는 작은 조각으로 파일(artifact) 을 나누거나 재사용할 수 있다는걸 의미 합니다.
+ * JS 파일들은 모듈(modules)이 될 수 있다. 또한 다른 모든 것(CSS, Images, HTMLS..)들도 모듈(modules)이 될 수 있다. 즉 `require(“myJSfile.js”)` 또는 `require(“myCSS.css”)` 를 할 수 있다. 이는 다루기 쉬운 작은 조각으로 나누거나, 재사용할 수 있다는걸 의미 합니다.
 
 * 당신이 필요한것 그리고 필요한 때에 불러진다(Load).
- * 전형적인 module bundlers는 모든 모듈을 주고, 거대한 `bundler.js` 파일 하나를 생산한다. 그러나 실제 앱들은 `bundle.js`는 10~15MB이고 영원히 로드 되고있다. 그래서 Webpack은 코드 분할 과 다중 “bundle” 파일 같은 다양한 기능을 가지고 있으며, 또한 당신이 필요한 것, 필요한 때에 앱이 비동기적으로 한부분을 로드 하게 해준다.
+ * 전형적인 **module bundlers**는 모든 모듈을 가져 와서, 큰 `bundler.js` 파일 하나를 생성한다. 그러나 실제 웹에서 `bundle.js`는 10~15MB이고 영원히 로드 되고 있을수 있다. 그래서 Webpack은 코드 분할 과 여러 “bundle” 파일을 생성하고 비동기적으로 앱의 일부를 로드 하는 다양한 기능이 있으며, 또한 당신이 필요한 것, 필요한 때에 로드 하게 해준다.
 
 이제 헷갈려하는 부분에 대해 알아보자.
 
