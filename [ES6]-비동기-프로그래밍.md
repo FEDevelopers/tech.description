@@ -70,8 +70,9 @@ Error
 다음으로, 각 함수는 종료되고, 스택의 최상위 요소가 제거 될때마다 함수가 종료됩니다. 마지막 함수 `f`가 끝나면, `전역 스코프(global scope)`로 복귀하여 **호출 스택**은 비어 있습니다. 결국 (E)라인이 오면 반환되어 **스택**은 비워지고 프로그램은 종료됨을 의미합니다.
 
 ## 2. 브라우저 이벤트 루프(event loop)
- 각 브라우저 탭은 **싱글 프로세스**(single process : [the event loop](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop))로 돌아갑니다. 
-이 루프(이하 **event loop**로 명칭 한다.)는 브라우저와 관련된 작업들(**tasks**라고 부른다.)을 실행 시킵니다. 앞에 브라우저와 관련된 작업은 **task queue**(고유명사는 영어로 명칭)가 공급해줍니다.
+ 간단히 말해서, 각 브라우저 탭은 **싱글 프로세스**(single process : [the event loop](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop))에서 실행됩니다.  
+이 loop(*event loop*)는 task queue(고유명사로써 영어를 사용한다.)를 통해 공급되는 브라우저 관련 작업(*task*)을 실행합니다.  
+**task**의 예는 다음과 같습니다. 
 
 * taks의 예
  1. HTML 파싱
@@ -79,35 +80,31 @@ Error
  3. 사용자 input 감지 후 반응(마우스 클릭, key 입력 등등)
  4. 비동기 네트워크 요청 수행 결과
 
-위 2,3,4 항목은 브라우저에 내장된 엔진을 통해 자바스크립트 코드가 실행되는 작업입니다. 그것들은 코드가 종료될 때 제거된다. 그러면 큐에서 다음 작업(task)을 가져와 다음 작업을 실행합니다. 다음 그림은 이러한 모든 메커니즘이 어떻게 연결되는지 방법을 제공합니다.
-
+위 2-4 항목은 브라우저에 내장된 엔진을 통해 자바스크립트 코드를 실행하는 작업입니다. 그것들은 코드가 종료될 때 종료됩니다. 그런 다음 큐에서 다음 *task*를 가져와 실행합니다. 다음 그림은 이러한 모든 메커니즘이 어떻게 연결되는지 방법을 제공합니다.
 
 ![task 메커니즘](http://exploringjs.com/es6/images/async----event_loop.jpg)
 
-
-**event loop**는 병렬로 함께 처리되는 다른 프로세스(timers, input handling, etc)에 둘러싸여 있습니다. 이 프로세스들은 각각의 task를 **task queue**에 추가함으로써 이벤트 루프와 통신합니다.
-
-
+**event loop**는 병렬로 함께 실행되는 다른 프로세스(timers, input handling, etc)로 둘러싸여 있습니다. 이 프로세스는 각각의 *task*를 **task queue**에 추가하여 프로세스와 통신합니다.
 
 ### 2-1 타이머(Timers)
- > 브라우저는 [timers](https://html.spec.whatwg.org/multipage/webappapis.html#timers)를 가지고 있으며  타이머는 `setTimeout()`을 제공합니다. 그리고 `setTimeout()`이 발생 될 때까지 기다렸다가, 큐에 **task**를 등록합니다.
+ > 브라우저는 [timers](https://html.spec.whatwg.org/multipage/webappapis.html#timers)를 가지고 있으며 타이머는 `setTimeout()`을 제공합니다. 그리고 `setTimeout()`이 발생 될 때까지 기다렸다가, 큐에 **task**를 추가합니다.
 
 ```` javascript
 setTimeout(callback, ms);
 ````
 
-`setTimeout()`은 **ms**(milliseconds) 경과 후 `callback`이 **taks queue** 에 추가됩니다. 타이머에 `callback`은 **ms**(milliseconds) 이후 실제 실행되는 게 아니라 **task queue**에 등록이 된다는 것이 중요하다는 걸 기억해야 합니다. 왜냐하면 
-만약 **event loop**가 블럭 당하면 지정된 시간 이후보다 나중에 setTimeout() `callback`이 실행된다는 걸 확인할 수 있기 때문입니다.
+`setTimeout()`은 **ms**(milliseconds) 경과 후 `callback`이 **taks queue** 에 추가됩니다. 타이머에 `callback`은 **ms**(milliseconds) 이후 실제 실행되는 게 아니라 **task queue**에 추가되는것이 중요하다는 걸 기억해야 합니다. 왜냐하면 
+만약 **event loop**가 차단 당하면 지정된 시간 이후보다 나중에 setTimeout() `callback`이 실행된다는 걸 확인할 수 있기 때문입니다.  
 
-보통 `setTimeout()` **ms**를 ‘0’ 으로 세팅하면 **task queue** 에 바로 추가한다는 걸 의도합니다. 그러나 몇몇 브라우저는 실제로 ‘0’ ms 이후 추가되지 않고 브라우저마다 ‘0’이 아닌 최소 ms가 세팅 되어져 있습니다.(ex : firefox는 4ms임)
+보통 `setTimeout()` **ms**를 ‘0’ 으로 세팅하는건 **task queue** 에 바로 추가하기 위한 일반적인 방법입니다. 그러나 몇몇 브라우저는 실제로 ‘0’ ms 이후 추가되지 않고 브라우저마다 ‘0’이 아닌 최소 ms가 세팅 되어져 있습니다.(ex : firefox는 4ms임)
 
 ### 2-2 DOM 변경 표시 (Displaying DOM changes)
- 대부분 DOM 변경이 발생할 경우(특히 layout 재갱신이 포함된 경우) 화면은 바로 갱신되지 않습니다. “레이아웃 새로고침은 16ms 정도 시간이 흐른다.”[@bz_moz](https://twitter.com/bz_moz/status/513777809287028736) 그리고 **event loop**를 통해 발생할 기회가 주어집니다.
+ 대부분 DOM 변경(특히 layout 재갱신이 포함된 경우)의 경우 화면은 바로 업데이트되지 않습니다. `“레이아웃 새로고침은 16ms 정도 시간이 흐른다.”`[@bz_moz](https://twitter.com/bz_moz/status/513777809287028736) 그리고 **event loop**를 통해 실행 할 기회가 주어집니다.  
 
 `requestAnaimationFrame()`을 [문서](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)에서 확인해 보면 브라우저가 DOM을 업데이트 빈번하게 업데이트할 경우 레이아웃 흐름에 방해되지 않게 조정할 수가 있다고 합니다.
 
-### 2-3 Run-to-completion 의미(해석하기 모호한 고유 용어)
- 자바스크립트는 소위 “run-to-completion” 라는 걸 가지고 있습니다. 항상 현재 **task**는 다음 **task** 가 실행되기 전에 끝나게 됩니다. 즉, 각 작업이 현재 모든 상태를 완벽하게 제어 할 수 있다는 걸 의미하며, 동시적으로 간섭이 되는 걸 걱정할 필요가 없습니다.
+### 2-3 Run-to-completion 의미(고유 용어로써 영어사용)
+ 자바스크립트는 소위 “run-to-completion” 라는 걸 가지고 있습니다. 항상 현재 **task**는 다음 **task** 가 실행되기 전에 끝나게 됩니다. 즉, 각 작업이 현재 모든 상태를 완벽하게 제어 할 수 있다는 걸 의미하며, 동시적으로 간섭이 되는 걸 걱정할 필요가 없습니다.  
 아래 예제를 확인해봅시다.
 
 ```` javascript
@@ -117,16 +114,17 @@ setTimeout(function () { // (A)
 console.log('First'); // (B)
 ````
 
-함수 (A) 라인이 시작되면 즉시 **task queue**에 추가가 됩니다. 그렇지만 (B)라인 코드 조각 작업이 끝난 후에 실행되게 됩니다. 다음 output이 나오는 걸 확인할 수 있습니다.
+함수 (A) 라인이 시작되면 즉시 **task queue**에 추가 되지만, (B)라인 코드 조각 작업이 끝난 후에 실행되게 됩니다.  
+즉 이 코드의 출력은 항상 다음과 같습니다.
 
 ````
 First
 Second
 ````
 
-### 2-4 이벤트 루프 블럭(Blocking the event loop)
- 우리가 봤듯이 각 탭(일부 브라우저에서, 전체 브라우저)은 싱글 프로세스로 운영됩니다. - 사용자 인터페이스, 모든 다른 연산작업들 포함하여.
-이것은 프로세스 안에 엄청 긴 연산작업이 수행되게 하여 사용자 인터페이스를 멈추게 할 수 있다는 걸 의미합니다. 
+### 2-4 이벤트 루프 차단(Blocking the event loop)
+ 우리가 봤듯이 일부 탭(일부 브라우저에서, 전체 브라우저)은 싱글 프로세스로 운영됩니다. - 사용자 인터페이스, 모든 다른 연산작업들 포함하여.  
+즉 해당 프로세스 안에서 엄청 긴 연산작업을 수행하게 하여 사용자 인터페이스를 멈추게 할 수 있다는 걸 의미합니다.  
 아래 데모 코드를 확인해봅시다.
 
 ```` javascript
@@ -161,21 +159,21 @@ Second
 ````
 > 온라인에서 위 코드를 확인해보아요 [링크](http://rauschma.github.io/async-examples/blocking.html)
 
-코드 안에 `Block for 5 seconds`링크를 클릭하면 함수 `onClick()` 가 트리거 됩니다. 그것은 5초 동안 **event loop**를 블럭 하기 위하여 동기함수인 `sleep()` 사용합니다. 이 시간 동안 사용자 인터페이스는 작동이 멈추게 됩니다. 예를 들어 당신은 “Simple button”을 클릭할 수 없을것 입니다.
+코드 안에 `Block for 5 seconds`링크를 클릭하면 함수 `onClick()`이 트리거 되고, 5초 동안 **event loop**를 차단 하기 위하여 동기함수인 `sleep()`을 사용합니다. 이 시간 동안 사용자 인터페이스는 작동이 멈추게 됩니다. 예를 들어 당신은 “Simple button”을 클릭할 수 없을것 입니다.
 
 ### 2-5 블로킹 피하기(Avoiding blocking)
->  **event loop**가 블로킹을 피하기 위한 2가지 방법이 있습니다.
+> 다음 두 가지 방법으로 **event loop**를 차단하지 마십시오.
 
- 첫 번째 당신은 메인 프로세스 안에서 엄청 긴 연산작업을 수행하면 안됩니다. 그것을 다른 프로세스로 옮겨야 합니다. **Worker API** 를 통해 그것을 수행할 수 있습니다.
- 두 번째 당신은 긴 연산 작업 결과를(동기적으로) 기다려서는 안 됩니다.(네트워크요청, 작업자 프로세스 안에 자신의 알고리즘 등)  **event loop**에서 수행시키고, 그 작업이 완료되면 통보를 하게 합니다. 사실 당신은 브라우저에서 이 작업을 하는 거에 대해 선택 여지가 없습니다. 예를 들어 내장된 동기 `sleep`이 없습니다. (이전에 구현한 `sleep()` 과 같은) 대신에 `setTimeout()`으로 비동기적인 `sleep`을 수행합니다.
+ 첫 번째 당신은 메인 프로세스 안에서 엄청 긴 연산작업을 수행하면 안됩니다. 다른 프로세스로 옮겨야 합니다. **Worker API** 를 통해 수행할 수 있습니다.  
+ 두 번째 당신은 긴 연산 작업 결과를(동기적으로) 기다려서는 안 됩니다.(네트워크요청, 작업자 프로세스 안에 자신의 알고리즘 등)  **event loop**에서 수행시키고, 그 작업이 완료되면 통보를 하게 합니다. 사실 당신은 브라우저에서 이 작업을 하는 거에 대해 선택 여지가 없습니다. 예를 들어 내장된 동기 `sleep`(이전에 `sleep()`을 구현한 것 같은)이 없습니다. 대신에 `setTimeout()`으로 비동기적인 `sleep`을 수행할 수 있습니다.  
 
-다음 섹션은 결과를 위하여 비동기적으로 대기 할 수 있는 기술적인 설명을 할 것입니다.
+다음 섹션에서는 비동기 적으로 결과를 기다리는 기술에 대해 설명합니다.
 
 ## 3. 비동기적 결과 수신(Receiving results asynchronously)
 > 비동기적 결과를 수신하기 위한 2가지 패턴 : **events** 와 **callback**
 
 ### 3-1 events를 통한 비동기 결과(Asynchronous results via events)
- 결과를 비동기적으로 수신받기 위해서는, 각 요청 별 객체를 생성하고, 생성 객체와 함께 **이벤트 핸들러**(events handlers)를 등록합니다.(:성공적인 연산작업을 위하거나, 에러를 핸들링하기 위해서)
+ 결과를 비동기적으로 수신받기 위해서는, 각 요청 별 객체를 생성하고, 생성 객체와 함께 **이벤트 핸들러**(events handlers)를 등록합니다.(:하나는 성공적인 계산을위한 것이고 다른 하나는 오류를 처리하는 것입니다.)  
 아래 코드는 `XMLHttpRequest` API가 어떻게 작동하는지 보여주는 코드입니다.
 
 ```` javascript
@@ -197,10 +195,10 @@ req.onerror = function () {
 req.send(); // Add request to task queue
 ````
 
-마지막 라인은 실제로 요청을 수행하지 않고, **task queue** 에 추가됩니다. 그러므로 `onload` , `onerror` 가 세팅 되기 전에, `open()` 메서드를 후에 수행 할 수 있습니다. 자바스크립트 **run-to-completion** 때문에 같게 작동합니다.(Things would work the same, due to JavaScript’s run-to-completion semantics.)
+마지막 라인은 실제로 요청을 수행하지 않고, **task queue** 에 추가됩니다. 따라서, `onload` , `onerror` 가 세팅 되기 전에, `open()` 메서드를 후에 수행 할 수 있습니다. 자바스크립트 **run-to-completion** 때문에 동일하게 작동합니다.
 
 ### 3-1-1 암시적 요청(Implicit requests)
- 브라우저 API인 **IndexedDB는 약간 특이한 스타일인 이벤트 처리(event handling)를 가지고 있습니다.
+ 브라우저 API인 **IndexedDB**는 약간 특이한 스타일인 이벤트 처리(event handling)를 가지고 있습니다.
 
 ```` javascript
 var openRequest = indexedDB.open('test', 1);
@@ -215,15 +213,15 @@ openRequest.onerror = function (error) {
 };
 ````
 
-첫 번째로 요청 객체를 만들고, 결과를 통지받기 위한 이벤트리스너를 등록합니다. 그러나 당신은 명시적으로 요청에 대해 대기할 필요가 없습니다. 그것은 `open()`메서드에 의해 완료됩니다. **IndexedDB**는 현재 작업이 끝난 후에 실행됩니다. 이것이 왜 `open()` 메서드 호출 이후에 이벤트 핸들러를 등록해야 하는지 이유입니다.
+첫 번째로 요청 객체를 만들고, 결과를 통지받기 위한 이벤트리스너를 등록합니다. 그러나 `open()`을 사용하여 요청을 명시적으로 **queue**에 추가 할 필요가 없습니다. 그것은 현재 **task**가 완료된 후에 실행됩니다. 그래서 `open()`을 호출 한 후 이벤트핸들러를 등록 할 수 있습니다.  
 
-만약 당신이 **멀티스레드**(multi-thread)프로그래밍 언어를 사용한다면, 아마도 이 핸들링 요청 스타일은 낯설 것입니다. 그것은 마치 **race condition**(경쟁상태)와 같은 것처럼 보일 것입니다. 그러나 **run-to-completion** 때문에 항상 안전할 것입니다.
+만약 당신이 **멀티스레드**(multi-thread)프로그래밍에 익숙하다면, 아마도 이 핸들링 요청 스타일은 낯설 것입니다. 그것은 마치 **race condition**(경쟁상태)와 같은 것처럼 보일 것입니다. 그러나 **run-to-completion** 때문에 항상 안전할 것입니다.
 
 ### 3-1-2 events는 하나의 결과는 잘 작동하지 않습니다. (Events don’t work well for single results)
- 만약 여러 번 결과를 수신받을 경우, 비동기 연산 결과 처리하는 것(handling)은 OK입니다. 그러나 하나의 결과는 다음의 다변적인 문제를 일으킵니다. 그 사례로 콜백은 매우 인기가 많아지게 되었습니다.(For that use case, callbacks have become popular.)(모호한 문장)
+ 만약 여러 번 결과를 수신받을 경우, 비동기 연산 결과 처리하는 것(handling)은 OK입니다. 그러나 단일 결과는 다음의 다변적인 문제를 일으킵니다. 그 사례로 콜백은 매우 인기가 많아지게 되었습니다.
 
 ### 3-2 callbacks를 통한 비동기 결과(Asynchronous results via callbacks)
- 만약 당신이 비동기 결과를 콜백을 통하여 처리 한다면, 당신은 비동기 함수, 메서드 호출을 콜백 함수로써 매개변수에 전달 합니다.
+ 만약 당신이 비동기 결과를 콜백을 통하여 처리 한다면, 비동기 함수 또는 메서드 호출에 후행 매개변수로 콜백 함수를 전달 합니다.  
 
 아래 **Node.js** 예제를 봅시다. 우리는 `fs.readFile()`을 비동기로 호출하여 text 파일 내용을 읽습니다. 
 
@@ -253,9 +251,10 @@ readFileFunctional('myfile.txt', { encoding: 'utf8' },
     });
 ````
 
-### 3-3 Continuation-passing style(역자주: 해석하기 모호한 고유명사 보통 CPS라고 불림)
-콜백을 사용하는 프로그래밍 스타일(특히 이전에 보여준 함수적인 방식)은 또한 *Continuation-passing-style*(CPS)라고 부릅니다. 왜냐하면, 다음 스텝으로 명시적인 파라미터(콜백)로서 전달 합니다. 이는 다음 스텝에 무엇을, 그리고 언제 발생할지 함수 호출을 더 효율적으로 제어할 수 있습니다.
-아래 CPS를 표현한 코드를 봅시다.
+### 3-3 Continuation-passing style(역자주: 고유명사 보통 CPS라고 불림)
+다음 단계 (연속)가 명시 적으로 매개 변수로 전달되기 때문에 콜백 사용 프로그래밍 스타일 (특히 앞에서 설명한 기능적 방식)은 *Continuation-passing-style*(CPS)라고 부릅니다.  
+이렇게하면 호출 된 함수가 다음에 발생할 일을보다 잘 제어 할 수 있습니다.  
+아래 *CPS*를 표현한 코드를 봅시다.
 
 ```` javascript
 console.log('A');
@@ -277,7 +276,7 @@ function identity(input, callback) {
 }
 ````
 
-아래 각 절차는 콜백 안에서 프로그램이 진행하는 제어 흐름입니다. 이 중첩된 함수는 때때로 콜백지옥(callback hell)이라고 불리 웁니다. 그러나 당신은 중첩을 피할 수 있습니다. 왜냐하면 자바스크립트 함수는 호이스팅(hoisted:스코프 최상단으로 위치시키는 것을 의미함)하기 때문입니다. 이 말은 당신이 먼저 호출하고, 함수 정의는 나중에 한다는 걸 의미합니다. 아래 호이스팅을 사용한 예제를 확인해봅시다.
+아래 각 절차는 콜백 안에서 프로그램이 진행하는 제어 흐름입니다. 이 중첩된 함수는 콜백지옥(callback hell)이라고 불리 웁니다. 그러나 당신은 중첩을 피할 수 있습니다. 왜냐하면 자바스크립트 함수는 호이스팅(hoisted:스코프 최상단으로 위치시키는 것을 의미함)하기 때문입니다. 이 말은 당신이 먼저 호출하고, 함수 정의는 나중에 한다는 걸 의미합니다. 아래 호이스팅을 사용한 예제를 확인해봅시다.
 
 ```` javascript
 console.log('A');
@@ -303,7 +302,8 @@ console.log('E');
 - `map()`, `filter()`,`forEach()`와 같은 배열 메소드  
 - `for, while`과 같은 루프
 
-[Async.js](https://github.com/caolan/async) 라이브러리는 **Node.js** 콜백스타일과 함께 **CPS** 비슷한 것을 할 수 있게 제공합니다. 그것은 아래 예제 코드와 같습니다. 3개의 파일의 컨텐츠를 불러오고 배열에 이름을 저장하는 예제 입니다.
+[Async.js](https://github.com/caolan/async) 라이브러리는 **Node.js** 콜백스타일과 함께 **CPS** 비슷한 것을 할 수 있게 제공합니다.   
+그것은 아래 예제 코드와 같습니다. 3개의 파일의 컨텐츠를 불러오고 배열에 이름을 저장하는 예제 입니다.
 
 ```` javascript
 var async = require('async');
@@ -324,22 +324,22 @@ async.map(fileNames,
 ````
 
 ### 3-5 콜백의 장단점(Pros and cons of callbacks)
- 콜백 결과를 사용하는 **CPS**는 근본적으로 다른 프로그래밍 스타일입니다. CPS는 주요한 이점을 가지고 있습니다. 그것은 기본적인 메커니즘을 쉽게 이해할 수 있게 도와줍니다. 그러나 단점도 있습니다.
+콜백을 사용하면 근본적으로 다른 프로그래밍 스타일 인 CPS가 발생합니다. CPS는 주요한 이점은 기본적인 메커니즘이 이해하기 쉽다는 것 입니다. 그러나 단점도 있습니다.
 
 - 에러 처리가 더 복잡해졌다: 에러를 처리하는 방법은 두 가지가 있다. 콜백 함수를 이용하는 방법과 예외를 이용하는 것 2가지가 있다. 그러므로 이 두 가지를 동시에 사용할 경우 조심해야 한다.
-- 코드 직관성이 떨어진다: 동기 함수에서는 입력 값과 출력 값에 대한 구분이 명확하다. 콜백 함수를 사용한 비동기 함수에서는 이 두 개가 섞여 있다. 함수의 매개변수 중 몇 개는 입력을 위해, 나머지는 출력을 위해 사용된다.
+- 코드 직관성이 떨어진다: 동기 함수에서는 입력(매개변수)과 출력(함수 결과) 사이에 구분이 명확하다. 콜백을 사용하는 비동기 함수에서는 이 두 개가 섞여 있다. 함수의 매개변수 중 몇 개는 입력을 위해, 나머지는 출력을 위해 사용된다.
 - 구성이 더 복잡해졌다: 출력을 위한 개념이 함수의 매개변수에 존재하기 때문에 구성이 더 복잡해졌다.
 
 **Node.js** 콜백스타일은 3가지 단점을 가지고 있습니다.(함수 스타일과 비교)
 
 - 에러를 처리하기 위한 if문이 많다.
 - 에러 핸들러를 재사용하기 힘들다.
-- 또한, 기본 에러 핸들러를 제공하는 게 어렵다. 기본 에러 핸들러는 당신이 함수를 호출 할 때 자신만의 핸들러를 작성하지 않을 때 유용합니다. 또한 만약 caller가 특정한 핸들러를 지정하지 않는다면 함수에 의해 사용될 수도 있다.
+- 또한, 기본 에러 핸들러를 제공하는 게 더 어렵다. 기본 에러 핸들러는 당신이 함수를 호출 할 때 자신만의 핸들러를 작성하지 않을 때 유용합니다. 또한 만약 호출자가 특정한 핸들러를 지정하지 않는다면 함수에 의해 사용될 수도 있다.
 
 ##4. 다음에 할 내용(Looking ahead)
  다음 챕터는 **Promise**와 **ES6 Promise** API을 다룹니다. **Promise**는 콜백보다 더 복잡합니다. 중요한 이점을 제공함으로써 콜백의 단점을 제거합니다.
 
 ##5. 추가로 읽을 거리(Further reading)
-[1] “[Help i’m stuck in an event-loop](http://vimeo.com/96425312)” by Philip Roberts (video). <br>
-[2] “[Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)” in the HTML Specification <br>
-[3] “[Asynchronous programming and continuation-passing style in JavaScript](http://www.2ality.com/2012/06/continuation-passing-style.html)” by Axel Rauschmayer.
+- [1] “[Help i’m stuck in an event-loop](http://vimeo.com/96425312)” by Philip Roberts (video).
+- [2] “[Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)” in the HTML Specification
+- [3] “[Asynchronous programming and continuation-passing style in JavaScript](http://www.2ality.com/2012/06/continuation-passing-style.html)” by Axel Rauschmayer.
