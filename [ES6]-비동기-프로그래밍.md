@@ -23,7 +23,8 @@
  이 챕터는 자바스크립트의 비동기 프로그래밍(asynchronous programming) 기본에 대한 이야기입니다. 또한 이번 챕터는 **ES6 Promise**을 위한 기본 배경 지식이기도 합니다.
 
 ## 1. 자바스크립트 호출 스택(**call stack**)
- `function f` 가 `function g`를 호출할 때 `function g`는 자신이 실행 후에 어디에 `return` 돼야 하는지 알 필요가 있습니다. (`function f` 안에 / inside f() ) 보통 이런 정보는 **stack**(the call stack)이 관리를 합니다.
+ `function f` 가 `function g`를 호출할 때 `function g`는 끝난 후에 어디로 돌아가야 하는지 알아야합니다.(`function f` 안에서)  
+일반적으로 이런 정보는 호출스택(call stack)인 **스택(*stack*)**이 관리를 합니다.  
 아래 예제를 봅시다.
 
 ```` javascript
@@ -41,7 +42,7 @@ f(3); // (D)
 return; // (E)
 ````
 
-최초 위 프로그램이 시작될 때, **호출 스택**(the call stack)은 비어있습니다. (D) 라인에 있는 함수 `f(3)`이 호출되면 스택은 한가지 항목을 가지게 됩니다.
+처음에는 위 프로그램이 시작될 때, **호출 스택**(the call stack)은 비어있습니다. (D) 라인에 있는 함수 `f(3)`이 호출되면 스택은 한가지 항목을 가지게 됩니다.
 
 * 전역 스코프 (Location in global scope)
 
@@ -66,7 +67,7 @@ Error
     at <global> (stack_trace.js:11:1)
 ````
 
-각 함수 실행은 종료되고 상위 함수부터 stack에서 제거됩니다. 마지막 함수 `f`가 끝나면, `전역 스코프(global scope)`로 복귀하여 **호출 스택**은 비워집니다. 결국 (E)라인이 오면 `return`되어 **stack**은 비워지고 프로그램은 종료됩니다.
+다음으로, 각 함수는 종료되고, 스택의 최상위 요소가 제거 될때마다 함수가 종료됩니다. 마지막 함수 `f`가 끝나면, `전역 스코프(global scope)`로 복귀하여 **호출 스택**은 비어 있습니다. 결국 (E)라인이 오면 반환되어 **스택**은 비워지고 프로그램은 종료됨을 의미합니다.
 
 ## 2. 브라우저 이벤트 루프(event loop)
  각 브라우저 탭은 **싱글 프로세스**(single process : [the event loop](https://html.spec.whatwg.org/multipage/webappapis.html#event-loop))로 돌아갑니다. 
