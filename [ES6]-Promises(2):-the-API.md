@@ -35,7 +35,7 @@
 11. [Promises와 generators](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#11-promises%EC%99%80-generators)
 
 #6. 에러 처리
- 앞서 언급했듯이, 에러 처리에서 반환하는 것은 *fulfillment* 값이 될 것입니다.(*rejection* 값이 아닌) 따라서 오류발생시 기본값을 지정 할 수 있습니다.
+ 앞서 언급했듯이, 에러 처리에서 반환하는 것은 *fulfillment* 값이 될 것입니다.(*rejection* 값이 아닌) 따라서 실패시 사용하는 기본값을 지정 할 수 있습니다.
 
 ```` javascript
  retrieveFileName()
@@ -49,7 +49,7 @@
 ````
 
 ##6-1 예외를 잡자(Catching exceptions)
- **executor**의 예외(Exceptions)는 다음 에러 핸들러(*handler*) 에게 전달 되어 집니다.
+ **executor**의 예외(Exceptions)는 다음 에러 핸들러(*handler*) 에게 전달 됩니다.
 
 ```` javascript
     new Promise(function (resolve, reject) {
@@ -73,7 +73,7 @@
 ````
 
 ##6-2 에러's 체이닝(Chaining errors)
- 아래 예제를 보면 에러 핸들러를 제공 하지 않는 `then()`메서드는 한개 또는 여러개의 체이닝을 사용 할 수 있습니다. 그러면 에러는 에러 핸들러가 있는 곳 까지 전달 됩니다.
+ 아래 예제를 보면 에러 핸들러를 제공 하지 않는 `then()`메서드는 하나 이상의 호출이 있을 수 있습니다. 그런 다음 에러 핸들러가 있는 곳 까지 에러는 전달 됩니다.
 
 ```` javascript
     asyncFunc1()
@@ -85,10 +85,10 @@
 ````
 
 #7.Composition
-> 이번 섹션은 새로운 것을 만들기 위해 기존 **promises**를 구성 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)<br>
-추가적으로 `Promise.all()`과 `Promise.race()`로 **promises**를 구성하는 법을 제공합니다.
+> 이번 섹션은 새로운 것을 만들기 위해 기존 **promises**를 구성(*composition*) 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성(*composition*)하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)  
+`Promise.all()`과 `Promise.race()`은 추가적인 **promises**를 구성(*composition*)방법을 제공합니다.
 
-##7-1 `Promise.all()` 에 의한 `map()`
+##7-1 `Promise.all()` 을 통한 `map()`
  **Promises**가 한가지 좋은 것은 promise기반 함수는 결과를 반환 하기 때문에, 많은 동기적으로 작동하는 도구(:라이브러리 tools)가 여전히 잘 작동한다는 것 입니다. 예를 들어, 배열이 제공하는 `map()` 메서드를 다음과 같이 사용 할 수 있습니다.
 
 ```` javascript
