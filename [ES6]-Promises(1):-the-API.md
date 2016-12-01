@@ -16,14 +16,17 @@
  2. [Resolving with thenable(thenable로 해결)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#52-resolving-with-thenablethenable%EB%A1%9C-%ED%95%B4%EA%B2%B0)
 
 
-> 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다. 2개의 비동기 프로그래밍 포스트 중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는 것이 좋을 것입니다.
+> 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다.  
+2개의 비동기 프로그래밍 포스트 중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는 것이 좋을 것입니다.
 
 #1. Promises
- **Promises**는 비동기 프로그래밍의 한 부분을 도와주는 패턴입니다.(함수 또는 메서드를 비동기적으로 결과를 받는 것) 이런 기능을 구현하기 위해선 promise 를 반환해야 합니다. **promise**는 결과를 위해 지정해놓은 객체를 의미합니다. <br>함수 호출자는 결과 계산이 완료되었다는 것을 알림 받기 위해 콜백을 **promise**로 등록합니다.<br><br>
-자바스크립트 **promises**의 사실상 표준은 [**Promises/A+**](https://promisesaplus.com/) 이라고 부릅니다. ECMAScript6 **promise** API는 표준을 따릅니다.
+ **Promises**는 비동기 프로그래밍의 한 부분을 도와주는 패턴입니다.(함수 또는 메서드를 비동기적으로 결과를 받는 것) 이런 기능을 구현하기 위해선 promise 를 반환해야 합니다. 이러한 함수를 구현하기 위해서는 결과에 대해 위임하는 객체인 **promise**를 반환해야 합니다.  
+함수 호출자는 결과가 연산 되었으면 통지 받을 **promise**와 함께 콜백을 등록합니다.
+
+자바스크립트 **promises**의 사실상 표준은 [**Promises/A+**](https://promisesaplus.com/) 입니다. ECMAScript6 **promise** API는 이 표준을 따릅니다.
 
 #2. 첫번째 예제
- 아래의 첫 번째 예제는 promise로 어떻게 동작하는지 보여주기 위함이다.<br>
+ 아래의 첫 번째 예제를 보면 어떻게 **promise**를 다루는지 맛볼수 있습니다.  
 **Node-js**스타일 콜백으로 비동기적으로 파일 읽는 법은 다음과 같습니다.
  
 ```` javascript
@@ -56,13 +59,13 @@
     });
 ````
 
-**promise**도 여전히 콜백이 존재합니다. 그러나 **promise**는 결과를 호출 할 수 있는 메서드를 통해 제공됩니다. (`then()`,`catch()`) (B)라인 안에 error 콜백은 2가지의 편리성을 가지고 있습니다. 첫 번째, 에러 처리를 한가지 방식으로 할 수 있습니다. 두 번째로, 당신은 `readFilePromisified()`와 (A)라인의 콜백 둘다 에러를 핸들링 할 수 있습니다.
+여전히 콜백이 존재하지만, **promise**는 결과(`then()`,`catch()`)에서 호출되는 메서드를 통해 제공됩니다. (B)라인 안에 error 콜백은 2가지의 편리성을 가지고 있습니다. 첫 번째, 에러 처리의 단일 스타일입니다. 두 번째로, 당신은 `readFilePromisified()`와 (A)라인에서 콜백 오류를 핸들링 할 수 있습니다.
 
 #3. Promises 생성과 사용
-> **promise**가 어떻게 작동하는지 공급자(Producer)와 소비자(consumer) 측면에서 알아봅시다.
+> **promise**가 생산자(Producer)와 소비자(consumer) 측면에서 어떻게 작동하는지 알아봅시다.
 
 ## 3-1. promise 생산(Producing a promise)
- 공급자로서, **promise**를 생성하고 결과를 전송합니다.
+ 생산자는 **promise**를 생성하고 결과를 전송합니다.
 
 ```` javascript
     var promise = new Promise(
@@ -78,15 +81,16 @@
 
 **promise**는 항상 아래 3가지 상태 중(상호배타적인) 1가지 상태입니다.
 - 대기(pending) : 아직 결과 처리가 안 됐다.
-- 성공(Fulfilled) : 성공적으로 완료되었다.
+- 완료(Fulfilled) : 성공적으로 완료되었다.
 - 거절(rejected) : 처리되는 동안 실패가 발생하였다.
 
-**promise**는 연산이 끝난 뒤 fulfilled 혹은 rejected 상태로 처리(settle)됩니다. promise는 한 번 처리되면 그 처리 상태로 유지됩니다. 
+**promise**는 연산이 끝난 뒤 완료(*fulfilled*) 혹은 거절(*rejected*) 상태로 처리(settle)됩니다. promise는 한 번 처리되면 그 처리 상태로 유지됩니다. 
 
 ![promise state](http://4.bp.blogspot.com/-iiX2B0bNZe4/VDEiVTNrpqI/AAAAAAAAA4Q/selZM4dBM7k/s1600/promise_states_simple.jpg)
 
-`new Promise()`의 파라미터는( (A)라인 시작점 ) 집행자(**executor** 모호한 단어라 이하 영문표기로 명칭)라고 부릅니다.
-- 만약 연산이 잘 되었다면, **executor**는 `resolve()` 통해 결과를 전송합니다. 보통 **promise** 성공(fulfills)을 말합니다.(promise가 resolve였지만 실제로 아닐 경우 뒤에 설명하겠습니다.)
+`new Promise()`의 파라미터를( (A)라인 시작점 ) 실행자(**executor** 모호한 단어라 이하 영문표기로 명칭)라고 부릅니다.
+
+- 만약 연산이 잘 되었다면, **executor**는 `resolve()` 통해 결과를 전송합니다. 보통 **promise** 완료(fulfills)를 말합니다.(*promise*가 *resolve*였지만 실제로 아닐 경우 뒤에 설명하겠습니다.)
 - 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 **promise**는 거절(reject) 상태입니다.
 
 ##3.2 promise의 사용(Consuming a promise)
