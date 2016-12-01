@@ -144,22 +144,22 @@
  이번 섹션은 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명 된대로 *ECMAScript6 promise API* 에 대한 개요를 설명합니다.
 
 ##9.1 Glossary(어휘)
-**Promise API**는 결과를 비동기적으로 제공하는 것에 대한 내용입니다. *promise* 객체는(짧게 promise로 대체함) 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
+**Promise API**는 결과를 비동기적으로 제공하는 것에 관한 내용입니다. *promise* 객체는 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
 
 ####상태:
 - promise는 항상 3개중에 1개의 상호배타적인 상태를 가집니다.
- - 결과가 준비되기전에는 promise는 *pending* 상태입니다.
- - 만약 결과가 준비됬으면, promise는 *fulfilled* 상태입니다.
- - 만약 에러가 발생하면, promise 는 *rejected* 입니다.
-- 만약 어떤 행위가 끝났다는건 promise 상태가 설정됬다는 것입니다.(*fulfilled* 또는 *rejected*던지간에..)
-- promise가 한번 설정되면, 더이상 변하지 않습니다.
+ - 결과가 준비되기전에는 promise는 대기중(*pending*) 상태입니다.
+ - 만약 결과가 준비됬으면, promise는 완료(*fulfilled*) 상태입니다.
+ - 만약 에러가 발생하면, promise 는 거절(*rejected*) 상태입니다.
+- 어떤 행위가 끝났다는건 promise 상태가 확정 됬다는 것입니다.(*fulfilled* 또는 *rejected*던지간에..)
+- promise는 한번 확정되면, 더이상 변하지 않습니다.
 
 ####상태 변화 반응(*Reacting*):
-- *Promise* 반응(*reactions*)은 *fulfillment* 또는 *rejection*을 알림 받기 위해 promise의 `then()` 메서드를 등록한 콜백입니다.
-- *thenable*은 **promise**스타일의 `then()` 메서드를 가진 객체입니다. 이 **API**는 promise가 설정됬다는 알림을 받는 것에 관심있을 뿐 아니라 *thenables*만 요구 할 뿐입니다.
+- *Promise* 반응(*reactions*)은 *promise* `then()`에 등록한 콜백이며, *fulfillment* 또는 *rejection*을 통지를 받습니다.
+- *thenable*은 **promise** 스타일 `then()` 메서드를 가진 객체입니다. **API**는 promise가 설정됬다는 알림을 받는 것에 관심있을 뿐 아니라 *thenables*도 요구 합니다.
 
 ####변경 상태: 
-*promise*는 상태를 변경하기 위해 2가지 방법이 있습니다. 당신이 한번에 두번 이상 호출 한 후에는, 더이상 영향을 주지 않습니다.
+*promise*는 상태를 변경하기 위해 2가지 방법이 있습니다. 당신이 한번 호출 한 후에 재 호출은 아무 효과가 없습니다.
 
 - promise가 거부(*Rejecting*)됬다는 것은 promise가 거절(*rejected*)된다는 것을 의미합니다.
 - promise가 해결(*Resolving*)됬다는 것은 당신이 어떤 값을 가지고 있냐에 따라 다른 영향을 끼칩니다.
@@ -173,51 +173,54 @@
     var p = new Promise(executor(resolve, reject));
 ````
 
-이는 콜백 실행자(executor)에 의해 결정된 행동의 **promise** 를 생성합니다. 생성자 파라미터를 사용하여 `var p`를 해결(*resolve*)하거나 거절(*reject*)할 수 있습니다.:
+이는 콜백 실행자(executor)에 의해 행동이 결정되는 **promise** 를 생성합니다. 생성자 파라미터를 사용하여 `var p`를 해결(*resolve*)하거나 거절(*reject*)할 수 있습니다.:
+
 - `x`를 통해 `p`를 해결하는 `resolve(x)`:
- - 만약 `x`가 *thenable*이라면, 그 설정은 `p`로 전달 됩니다.(`then()`을 통해 등록된 트리거 반응을 포함하여)
+ - 만약 `x`가 *thenable*이라면, 그 확정(*settlement*)은 `p`로 전달 됩니다.(`then()`을 통해 등록된 트리거 반응을 포함하여)
  - 그렇지 않으면, `p`는 `x`로 처리(*fulfilled*) 됩니다.
 - `reject(e)`의 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(`Error` 대신에)
 
 ##9.3 정적 메소드
 > **Promise**의 모든 정적메소드는 *subclassing* 을 제공합니다.
 
- *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 그리고 또한 *subclassing*을 통해 다른 정적메소드에 접근하게 됩니다.(`this.resolve(...) VS `Promise.resolve(...))
+ *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 또한 *subclassing*을 통해 다른 정적메소드에 접근합니다.(`this.resolve(...) VS `Promise.resolve(...))
 
 ###Promises 생성
-아래 2개 메서드는 새로운  *receiver* 인스턴스를 생성합니다.(*subclassing*의 this)
+아래 2개 메서드는 새로운 *receiver* 인스턴스를 생성합니다.(*subclassing*의 this)
 
 - Promise.resolve(x):
  - 만약 `x`가 *thenable* 이면, *promise*로 변환됩니다.(receiver의 인스턴스)
  - 만약 `x`가 *promise* 이면, 변경되지 않은채로 반환됩니다.
  - 그렇지않으면, `x`가 처리된 새로운 *receiver* 인스턴스를 반홥니다.
-- Promise.reject(reason): 어떤 값-*reason* 과 통해 거절(*rejected*)된 새로운 *promise*를 생성합니다. 
+- Promise.reject(reason): 어떤 값-*reason* 을 통해 거절(*rejected*)된 새로운 *promise*를 생성합니다. 
 
 ###Promises 합성
- 정적메소드인 `Promise.all()`과 `Promise.race()`는 하나의 *promise*에 반복 가능한 *promise's*로 구성됩니다. <br><br>
+ 정적메소드인 `Promise.all()`과 `Promise.race()`는 단일 *promise*를 반복 가능한 *promise's*로 구성합니다.  
 그것은 즉:
+
 - 그것들은 **iterable**를 줍니다. **iterable**의 요소들은 `this.resolve()`를 통해 *promises*로 변환됩니다.
 - 그것들은 새로운 *promise*를 반환합니다. 그 *promise*는 *receiver*의 새로운 인스턴스입니다.
 
 Method 들 :
+
 - Promise.all(iterable): *promise* 반환
- - 만약 *iterable* 요소들이 모두 처리(*fulfilled*)되면, *promise.all*은 처리(*fulfilled*)되어집니다. **Fulfillment** 값: 처리(*fulfillment*)값들의 배열
+ - 만약 *iterable* 요소들이 모두 완료(*fulfilled*)되면, *promise.all*은 완료(*fulfilled*)됩니다. **Fulfillment** 값: 완료(*fulfillment*)값들의 배열
  - 만약 *iterable* 요소중 어느 하나라도 거절(*rejected*)되면 *promise.all*은 거절(*rejected*)됩니다. **Rejection** 값 : 첫번째 거절(*rejection*)값
-- Promise.race(iterable): 해결(*settled*)된 *iterable* 첫번째 요소는 다음 반환되어지는 *promise*를 해결하기 위해 사용됩니다. 
+- Promise.race(iterable): 확정(*settled*)된 *iterable* 첫번째 요소는 다음 반환되어지는 *promise*를 해결하기 위해 사용됩니다. 
 
 ##9.4 인스턴스 프로토타입 메서드's
-####*Promise.prototype.then(onFulfilled, onRejected)*:
+####`Promise.prototype.then(onFulfilled, onRejected)`:
 
-- *onFulfilled* 와 *onRejected* 콜백을 반응(reactions)이라고 말합니다.
-- *onFulfilled*는 promise가 이미 처리(*fulfilled*) 되었을 경우 즉시 호출되고 또는 그것이 실현되자마자 즉시 호출됩니다. 마찬가지로 *onRejected*는 거절에 관한 정보를 받습니다.
+- *onFulfilled* 와 *onRejected* 콜백을 반응(reactions)이라고 부릅니다.
+- *onFulfilled*는 promise가 이미 처리(*fulfilled*) 되었을 경우 즉시 호출되고 또는 그것이 실현되자마자 즉시 호출됩니다. 마찬가지로 *onRejected*는 거절에 관한 정보를 제공 받습니다.
 - `then()`은 새로운 `promise Q`를 반환합니다.(*receiver* 생성자를 통해 생성된..):
- - 만약 반응(*reactions*)중 하나라도 값을 반환하면, *Q*는 값으로 해결(*resolved*)됩니다.
+ - 만약 반응(*reactions*)중 하나라도 값을 반환하면, *Q*는 해결(*resolved*)됩니다.
  - 만약 반응(*reactions*)중 하나라도 예외가 발생하면, *Q*는 거절(*rejected*) 됩니다.
 - 생략에 의한 반응들(Omitted reactions):
- - 만약 *onFulfilled*가 생략되었다면, *receiver*의 이행(*fulfillment*)이 `then()`의 결과로 전달됩니다.
+ - 만약 *onFulfilled*가 생략되었다면, *receiver*의 완료(*fulfillment*)가 `then()`의 결과로 전달됩니다.
  - 만약 *onRejected*가 생략되었다면, *receiver*의 거절(rejection)이 `then()`의 결과로 전달됩니다.
 
-생략된 것의 반응의 기본 값은 다음과 같이 구현됩니다.
+*생략된 것의 반응* 의 기본 값은 다음과 같이 구현됩니다.
 
 ```` javascript
     function defaultOnFulfilled(x) {
@@ -228,14 +231,16 @@ Method 들 :
     }
 ````
 
-####*Promise.prototype.catch(onRejected)*:<br>
+####`Promise.prototype.catch(onRejected)`:
+
 - `then(null, onRejected)`와 동일
 
 #10. promises의 장단점
 ##10.1 장점
 ###통합 비동기 API
-*promise*는 한가지 중요한 장점이 있습니다. *promise*는 점점 비동기식 브라우저 APIs에 사용될 것이고, 현재 다양하고 호환되지 않은 패턴과 규칙들을 통합 할 것입니다.<br>
-아래 2가지 promise 기반 API's를 봅시다.<br><br>
+*promise*는 중요한 장점이 한가지 있습니다. *promise*는 점점 비동기식 브라우저 API's에 사용될 것이고, 현재 다양하고 호환되지 않은 패턴과 규칙들을 통합 할 것입니다.  
+아래 2가지 promise 기반 API's를 봅시다.  
+
 *fetch* API는 *XMLHttpRequest* 대신에 선택할 수 있는 promise 기반 API입니다. 
 
 ```` javascript
@@ -244,7 +249,7 @@ fetch(url)
 .then(str=>...)
 ````
 
-`fetch()`는 실제 요청(*request*) 하는 *promise*를 반환하고, `text()`는 문자열 컨텐츠 *promise*를 반환합니다.<br><br>
+`fetch()`는 실제 요청(*request*)에 대한 *promise*를 반환하고, `text()`는 컨텐츠에 관한 *promise*를 문자열로 반환합니다.  
 
 모듈 프로그래밍 방식인 `Sytem.import`는 [ECMAScript 6 API](http://www.2ality.com/2014/09/es6-modules-final.html#the_ecmascript_6_module_loader_api)에 *promise* 기반입니다.
 
@@ -256,10 +261,11 @@ then(some_module=>{
 ````
 
 ###Promises VS events
- *events*에 비해, 일회성 결과를 다루기에는 *promise*가 더 낫습니다. *promise*가 연산되어지는 전이든 후든, 그 결과를 등록했는지 여부는 중요하지 않습니다. 언제 등록 했는지에 상관없이 당신은 결과를 얻을 수 있습니다. 이런 *promise*장점은 자연에 본질적입니다. (This advantage of promises is fundamental in nature)<br> 반면에, 당신은 반복 이벤트를 다룰때는 사용할 수 없습니다. 체이닝은 *promise*의 또다른 장점이지만, 하나의 이벤트 처리기에 등록되어집니다.
+ *events*에 비해, 일회성 결과를 다루기에는 *promise*가 더 낫습니다. *promise*가 연산되어지는 전이든 후든, 그 결과를 등록했는지 여부는 중요하지 않습니다. 언제 등록 했는지에 상관없이 당신은 결과를 얻을 수 있습니다. 이런 *promise*장점은 자연에 본질적입니다.  
+반면에, 당신은 반복 이벤트를 다룰때는 사용할 수 없습니다. 체이닝은 *promise*의 또다른 장점이지만, 하나의 이벤트 처리기에 등록됩니다.
 
 ###Promise VS callbacks
-*callbacks*와 비교하자면, *promise*는 보다 깨끗한 함수(또는 메서드) 시그니쳐를 가지고 있습니다. <br>
+*callbacks*와 비교하자면, *promise*는 보다 깨끗한 함수(또는 메서드) 시그니쳐를 가지고 있습니다.  
 *callback*은 매개변수에 입력과 출력을 사용합니다. 
 
 ```` javascript
@@ -280,9 +286,10 @@ then(some_module=>{
 - 반복적인 이벤트 : 만약 당신이 관심이 있다면, *reactive programming*를 보길 바랍니다.(일반적인 이벤트 처리 체이닝을 현명하게 추가하는 방법)
 - 데이터 스트림 : 현재 데이터 스트림을 제공하기 위해 [표준](https://streams.spec.whatwg.org/)을 개발중입니다.
 
-ECMAScript6 *promise*는 유용할 수 있는 2가지 특성이 없습니다.
+ECMAScript6 *promise*는 때때로 유용할 수 있는 2가지 특성이 없습니다.
+
 - 당신은 *promise*를 취소 할 수 없습니다.
-- 당신은 *promise*가 얼만큼 진행 됬는지 질의(*query*) 할수 없습니다.(예를들어 클라이언트 UI 에서 progress bar를 표시해주는것)
+- 당신은 *promise*가 얼만큼 진행 됬는지 요청 할수 없습니다.(예를들어 클라이언트 UI 에서 progress bar를 표시해주는것)
 
 **Q promise** 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**는 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
 
@@ -310,8 +317,8 @@ ECMAScript6 *promise*는 유용할 수 있는 2가지 특성이 없습니다.
 2. `yield` 연산자는 함수의 반환입니다. (그것은 정확히 반환은 아니고, 현재는 무시되는 상태입니다.)
 3. 이후, 이 함수는 값 또는 예외로 다시 시작합니다. 전자의 경우(값인 경우) 그것이 정지된 상태에서 이후로 다시 실행되고, `yield`는 값을 반환합니다. 후자의 경우(예외인 경우)`yield` 연산자 내부에 예외를 발생시킨 것처럼, 예외는 함수 내에 발생합니다. 
 
-따라서 `Q.spawn()`은 무엇을 해야 하는 지 분명합니다. *generator* 함수 *yield* promise가 실행되면, `spaw`은 반응(*reactions*)을 등록하고, 처리 되기를 기다립니다. 만약 *promise*가 *fulfilled*라면, *generator*는 결과와 함께 다시 재개합니다. 그리고 만약 *promise*가 *rejected*라면, 예외를 *generator* 내에 던집니다.<br><br>
-새로운 구문 생성자 *async function*으로, `spawn`기능을 제공하자는 [제안](https://github.com/tc39/ecmascript-asyncawait)이 있습니다. <br>
+따라서 `Q.spawn()`은 무엇을 해야 하는 지 분명합니다. *generator* 함수 *yield* promise가 실행되면, `spaw`은 반응(*reactions*)을 등록하고, 처리 되기를 기다립니다. 만약 *promise*가 *fulfilled*라면, *generator*는 결과와 함께 다시 재개합니다. 그리고 만약 *promise*가 *rejected*라면, 예외를 *generator* 내에 던집니다.  
+새로운 구문 생성자 *async function*으로, `spawn`기능을 제공하자는 [제안](https://github.com/tc39/ecmascript-asyncawait)이 있습니다.  
 *async* 함수로써 이전 예제는 다음과 같습니다. 내부적으로는, 큰 차이가 없습니다. - *async* 함수는 *generators* 기반입니다.
 
 ```` javascript
