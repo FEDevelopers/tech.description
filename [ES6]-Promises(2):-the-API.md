@@ -99,7 +99,7 @@
     var promisedTexts = fileUrls.map(httpGet);
 ````
 
-아래 예제 에서 `promisedTexts`는 **promises** 배열 입니다. `Promise.all()`은 **promises** 배열을 받고(*thenables*과 다른 값은 `Promise.resolve()`에 의해 **promise**로 변화됩니다.) 그리고, 모든 **promises**가 성공(fulfilled)하면, 그것들의 값의 배열로 결과가 전달됩니다.(once all of them are fulfilled, it fulfills with an array of their values:)
+아래 예제 에서 `promisedTexts`는 **promises** 배열 입니다. `Promise.all()`은 **promises** 배열을 받고(*thenables*과 다른 값은 `Promise.resolve()`에 의해 **promise**로 변화됩니다.) 모든 **promises**가 성공(fulfilled)하면, 그것들의 값의 배열로 결과가 전달됩니다.(once all of them are fulfilled, it fulfills with an array of their values:)
 
 ```` javascript
     Promise.all(promisedTexts)
@@ -114,7 +114,8 @@
 ````
 
 ##7-2 `Promise.race()`를 통한 Timing out
-`Promise.race()`는 *promises* 배열을 받으며, 새로운 **promise P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)<br>만약 첫번째 **Promise**가 성공 또는 거절로 설정되면 그 Promise를 반환되어집니다. 
+`Promise.race()`는 *promises* 배열을 받으며, 새로운 **promise P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)  
+만약 첫번째 **Promise**가 성공 또는 거절로 확정되면 그 *Promise*가 전달되어집니다. 
 
 아래 `Promise.race()`로 구현한 *timeout* 예제를 봅시다.
 
@@ -130,17 +131,17 @@
 ````
 
 #8. 항상 비동기인 Promises
-promise 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적으로 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.
-그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다.<br> 
+*promise* 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적으로 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.  
+그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다.  
 `then()` 메서드를 위해 [requirement](https://promisesaplus.com/#point-34) 를 따르기를 권장 합니다. (It states so via the following requirement (2.2.4) for the then() method:)
 
-> 실행컨텍스트 스택은 플랫폼 코드를 포함하기 전까지 `onFulfilled` 또는 `onRejected` 를 호출 할 수 없습니다.
+> 실행컨텍스트 스택은 플랫폼 코드를 포함되기 전까지 `onFulfilled` 또는 `onRejected` 를 호출 할 수 없습니다.
 
-이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다. 
-그리고 promises 체이닝은 다른  **tasks**의 프로세스를 처리하지 않을 것입니다.(and that chaining promises won’t starve other tasks of processing time)
+이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다.   
+그리고 *promises* 체이닝은 다른  **tasks**의 프로세스를 처리하지 않을 것입니다.
 
 #9. Cheat sheet: the ECMAScript 6 promise API
- 이번 섹션은 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명 된대로  *ECMAScript6 promise API* 에 대한 개요를 설명합니다.
+ 이번 섹션은 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명 된대로 *ECMAScript6 promise API* 에 대한 개요를 설명합니다.
 
 ##9.1 Glossary(어휘)
 **Promise API**는 결과를 비동기적으로 제공하는 것에 대한 내용입니다. *promise* 객체는(짧게 promise로 대체함) 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
