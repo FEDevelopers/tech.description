@@ -99,7 +99,7 @@
     var promisedTexts = fileUrls.map(httpGet);
 ````
 
-아래 예제 에서 `promisedTexts`는 **promises** 배열 입니다. `Promise.all()`은 **promises** 배열을 받고(*thenables*과 다른 값은 `Promise.resolve()`에 의해 **promise**로 변화됩니다.) 모든 **promises**가 성공(fulfilled)하면, 그것들의 값의 배열로 결과가 전달됩니다.(once all of them are fulfilled, it fulfills with an array of their values:)
+아래 예제 에서 `promisedTexts`는 **promises** 배열 입니다. `Promise.all()`은 **promises** 배열을 받고(*thenables*과 다른 값은 `Promise.resolve()`에 의해 **promise**로 변화됩니다.) 모든 **promises**가 성공(fulfilled)하면, 그것들의 값의 배열로 결과가 전달됩니다.
 
 ```` javascript
     Promise.all(promisedTexts)
