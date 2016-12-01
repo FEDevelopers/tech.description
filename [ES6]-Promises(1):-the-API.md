@@ -94,7 +94,8 @@
 - 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 **promise**는 거절(reject) 상태입니다.
 
 ##3.2 promise의 사용(Consuming a promise)
-**promise** 소비자(consumer)로서, 당신은 `fulfillment` 혹은 `rejection` 이라는 반환 상태에 따라 `then()` 메소드에 등록한 콜백 함수로부터 알림을 받게 된다.
+**promise** 소비자(consumer)로서, 당신은 반응(*reactions*)을 통해 완료(`fulfillment)` 혹은 거절(`rejection`) 상태에 대해 'then()` 메소드에 등록한 콜백 함수로부터 통보를 받게 됩니다.
+
 ```` javascript
     promise.then(
         function (value) { /* fulfillment */ },
@@ -102,9 +103,11 @@
     );
 ````
 
-비동기 함수를 위한 **promise**가 어떤 점에서 좋냐면, **promise**상태가 한 번 설정되면 더이상 어느 것도 변하지 않게 된다는 점이다.  게다가 비동기 함수들은 경쟁상태(race condition)가 절대 되지 않는다. 왜냐하면 `then()`을 실행하는 게 **promise**가 처리되기 전이냐 후냐는 중요하지 않기 때문이다. (**promise**는 어차피 *resolve*와 *reject*에 의해 진행되므로)
-- 전자의 경우, **promise** 상태가 세팅된 직후 호출됩니다.
-- 후자의 경우, **promise** 결과(**fulfillment** 또는 **rejection** 값)는 캐시 되고, 적절하게 원하는 타이밍에 즉시 `then()` 다룰수 있게 해줍니다.(task로 큐에 저장이 되어지고) 
+**promise**가 비동기 함수(일회성 결과)에 유용한 점은, **promise**상태가 한 번 확정되면 더이상 변하지 않게 된다는 점이다.  
+게다가 **promise**가 확정(*settled*)되기 전이나 후에 당신이 `then()`을 호출 했는지는 중요하지 않기 때문에 어떤 경쟁상태(*race condition*)도 존재하지 않습니다.
+
+- 전자의 경우, **promise** 상태가 확정(*settled*)되는대로 바로 적절한 반응(*reaction*)이 호출됩니다.
+- 후자의 경우, **promise** 결과(**fulfillment** 또는 **rejection** 값)가 캐시 되어, 적절하게 원하는 타이밍에 즉시 `then()` 다룰수 있게 해줍니다.(task로 큐에 저장) 
 
 ##3.3 성공 또는 거절만 처리(Only handling fulfillments or rejections)
  만약 당신이 성공에만 관심 있다면, `then()`의 2번째 파라미터를 생략할 수 있습니다.
@@ -115,7 +118,7 @@
     );
 ````
 
-만약 당신이 거절(reject)에만 관심 있다면, 1번째 파라미터를 생략할 수 있습니다. `catch()`메서드는 같은 작동을 하게 해주는 더 적합한 방법입니다. 
+만약 당신이 거절(reject)에만 관심 있다면, 1번째 파라미터를 생략할 수 있습니다. `catch()`메서드는 같은 작동을 하게 해주는 더 간단한 방법입니다. 
 
 ```` javascript
     promise.then(
@@ -129,10 +132,10 @@
     );
 ````
 
-`catch()`메서드를 사용하는 것은 성공 상태를 배제하고 오류만 잡기 위하여 `then()`을 사용할 때 추천하는 방식입니다. 왜냐하면 catch는 나이스한 콜백 식별자이며, 또 동시간대에 여러개 **promise**의 거절상태를 처리할 수 있습니다. (어떻게 하는지 나중에 설명)
+성공(*fulfillments*)을 위해서는 `then()`을 사용하고 에러는 `catch()`를 사용하는 것을 추천합니다. 왜냐하면 `catch`는 콜백에 멋진 라벨을 지정하고 또 동시에 여러 **promise**의 거절(*rejections*)을 처리할 수 있습니다. (어떻게 하는지 나중에 설명)
 
 #4. 예제(Examples)
-> 몇 가지 예제를 통하여 기본적인 빌딩 블록(코드 블록's)을 사용해봅시다.
+> 몇 가지 예제를 통하여 이러한 기본 구성요소를 사용해봅시다.
 
 ##4.1 예제:promisifying XMLHttpRequest
  이벤트 기반인 **XMLHttpRequest API** 통해 HTTP GET 메서드를 수행하는 **promise**기반 함수입니다.
@@ -190,9 +193,10 @@
     });
 ````
 
-(A)라인에서 파라미터 없이 `resolve`를 호출합니다.(`resolve(undefined)`를 호출하는 것과 동일). (B)라인에 성공 결과 값은 필요 없습니다. 그냥 통보만 할 뿐 충분합니다.
+(A)라인에서 파라미터 없이 `resolve`를 호출합니다.(`resolve(undefined)`를 호출하는 것과 동일). (B)라인에 성공(*fulfillment*) 결과 값은 필요 없습니다. 그냥 통보 받는것 만으로도 충분합니다.
 
 ##4.3 예제: timing out a promise(promise의 시간 초과)
+
 ```` javascript
     function timeout(ms, promise) {
         return new Promise(function (resolve, reject) {
@@ -204,7 +208,7 @@
     }
 ````
 
-시간 경과 이후 거절((A)라인) 요청을 취소하진 않으면, 성공 결과가 수행(return)되지 않도록 방지할 뿐입니다.
+시간 경과 이후 거절((A)라인) 요청을 취소하진 않지만, 그 결과로 *promise*가 수행되지 않도록 방지할 뿐입니다.
 
 `timeout()`메서드를 사용하면 다음과 같습니다.
 
@@ -225,12 +229,13 @@
     P.then(onFulfilled, onRejected)
 ````
 
-이 의미는 *Q*의 `then()`을 호출을 통해서 **promise**기반 흐름을 제어할 수 있게 유지 한다는 것입니다.
-- **Q**는 `onFulfilled` 또는 `onRejected` 중 하나에 의해 반환된 것으로 `resolved` 합니다.
-- **Q**는 `onFulfilled` 또는 예외를 던진 `onRejected`중 하나에 의해 `rejected` 합니다.
+즉 *Q*의 `then()`을 호출하여 **promise**기반 흐름을 제어할 수 있게 유지 한다는 것입니다.
+
+- **Q**는 `onFulfilled` 또는 `onRejected` 중 하나에 의해 반환된 것으로 해결(`resolved`) 합니다.
+- **Q**는 `onFulfilled` 또는 예외를 던진 `onRejected`중 하나에 의해 거절(`rejected`) 합니다.
 
 ##5.1 일반 값으로 해결(Resolving with normal values)
- 만약 당신이 일반값으로 `then()`에 의해 반환되는 **promise Q**를 해결(resolve)하면, 그다음 `then()`을 통해 일반 값을 받을 수 있습니다.
+ 만약 `then()`에 의해 반환된 **promise Q**의 값을 정상적인 값으로 해결(resolve)하면, 그 다음 `then()`을 통해 해당 값을 받을 수 있습니다.
 
 ```` javascript
     asyncFunc()
@@ -243,8 +248,8 @@
 ````
 
 ##5.2 Resolving with thenable(thenable로 해결)
-또한 당신은 *thenable* **R**을 반환하는 `then()`으로 **promise Q**를 해결(resolve) 할 수 있습니다. **A** *thenable* 은 **promise** 스타일 : `then()`메서드를 가진 객체입니다. 그래서 **promises**는 *thenable* 입니다. 
-**R**로 해결(resolve)하는 의미는 **Q** 이후에 삽입된다는 것을 말합니다.(예를들어 `onFulfilled`로 반환 하는 것) : **R**의 상태는 **Q**의 `onFulfilled` , `onRejected` 콜백에 전달 됩니다. 어떤 면에서는 Q가 R이 되는 겁니다.
+또한 당신은 `then()`에 의해 반환되 **promise Q**를  *thenable* **R**로 해결(resolve) 할 수 있습니다. **A** *thenable* 은 **promise** 스타일 : `then()`메서드를 가진 객체입니다. 그래서 **promises**는 *thenable* 입니다.  
+**R**을 이용하여 해결(resolve)하는 것은 **Q** 후에 삽입 된다는 것을 의미합니다.(예를들어 `onFulfilled`에서 반환) : **R**의 상태는 **Q**의 `onFulfilled` , `onRejected` 콜백에 전달 됩니다. 어떤 면에서는 **Q**는 **R**이 됩니다.
 
 ![thenable R](http://3.bp.blogspot.com/-K9wwF9rRnJA/VDEiVbdCqDI/AAAAAAAAA4g/QkdNWpxIzEc/s1600/resolve_with_thenable.jpg)
 
