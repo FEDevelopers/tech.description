@@ -127,7 +127,7 @@ Second
 즉 해당 프로세스 안에서 엄청 긴 연산작업을 수행하게 하여 사용자 인터페이스를 멈추게 할 수 있다는 걸 의미합니다.  
 아래 데모 코드를 확인해봅시다.
 
-```` javascript
+``` html
 <a id="block" href="">Block for 5 seconds</a>
 <p>
 <button>This is a button</button>
@@ -156,7 +156,7 @@ Second
         while ((Date.now() - start) < milliseconds);
     }
 </script>
-````
+```
 > 온라인에서 위 코드를 확인해보아요 [링크](http://rauschma.github.io/async-examples/blocking.html)
 
 코드 안에 `Block for 5 seconds`링크를 클릭하면 함수 `onClick()`이 트리거 되고, 5초 동안 **event loop**를 차단 하기 위하여 동기함수인 `sleep()`을 사용합니다. 이 시간 동안 사용자 인터페이스는 작동이 멈추게 됩니다. 예를 들어 당신은 “Simple button”을 클릭할 수 없을것 입니다.
