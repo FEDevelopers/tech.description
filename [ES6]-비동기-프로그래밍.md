@@ -74,7 +74,7 @@ Error
 이 loop(*event loop*)는 task queue(고유명사로써 영어를 사용한다.)를 통해 공급되는 브라우저 관련 작업(*task*)을 실행합니다.  
 **task**의 예는 다음과 같습니다. 
 
-* taks의 예
+* task의 예
  1. HTML 파싱
  2. 자바스크립트 코드 실행
  3. 사용자 input 감지 후 반응(마우스 클릭, key 입력 등등)
@@ -93,7 +93,7 @@ Error
 setTimeout(callback, ms);
 ````
 
-`setTimeout()`은 **ms**(milliseconds) 경과 후 `callback`이 **taks queue** 에 추가됩니다. 타이머에 `callback`은 **ms**(milliseconds) 이후 실제 실행되는 게 아니라 **task queue**에 추가되는것이 중요하다는 걸 기억해야 합니다. 왜냐하면 
+`setTimeout()`은 **ms**(milliseconds) 경과 후 `callback`이 **task queue** 에 추가됩니다. 타이머에 `callback`은 **ms**(milliseconds) 이후 실제 실행되는 게 아니라 **task queue**에 추가되는것이 중요하다는 걸 기억해야 합니다. 왜냐하면 
 만약 **event loop**가 차단 당하면 지정된 시간 이후보다 나중에 setTimeout() `callback`이 실행된다는 걸 확인할 수 있기 때문입니다.  
 
 보통 `setTimeout()` **ms**를 ‘0’ 으로 세팅하는건 **task queue** 에 바로 추가하기 위한 일반적인 방법입니다. 그러나 몇몇 브라우저는 실제로 ‘0’ ms 이후 추가되지 않고 브라우저마다 ‘0’이 아닌 최소 ms가 세팅 되어져 있습니다.(ex : firefox는 4ms임)
