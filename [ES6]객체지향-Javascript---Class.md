@@ -137,3 +137,54 @@ let SimpleDate = (function() {
 }());
 ```
 
+#2.4 Privacy with Weak Maps
+`Weak.map` 또한 자바스크립트의 새로운 기능입니다. 우리의 인스턴스를 `key`로 사용하여 `key/value`쌍으로 우리의 객체 속성을 비공개로 저장할 수 있습니다. 그리고 클래스는 `key/value map`을 클로저로 캡쳐 할 수 있습니다.
+
+``` javascript
+let SimpleDate = (function() {
+  let _years = new WeakMap();
+  let _months = new WeakMap();
+  let _days = new WeakMap();
+
+  class SimpleDate {
+    constructor(year, month, day) {
+      // Check that (year, month, day) is a valid date
+      // ...
+
+      // If it is, use it to initialize "this" date
+      _years.set(this, year);
+      _months.set(this, month);
+      _days.set(this, day);
+    }
+
+    addDays(nDays) {
+      // Increase "this" date by n days
+      // ...
+    }
+
+    getDay() {
+      return _days.get(this);
+    }
+  }
+
+  return SimpleDate;
+}());
+``` 
+
+##2.5 Other Access Modifiers
+`protected`, `internal`, `package private`, `friend`와 같은 다른 언어에서 `private`외에 다른 단계의 가시성이 있습니다.(There are other levels of visibility besides “private” that you’ll find in other languages, such as “protected”, “internal”, “package private”, or “friend”.) 자바스크립트는 여전히 다른 수준의 가시성을 강화하는 방법을 제공하지 않습니다. 만약 이런것들이 필요하다면, 규칙이나, 자신의 훈련을 통해 의존 해야 합니다.
+
+#3. 현재 객체 참조
+`getDay()`를 다시 보자. 매개변수를 지정하지 않았는데, 어떻게 호출 되는 객체를 알 수 있습니까?  
+함수가 `object.function` 표기를 사용하는 메소드로 호출되면, 객체를 식별하기 위해 사용하는 암시적 인자(*argument*)가 있습니다. 이 암시적 인자는 `this`라는 암시적 매개변수에 할당 됩니다.  
+이를 설명하기 위해 아래, 명시적으로 객체 인자를 전달 하는 방법이 있습니다.
+
+``` javascript
+// Get a reference to the "getDay" function
+let getDay = SimpleDate.prototype.getDay;
+
+getDay.call(today); // "this" will be "today"
+getDay.call(tomorrow); // "this" will be "tomorrow"
+
+tomorrow.getDay(); // same as last line, but "tomorrow" is passed implicitly
+```
