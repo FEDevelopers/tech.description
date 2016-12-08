@@ -188,3 +188,52 @@ getDay.call(tomorrow); // "this" will be "tomorrow"
 
 tomorrow.getDay(); // same as last line, but "tomorrow" is passed implicitly
 ```
+
+#4. 정적 속성과 메서드
+우리는 클래스 일부분 이면서 해당 클래스 인스턴스의 부분이 아닌 데이터와 함수를 정의 할 수 있는 옵션이 있습니다.  
+각 인스턴스를 새롭게 복사하기 보단 정적 속성 복사본 하나만 갖고 있을 것입니다.
+
+``` javascript
+class SimpleDate {
+  static setDefaultDate(year, month, day) {
+    // A static property can be referred to without mentioning an instance
+    // Instead, it's defined on the class
+    SimpleDate._defaultDate = new SimpleDate(year, month, day);
+  }
+
+  constructor(year, month, day) {
+    // If constructing without arguments,
+    // then initialize "this" date by copying the static default date
+    if (arguments.length === 0) {
+      this._year = SimpleDate._defaultDate._year;
+      this._month = SimpleDate._defaultDate._month;
+      this._day = SimpleDate._defaultDate._day;
+
+      return;
+    }
+
+    // Check that (year, month, day) is a valid date
+    // ...
+
+    // If it is, use it to initialize "this" date
+    this._year = year;
+    this._month = month;
+    this._day = day;
+  }
+
+  addDays(nDays) {
+    // Increase "this" date by n days
+    // ...
+  }
+
+  getDay() {
+    return this._day;
+  }
+}
+
+SimpleDate.setDefaultDate(1970, 1, 1);
+
+let defaultDate = new SimpleDate();
+```
+
+#5. 서브클래스's
