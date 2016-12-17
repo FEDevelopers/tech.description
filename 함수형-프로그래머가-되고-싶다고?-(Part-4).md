@@ -356,8 +356,10 @@ add 함수는 2개의 매개변수를 받고 합계를 반환한다. 위 코드�
 ## 아이고 머리야!!!
 
 
+![Brain](https://cdn-images-1.medium.com/max/800/1*IK5485-iZaHeZRfP8aWmYg.png)
+
+
 오늘은 이걸로 충분하다.
 
 
-In subsequent parts of this article, I’ll talk about Referential Integrity, Execution Order, Types, and more.
 다음 문서부터는 참조 무결성, 실행순서, 형식 등에 대해 이야기 할 예정이다.
