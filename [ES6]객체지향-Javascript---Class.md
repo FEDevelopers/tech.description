@@ -237,3 +237,67 @@ let defaultDate = new SimpleDate();
 ```
 
 #5. 서브클래스's
+종종 우리는 통합 하고자 하는 클래스들 사이의 반복코드를 찾게 됩니다. **서브클래스**는 다른 클래스들의 상태나 행동들을 우리 자신의 클래스내로 통합시켜줍니다. 이런 과정을 우리는 **상속(*inheritance*)**이라고 부릅니다. 그리고 서브클래스는 부모클래스나 슈퍼클래스로부터 **상속받다** 라고 말합니다. **상속**은 중복을 피하게 해주고, 다른 클래스와 동일한 데이터나 함수가 필요한 클래스의 구현을 단순화 시켜줍니다. 또한 **상속**은 공통 슈퍼클래스가 제공하는 인터페이스에 의존하여 서브클래스를 대체 하게 해줍니다.
+
+#6. 중복을 피하기 위한 상속
+다음은 상속을 사용하지 않은 예제입니다.
+
+``` javascript
+class Employee{
+	constructor(firstName, familyName){
+		this._firstName = firstName;
+		this._familyName = familyName;
+	}
+
+	getFullName(){
+		return `${this._firstName} ${this._familyName}`;
+	}
+}
+
+class Manager{
+	constructor(firstName, familyName){
+		this._firstName = firstName;
+		this._familyName = familyName;
+		this._managedEmployees = [];
+	}
+
+	getFullName(){
+		return `${this._firstName} ${this._familyName}`;
+	}
+
+	addEmployee(employee){
+		this._managedEmployees.push(employee);
+	}
+}
+```
+
+`_firstName`과 `_familyName` 속성과 `getFullName` 메서드는 클래스내에서 반복적으로 사용되고 있습니다. 우리는 `Manager`클래스가 `Employee`클래스를 상속받게 함으로써 중복을 제거 할 수 있습니다. 우리가 상속을 진행하면, `Employee`클래스의 상태와 행동은 `Manager`클래스에 통합됩니다.
+
+다음은 상속을 사용한 예제 입니다. `super`를 사용한 것을 주목하십시오.
+
+``` javascript
+class Employee{
+	constructor(firstName, familyName){
+		this._firstName = firstName;
+		this._familyName = familyName;
+	}
+
+	getFullName(){
+		return `${this._firstName} ${this._familyName}`;
+	}
+}
+
+class Manager extends Employee{
+	constructor(firstName, familyName){
+		super(firstName, familyName);
+		this._managedEmployees = [];
+	}
+
+	addEmployee(employee){
+		this._managedEmployees.push(employee);
+	}
+}
+```
+
+##6.1 IS-A 와 WORKS-LIKE-A
+상속을 하기 위해 적절한 때를 결정하기 위한 좋은 디자인 법칙이 있습니다. 상속은 항상 *IS-A* 와 *WORKS-LIKE-A* 관계 모델링을 해야 합니다.
