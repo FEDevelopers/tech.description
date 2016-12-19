@@ -352,11 +352,132 @@ f(new Square()); //error
 ##6.2 Beware Overuse
 어디서든 쉽게 공통점을 찾을 수 있고, 숙련된 개발자에게도 완벽한 기능을 제공하는 클래스를 가질 가능성이 있습니다. 그러나 상속 또한 단점이 있습니다. 우리는 작고 고정된 함수 집합을 통해 데이터를 조작하여 유효한 상태를 보장한다는 점을 상기 해야 합니다. 그러나 우리가 상속을 사용하면, 데이터를 직접적으로 조작해야하는 함수 목록들이 늘어나고, 이러한 추가된 함수집합들도 유효한 상태를 유지해야 할 책임이 있습니다.  
 만약 데이터를 직접적으로 조작할 수 있는 함수들이 많으면, 이것은 전역변수만큼 나빠질 수 있습니다. 지나친 상속은 캡슐화를 희석시키고, 수정하기가 더 어렵고, 재사용이 어려워지는 단단한 클래스를 만들어버립니다. 그래서 하나의 컨셉만 가지고 있는 미니멀한 클래스를 디자인 하기를 추천합니다.  
-코드 중복 문제에 대해 다시 한번 살펴보겠습니다. 우리는 상속없이 해결 할 수 있을까요? 다른 방식으로 객체를 참조로 연결하는 방식으로 부분-전체 관계를 표현 하는 것입니다. 우리는 이것을 **구성**(*composition*) 이라고 부릅니다.
+코드 중복 문제에 대해 다시 한번 살펴보겠습니다. 우리는 상속없이 해결 할 수 있을까요? 다른 방식으로 객체를 참조로 연결하는 방식으로 부분-전체 관계를 표현 하는 것입니다. 우리는 이것을 **구성**(*composition*) 이라고 부릅니다.  
+다음은 상속이 아닌 구성(composition)으로 `manager-employee`를 구현한 버전입니다.
 
+``` javascript
+class Employee{
+  constructor(firstName, familyName){
+    this._firstName = firstName;
+    this._familyName = familyName;
+  }
 
+  getFullName(){
+    return `${this._firstName} ${this._familyName}`;
+  }
+}
 
+class Group{
+  constructor(manager /* : Employee*/){
+    this._manager = manager;
+    this._managedEmployees = [];
+  }
 
+  addEmployee(employee){
+    this._managedEmployees.push(employee);
+  }
+}
+```
 
+여기서 `manager`는 별도의 클래스가 아닙니다. 대신에 `manager`는 `Group`인스턴스가 참조를 소유하는 일반 `Employee` 인스턴스 입니다. 만약 상속 모델이 `IS-A`관계라면, 구성(*composition*)모델은 `HAS-A`관계입니다. 즉 **`Group`에는 `manager`가 있습니다** 라고 할 수 있습니다.  
+만약 상속 이나 구성(*composition*)이 우리 프로그램안에 개념과 관계를 합리적으로 표현 할 수 있다면, 구성(*composition*)을 선호하십시오.
 
+##7. 대체 서브클래스 상속
+또한 상속은 공통 슈퍼클래스가 제공하는 인터페이스로 서로 다른 서브클래스를 교환하여 사용 할 수 있게 해줍니다. 슈퍼클래스 인스턴스를 인수로 사용하는 함수는 함수가 서브클래스에 대해 알 필요 없는 서브클래스 인스턴스를 전달 할 수 있습니다. 공통 슈퍼클래스를 가진 클래스를 대체하는 것을 다형성(*polymorphism*)이라고 부릅니다.
 
+``` javascript
+// 공통 슈퍼클래스
+class Cache{
+  get(key, defaultValue){
+    let value = this._doGet(key);
+    if(value === undefined || value === null){
+      return defaultValue;
+    }
+  }
+
+  set(key, value){
+    if(key === undefined || key === null){
+      throw new Error('invalid argument');
+    }
+    this._doSet(key, value);
+  }
+
+  // overriden
+  // _doGet()
+  // _doSet()
+}
+
+// 서브클래스는 새로운 public 메서드를 정의하지 않습니다.
+// public 인터페이스는 슈퍼클래스에 정의되어있습니다.
+class ArrayCache extends Cache{
+  _doGet(){
+    // ...
+  }
+
+  _doSet(){
+   // ...
+  }
+}
+
+class LocalStorageCache extends Cache{
+  _doGet(){
+    // ...
+  }
+
+  _doSet(){
+    // ...
+  }
+}
+
+class LocalStorageCache extends Cache{
+  _doGet(){
+    // ...
+  }
+
+  _doSet(){
+    // ...
+  }
+}
+
+//함수는 슈퍼클래스 인터페이스를 통하여 상호작용하여 모든 캐시에서 다형성으로 작동 할 수 있습니다.
+function compute(cache){
+  let cached = cache.get('result');
+  if(!cached){
+    let result = // ...
+    cache.set('result', result);
+  }
+
+  // ...
+}
+
+compute(new ArrayCache());
+compute(new LocalStorageCache());
+```
+
+#8. 설탕보다 더한 것(sugar!)
+자바스크립트 클래스 구문은 많은 면에서 문법적 설탕이라고 불리웁니다. 그러나 실제로 차이점이 있습니다. ES5가 아닌 ES6에서 할 수 있는 것 입니다.
+
+##8.1 Static Properties Are Inherited
+ES5는 생성자 함수 사이에 진짜 상속을 만들지 않았습니다. `Object.create` 는 일반 객체를 생성 할 수 있지만, 함수 객체는 아닙니다. 정적 속성을 수동으로 복사하여 상속하는 가짜입니다. 이제 ES6 클래스를 사용하여 서브클래스 생성자 함수와 슈퍼클래스 생성자 사이에 실제 프로토타입 연결을 얻습니다.
+
+``` javascript
+//ES5
+function B(){}
+B.f = function(){};
+
+function D(){}
+D.prototype = Object.create(B.prototype);
+
+D.f(); //error
+```
+``` javascript
+//ES6
+class B{
+  static f(){}
+}
+
+class D extends B {}
+D.f(); //ok
+```
+
+##8.2 Built-in Constructors Can Be Subclassed
