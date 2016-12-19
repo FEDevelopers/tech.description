@@ -300,4 +300,8 @@ class Manager extends Employee{
 ```
 
 ##6.1 IS-A 와 WORKS-LIKE-A
-상속을 하기 위해 적절한 때를 결정하기 위한 좋은 디자인 법칙이 있습니다. 상속은 항상 *IS-A* 와 *WORKS-LIKE-A* 관계 모델링을 해야 합니다.
+상속을 하기 위해 적절한 때를 결정하기 위한 좋은 디자인 법칙이 있습니다. 상속은 항상 *IS-A* 와 *WORKS-LIKE-A* 관계 모델링을 해야 합니다. 즉 `Manager` 는(*IS-A*) 특정 종류의 `Employee` 와 같이 일한다 이며(*works like a*), 슈퍼클래스 인스턴스에서 작동하며, 서브클래스 어디서든 대체 할 수 있어서 모든것이 잘 작동 해야 합니다.  
+이 원칙을 준수하거나, 위반 하는 차이는 때때로 미묘 할 수 있습니다.
+ A classic example of a subtle violation is a Rectangle superclass and a Square subclass.
+
+
