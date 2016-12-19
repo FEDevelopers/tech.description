@@ -301,7 +301,62 @@ class Manager extends Employee{
 
 ##6.1 IS-A 와 WORKS-LIKE-A
 상속을 하기 위해 적절한 때를 결정하기 위한 좋은 디자인 법칙이 있습니다. 상속은 항상 *IS-A* 와 *WORKS-LIKE-A* 관계 모델링을 해야 합니다. 즉 `Manager` 는(*IS-A*) 특정 종류의 `Employee` 와 같이 일한다 이며(*works like a*), 슈퍼클래스 인스턴스에서 작동하며, 서브클래스 어디서든 대체 할 수 있어서 모든것이 잘 작동 해야 합니다.  
-이 원칙을 준수하거나, 위반 하는 차이는 때때로 미묘 할 수 있습니다.
- A classic example of a subtle violation is a Rectangle superclass and a Square subclass.
+위와 같은 원칙을 준수하거나, 위반 하는 차이는 때때로 미묘 할 수 있습니다. 미묘하게 위반하는 예는 `Rectangle` 수퍼클래스에 `Square` 서브클래스입니다.
+
+``` javascript
+class Rectangle{
+  set width(w){
+    this._width = w;
+  }
+
+  get width(){
+    return this._width;
+  }
+
+  set height(h){
+    this._height = h;
+  }
+
+  get height(){
+    return this._height;
+  }
+}
+
+function f(rectangle){
+  rectangle.width = 5;
+  rectangle.height = 4;
+
+  if(rectangle.width * rectangle.height !== 20){
+    throw new Error("expected the rectangle's area");
+  }
+}
+// square 는(is-a) rectangle 이 올바른가요?
+class Square extends Rectangle{
+  set width(w){
+    super.width = w;
+    super.height = w;
+  }
+
+  set height(h){
+    super.height = h;
+    super.width = h;
+  }
+}
+// square의 대체제로 rectangle을 할 수 있을까요?
+f(new Square()); //error
+```
+
+정사각형은 수학적으로는 사각형일 수 있습니다. 그러나 정사각형은 사각형처럼 동작하지 않습니다.  
+수퍼클래스 인스턴스 사용하는 경우 서브클래스 인스턴스는 슈퍼클래스 인스턴스로 대체 되어질 수 있어야 한다는 법칙을 **[리스코프 치환 법칙(LSP)](https://en.wikipedia.org/wiki/Liskov_substitution_principle)** 이라고 부릅니다. 이것은 OOP 디자인의 중요한 부분입니다.  
+
+##6.2 Beware Overuse
+어디서든 쉽게 공통점을 찾을 수 있고, 숙련된 개발자에게도 완벽한 기능을 제공하는 클래스를 가질 가능성이 있습니다. 그러나 상속 또한 단점이 있습니다. 우리는 작고 고정된 함수 집합을 통해 데이터를 조작하여 유효한 상태를 보장한다는 점을 상기 해야 합니다. 그러나 우리가 상속을 사용하면, 데이터를 직접적으로 조작해야하는 함수 목록들이 늘어나고, 이러한 추가된 함수집합들도 유효한 상태를 유지해야 할 책임이 있습니다.  
+만약 데이터를 직접적으로 조작할 수 있는 함수들이 많으면, 이것은 전역변수만큼 나빠질 수 있습니다. 지나친 상속은 캡슐화를 희석시키고, 수정하기가 더 어렵고, 재사용이 어려워지는 단단한 클래스를 만들어버립니다. 그래서 하나의 컨셉만 가지고 있는 미니멀한 클래스를 디자인 하기를 추천합니다.  
+코드 중복 문제에 대해 다시 한번 살펴보겠습니다. 우리는 상속없이 해결 할 수 있을까요? 다른 방식으로 객체를 참조로 연결하는 방식으로 부분-전체 관계를 표현 하는 것입니다. 우리는 이것을 **구성**(*composition*) 이라고 부릅니다.
+
+
+
+
+
 
 
