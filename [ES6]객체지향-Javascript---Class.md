@@ -481,3 +481,28 @@ D.f(); //ok
 ```
 
 ##8.2 Built-in Constructors Can Be Subclassed
+일부 객체는 특이하지만 일반 객체처럼 행동 하진 않습니다. 예를들어, 배열은 길이 속성을 최대 정수 인덱스보다 더 크게 조정합니다. ES5에서 배열로 하위 클래스를 만들려고 할 때, `new` 연산자는 우리의 하위 클래스의 `Array` 진짜 객체가 아니라 하위 클래스에 일반 객체를 할당할 것입니다.
+
+``` javascript
+//es5
+function D(){
+  Array.apply(this, arguments);
+}
+
+D.prototype = Object.create(Array.prototype);
+
+var d = new D();
+d[0] = 42;
+
+d.length; // 0 - bad, no array exotic behavior
+```
+
+ES6 클래스는 객체가 언제, 누구에 의해 할당 되어지는지를 변경하여 수정합니다. ES5 객체는 서브 클래스 생성자가 호출 되기전에 할당되었으며, 서브 클래스는 수퍼클래스 생성자에 해당 객체를 전달 하였습니다. 이젠 ES6 클래스는 수퍼클래스 생성자가 호출 되기전에 객체가 할당 되어지며, 수퍼클래스는 해당 객체를 서브 클래스에서 사용할 수 있게 만들어줍니다. 이대로 한다면, 우리의 `new` 연산자로 서브클래스를 호출 하면, `Array` 진짜 객체를 할당하게 해줍니다.
+
+``` javascript
+//es6
+class D extends Array{}
+let d = new D();
+d[0] = 42;
+d.length; // 1 - good, array exotic behavior
+```
