@@ -568,6 +568,4 @@ inheritsFromMultiple.receive(); // works
 ```
 
 #11. 결론
-이 글을 통해 ES6에서 클래스가 어떻게 작동하는지와 우리 주변에 둘러싸인 용어에 대한 인사이트를 줄 수 있길 바랍니다.
-Unfortunately, at the time of writing, support for classes isn’t very good, so you’ll need to use a transpiler such as Babel if you want to give them a try. 
-불행하게도 이 글을 쓰는 시점에 클래스에 대한 지원이 부족하여, 당신은 `transpiler`나 `Babel`을 사용해야 합니다.(역자주: 현재는 상관없는 이야기입니다.) 이럼에도 불구하고, 나는 클래스에 대한 당신의 생각과 이것들이 ES6의 특징인지 에 대해 이야기를 나누고 싶습니다.
+이 글을 통해 ES6에서 클래스가 어떻게 작동하는지와 우리 주변에 둘러싸인 용어에 대한 인사이트를 줄 수 있길 바랍니다. 불행하게도 이 글을 쓰는 시점에 클래스에 대한 지원이 부족하여, 당신은 `transpiler`나 `Babel`을 사용해야 합니다.(역자주: 현재는 상관없는 이야기입니다.) 이럼에도 불구하고, 나는 클래스에 대한 당신의 생각과 이것들이 ES6의 특징인지 에 대해 이야기를 나누고 싶습니다.
