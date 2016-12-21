@@ -506,3 +506,36 @@ let d = new D();
 d[0] = 42;
 d.length; // 1 - good, array exotic behavior
 ```
+
+##8.3 Miscellaneous
+다른 종류의 잡다한 구색이 있지만, 아마도 덜 중요한 차이 일 것 입니다. 클래스 생성자는 함수 호출을 할 수 없습니다. 이는 `new`와 함께 생성자를 호출 하는 것을 잊어버리지 않게 하기 위한 보호입니다. 또한 클래스 생성자의 프로토타입 속성을 재할당 할 수 없습니다. 이는 자바스크립트 엔진이 클래스 객체를 최적화 하는데 도움이 됩니다. 마지막으로 클래스 메서드는 프로토타입 속성을 가질 수 없습니다. 이러면 불필요한 객체를 제거함으로써 메모리를 절약 할 수 있습니다.
+
+#9. 창의적인 방식으로 새로운 기능 사용하기
+여기에 설명된 많은 기능과 다른 SitePoint 기사는 자바스크립트에 익숙치 않으며, 커뮤니티에서 창의적인 방식으로 새로운 기능을 사용하기 위해 여러 실험을 하고 있습니다.
+
+##9.1 Multiple Inheritance with Proxies
+다양한 실험중 하나는 다중 상속을 구현하기 위해 자바스크립트 새로운 기능인 `proxies` 를 사용하는 것입니다.  
+자바스크립트 프로토타입 체인은 단일 상속만 허용합니다. 객체는 하나의 다른 객체에만 위임할 수 있습니다. `Proxies`는 여러 다른 객체 속성에 접근 권한을 위임 할 수 있습니다.
+
+``` javascript
+let transmitter = {
+  transmit(){}
+};
+
+let receiver = {
+  receive(){}
+};
+
+// Create a proxy object that intercepts property accesses and forwards to each parent,
+// returning the first defined value it finds
+let inheritsFromMultiple = new Proxy([transmitter, receiver], {
+  get: function(proxyTarget, propertyKey){
+    const foundParent = proxyTarget.find(parent => parent[propertyKey] !== undefined);
+    return foundParent && foundParent[propertyKey];
+  }
+});
+
+inheritsFromMultiple.transmit();// works
+inheritsFromMultiple.receive(); // works
+```
+
