@@ -539,3 +539,35 @@ inheritsFromMultiple.transmit();// works
 inheritsFromMultiple.receive(); // works
 ```
 
+우리는 proxy를 클래스와 함께 작동 하도록 할 수 있습니까? 클래스 프로토타입은 여러 다른 프로토타입에 액세스를 전달하는 프록시 일 수 있습니다.  
+자바스크립트 커뮤니티는 이 작업을 진행중입니다. 당신이 할 수 있다면, 토론에 참가하여 당신의 아이디어를 공유해주세요
+
+#10. 클래스 팩토리로 다중상속
+자바스크립트 커뮤니티가 실험한 다른 접근 방식으로 다양한 슈퍼클래스를 확장하기 위해 클래스를 생성을 주문하는 것입니다.
+각 클래스는 단일 부모클래스 체계 이지만, 흥미로운 방식으로 각 부모 클래스를 연결 할 수 있습니다.
+
+``` javascript
+function makeTransmitterClass(Superclass = Object){
+  return class Transmitter extends Superclass{
+    transmit(){}
+  };
+}
+
+function makeReceiverClass(Superclass = Object){
+  return class Receiver extends Superclass{
+    receive(){}
+  };
+}
+
+class InheritsFromMultiple extends makeTransmitterClass(makeReceiverClass()){}
+
+let inheritsFromMultiple = new InheritsFromMultiple();
+
+inheritsFromMultiple.transmit();// works
+inheritsFromMultiple.receive(); // works
+```
+
+#11. 결론
+이 글을 통해 ES6에서 클래스가 어떻게 작동하는지와 우리 주변에 둘러싸인 용어에 대한 인사이트를 줄 수 있길 바랍니다.
+Unfortunately, at the time of writing, support for classes isn’t very good, so you’ll need to use a transpiler such as Babel if you want to give them a try. 
+불행하게도 이 글을 쓰는 시점에 클래스에 대한 지원이 부족하여, 당신은 `transpiler`나 `Babel`을 사용해야 합니다.(역자주: 현재는 상관없는 이야기입니다.) 이럼에도 불구하고, 나는 클래스에 대한 당신의 생각과 이것들이 ES6의 특징인지 에 대해 이야기를 나누고 싶습니다.
