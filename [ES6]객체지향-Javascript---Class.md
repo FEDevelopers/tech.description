@@ -1,5 +1,19 @@
 > 이 글은 [https://www.sitepoint.com/object-oriented-javascript-deep-dive-es6-classes/](https://www.sitepoint.com/object-oriented-javascript-deep-dive-es6-classes/)을 번역한 글입니다.
 
+#목차
+1. [서문](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#%EC%84%9C%EB%AC%B8)
+2. [생성자](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#1-%EC%83%9D%EC%84%B1%EC%9E%90)
+3. [비공개 데이터 유지](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#2-%EB%B9%84%EA%B3%B5%EA%B0%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9C%A0%EC%A7%80)
+4. [현재 객체 참조](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#3-%ED%98%84%EC%9E%AC-%EA%B0%9D%EC%B2%B4-%EC%B0%B8%EC%A1%B0)
+5. [서브클래스's](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#5-%EC%84%9C%EB%B8%8C%ED%81%B4%EB%9E%98%EC%8A%A4s)
+6. [중복을 피하기 위한 상속](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#6-%EC%A4%91%EB%B3%B5%EC%9D%84-%ED%94%BC%ED%95%98%EA%B8%B0-%EC%9C%84%ED%95%9C-%EC%83%81%EC%86%8D)
+7. [대체 서브클래스 상속](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#7-%EB%8C%80%EC%B2%B4-%EC%84%9C%EB%B8%8C%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%83%81%EC%86%8D)
+8. [설탕 보다 더한것](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#8-%EC%84%A4%ED%83%95%EB%B3%B4%EB%8B%A4-%EB%8D%94%ED%95%9C-%EA%B2%83sugar)
+9. [창의적인 방식으로 새로운 기능 사용하기](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#9-%EC%B0%BD%EC%9D%98%EC%A0%81%EC%9D%B8-%EB%B0%A9%EC%8B%9D%EC%9C%BC%EB%A1%9C-%EC%83%88%EB%A1%9C%EC%9A%B4-%EA%B8%B0%EB%8A%A5-%EC%82%AC%EC%9A%A9%ED%95%98%EA%B8%B0)
+10. [팩토리 클래스로 다중상속](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#10-%ED%81%B4%EB%9E%98%EC%8A%A4-%ED%8C%A9%ED%86%A0%EB%A6%AC%EB%A1%9C-%EB%8B%A4%EC%A4%91%EC%83%81%EC%86%8D)
+11. [결론](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#11-%EA%B2%B0%EB%A1%A0)
+
+
 #서문
 
 종종 우리는 자동차 엔진, 컴퓨터 파일, 라우터, 또는 온도계같은 프로그램에서 우리의 아이디어나 개념을 표현 할 필요가 있습니다. 코드에서 이런 개념을 나타내는 것은 상태를 표현하는 데이터와 행동을 표현하는 함수 이 두가지로 나뉩니다. 클래스는 우리의 개념을 표현 할수 있는 객체의 상태와 행동을 정의하는 편리한 구문을 제공합니다. 그것들은 초기화 함수가 불러지는 것을 보장함으로써 우리의 코드를 안전하게 만들고, 데이터를 조작하고, 유효한 상태를 유지하는 함수 집합을 쉽게 정의 할 수 있게 해줍니다. 만약 별도의 엔티티로써 *어떤'것'*을 생각한다면, 당신의 프로그램에 그 *어떤'것'*을 나타내기 위한 클래스를 정의 해야 합니다.  
@@ -137,7 +151,7 @@ let SimpleDate = (function() {
 }());
 ```
 
-#2.4 Privacy with Weak Maps
+##2.4 Privacy with Weak Maps
 `Weak.map` 또한 자바스크립트의 새로운 기능입니다. 우리의 인스턴스를 `key`로 사용하여 `key/value`쌍으로 우리의 객체 속성을 비공개로 저장할 수 있습니다. 그리고 클래스는 `key/value map`을 클로저로 캡쳐 할 수 있습니다.
 
 ``` javascript
@@ -382,7 +396,7 @@ class Group{
 여기서 `manager`는 별도의 클래스가 아닙니다. 대신에 `manager`는 `Group`인스턴스가 참조를 소유하는 일반 `Employee` 인스턴스 입니다. 만약 상속 모델이 `IS-A`관계라면,*Composition*모델은 `HAS-A`관계입니다. 즉 **`Group`에는 `manager`가 있습니다** 라고 할 수 있습니다.  
 만약 상속 이나 *Composition*이 우리 프로그램안에 컨셉과 관계를 합리적으로 표현 할 수 있다면, *Composition*을 선호하십시오.
 
-##7. 대체 서브클래스 상속
+#7. 대체 서브클래스 상속
 또한 상속은 공통 슈퍼클래스가 제공하는 인터페이스로 서로 다른 서브클래스를 교환하여 사용 할 수 있게 해줍니다. 슈퍼클래스 인스턴스를 인수로 사용하는 함수는 함수가 서브클래스에 대해 알 필요 없는 서브클래스 인스턴스를 전달 할 수 있습니다. 공통 슈퍼클래스를 가진 클래스를 대체하는 것을 다형성(*polymorphism*)이라고 부릅니다.
 
 ``` javascript
