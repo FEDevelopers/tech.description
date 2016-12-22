@@ -1,10 +1,10 @@
 > 이 글은 [https://www.sitepoint.com/object-oriented-javascript-deep-dive-es6-classes/](https://www.sitepoint.com/object-oriented-javascript-deep-dive-es6-classes/)을 번역한 글입니다.
 
 #목차
-1. [서문](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#%EC%84%9C%EB%AC%B8)
-2. [생성자](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#1-%EC%83%9D%EC%84%B1%EC%9E%90)
-3. [비공개 데이터 유지](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#2-%EB%B9%84%EA%B3%B5%EA%B0%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9C%A0%EC%A7%80)
-4. [현재 객체 참조](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#3-%ED%98%84%EC%9E%AC-%EA%B0%9D%EC%B2%B4-%EC%B0%B8%EC%A1%B0)
+1. [생성자](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#1-%EC%83%9D%EC%84%B1%EC%9E%90)
+2. [비공개 데이터 유지](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#2-%EB%B9%84%EA%B3%B5%EA%B0%9C-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9C%A0%EC%A7%80)
+3. [현재 객체 참조](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#3-%ED%98%84%EC%9E%AC-%EA%B0%9D%EC%B2%B4-%EC%B0%B8%EC%A1%B0)
+4. [정적 속성과 메서드](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#4-%EC%A0%95%EC%A0%81-%EC%86%8D%EC%84%B1%EA%B3%BC-%EB%A9%94%EC%84%9C%EB%93%9C)
 5. [서브클래스's](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#5-%EC%84%9C%EB%B8%8C%ED%81%B4%EB%9E%98%EC%8A%A4s)
 6. [중복을 피하기 위한 상속](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#6-%EC%A4%91%EB%B3%B5%EC%9D%84-%ED%94%BC%ED%95%98%EA%B8%B0-%EC%9C%84%ED%95%9C-%EC%83%81%EC%86%8D)
 7. [대체 서브클래스 상속](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D%EA%B0%9D%EC%B2%B4%EC%A7%80%ED%96%A5-Javascript---Class#7-%EB%8C%80%EC%B2%B4-%EC%84%9C%EB%B8%8C%ED%81%B4%EB%9E%98%EC%8A%A4-%EC%83%81%EC%86%8D)
