@@ -209,11 +209,166 @@ upperMessage와 quotedValue가 어떻게 독립적인지 주목하자. 어떻게
 ![type](https://cdn-images-1.medium.com/max/800/1*btL9u2b5VZwivpqNbfoVmw.png)
 
 
-In Statically Typed Languages, types are defined inline. Here’s some Java code to illustrate:
+정적 타입 언어에서는 타입이 코드에 정의된다. 아래의 자바 코드를 살펴보자.
 
 
-``` javascript
+``` java
 public static String quote(String str) {
     return "'" + str + "'";
 }
 ```
+
+
+함수 정의에서의 타입 선언이 어떻게 되는지 주목해보자. 만약 제네릭이 있다면 가독성은 더욱 나빠진다.
+
+
+``` java
+private final Map<Integer, String> getPerson(Map<String, String> people, Integer personId) {
+   // ...
+}
+```
+
+
+코드 상에서 실제 변수의 이름을 찾으려면 매우 주의깊게 읽어야 한다.
+
+
+하지만 동적 타입 언어에서는 크게 문제되지 않는다. 자바스크립트에서는 아래와 같이 코드를 작성할 수 있다.
+
+
+``` javascript
+var getPerson = function(people, personId) {
+    // ...
+};
+```
+
+
+이전 코드와 비교해서 아무런 거리낌 없이 훨씬 쉽게 읽을 수 있는 것을 확인할 수 있다. 하나의 문제가 있다면 타입의 보장을 포기해야 한다는 점이다. 우리는 이 매개변수들을 쉽게 바꿔서 전달할 수 있다. 즉, people 대신에 숫자를, personId 대신에 객체를 넘길 수 있다.
+
+
+우리는 프로그램이 실행할 때까지 잘못된 매개변수 타입을 알지 못할 것이다. 혹은 프로그램 제작이 완료된 후 몇달 후에 알 수도 있다. 이런 일은 자바에서는 일어나지 않을 것이다. 왜냐하면 자바스크립트의 경우, 컴파일 단계가 없기 때문이다.
+
+
+하지만, 만약 두 가지의 모든 장점(자바스크립트의 유연함과 자바의 안정성)을 얻을 수 있다면 어떨까.
+
+
+실제로 가능한 일이다. 아래의 함수는 Elm으로 짠 코드이며 타입이 명시 되어있다.
+
+
+``` Elm
+add : Int -> Int -> Int
+add x y =
+    x + y
+```
+
+
+각각의 라인에서 타입 정보가 어떻게 작성되었는지 확인해보자. 띄어쓰기는 분리를 위함이다.
+
+
+타입이 명시 되어있는 곳에 아마 오타가 있을거라고 생각할 수도 있다. 사실 내가 처음에 이 코드를 봤을 때 그런 생각을 했었다. 나는 첫번째 -> 대신 ,로 대체되어야 한다고 생각했었다. 하지만 오타가 아니었다.
+
+
+괄호 함축(implied parentheses)은 코드를 조금 더 이해하기 쉽게 만들어준다.
+
+
+``` Elm
+add : Int -> (Int -> Int)
+```
+
+
+위의 코드에서 add는 Int 타입의 매개변수 하나를 받아서 함수를 반환하고, 그 함수는 Int 타입의 매개변수 하나를 받아서 Int 타입을 반환하는 것을 의미한다.
+
+
+아래는 괄호 함축(implied parentheses)이 적용된 또다른 타입 명시 코드다.
+
+
+``` Elm
+doSomething : String -> (Int -> (String -> String))
+doSomething prefix value suffix =
+    prefix ++ (toString value) ++ suffix
+```
+
+
+위의 코드는 doSomething은 String 타입의 매개변수 하나를 받아서 함수를 반환하고, 그 함수는 Int 타입의 매개변수 하나를 받아서 함수를 반환하고, 그 함수는 String 타입의 매개변수 하나를 입력받아서 String 타입을 반환하는 함수라는 것을 의미한다.
+
+
+모든 게 하나의 매개변수를 받는 다는 것에 주목하자. Elm에서 모든 함수는 커링 방식이기 때문이다.
+
+
+항상 코드는 오른쪽으로 흘러가기 때문에 괄호가 꼭 필요한 것은 아니다. 그래서 위의 코드는 간단하게 바꿀 수 있다.
+
+
+``` Elm
+doSomething : String -> Int -> String -> String
+```
+
+
+만약 함수를 매개변수로 전달할 때에는 괄호가 필요하다. 괄호가 없으면, 타입 명시가 애매해진다. 아래의 코드로 예제를 살펴보자.
+
+
+``` Elm
+takes2Params : Int -> Int -> String
+takes2Params num1 num2 =
+    -- do something
+```
+
+
+아래의 코드는 위의 코드와 다르다.
+
+
+``` Elm
+takes1Param : (Int -> Int) -> String
+takes1Param f =
+    -- do something
+```
+
+
+takes2Param은 Int 타입 2개의 매개변수를 필요로 하는 함수다. 하지만 takes1Param은 1개의 함수를 매개변수를 필요로 한다. 그리고 그 함수는 Int 타입 2개를 받는다.
+
+
+아래는 map 함수를 위한 타입 명시다.
+
+
+``` Elm
+map : (a -> b) -> List a -> List b
+map f list =
+    // ...
+```
+
+
+여기에서는 괄호가 필요하다. 왜냐하면 f는 (a -> b)의 타입이기 때문이다. 즉 f는 a라는 타입의 매개변수를 받고 b라는 타입을 반환하는 함수다.
+
+
+a라는 타입은 모든 타입이다. 만약 타입이 대문자(ex String)라면 그것은 명시적인 타입이다. 만약 타입이 소문자라면 모든 타입이 될 수 있다. 여기에서의 a는 String이 될 수도 있고, Int가 될 수도 있다.
+
+
+(a -> a)는 입력 데이터와 출력 데이터의 타입이 반드시 같아야 한다는 의미다. 어떤 타입인지 중요하지 않지만, 그것들은 반드시 같아야 한다.
+
+
+하지만 위의 map 함수의 경우, (a -> b)라는 게 있다. 이 코드는 입력 데이터 타입과 다른 타입을 반환할 수 있지만, 같은 타입을 반환할 수도 있다는 것을 의미한다.
+
+
+But once the type for a is determined, a must be that type for the whole signature. For example, if a is Int and b is String then the signature is equivalent to:
+하지만 a에 대한 타입이 정해지면, a는 전체 구문에서 대한 반드시 동일한 타입이어야 한다. 예를 들어, a가 Int 타입이고, b가 String 타입이면 구문은 다음과 같다.
+
+
+``` Elm
+(Int -> String) -> List Int -> List String
+```
+
+
+여기에서 모든 a는 Int로 대체되고, 모든 b는 String으로 대체되었다.
+
+
+List Int 타입은 Ints를 포함하는 하나의 리스트라는 것을 의미하고, List String 타입은 Strings를 포함하는 하나의 리스트라는 것을 의미한다. 만약  자바나 다른 언어에서 제네렉을 사용해왔다면 이 개념은 훨씬 친숙할 것이다.
+
+
+## 아이고 머리야!!!
+
+
+![Brain](https://cdn-images-1.medium.com/max/800/1*IK5485-iZaHeZRfP8aWmYg.png)
+
+
+오늘은 이걸로 충분하다.
+
+
+마지막 문서에서는 지금까지 배운 것을 일상 업무(예를 들어, 자바스크립트나 Elm)에 어떻게 쓸 수 있는지 설명하겠다.
