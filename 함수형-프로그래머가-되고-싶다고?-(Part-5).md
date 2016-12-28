@@ -347,7 +347,6 @@ a라는 타입은 모든 타입이다. 만약 타입이 대문자(ex String)라�
 하지만 위의 map 함수의 경우, (a -> b)라는 게 있다. 이 코드는 입력 데이터 타입과 다른 타입을 반환할 수 있지만, 같은 타입을 반환할 수도 있다는 것을 의미한다.
 
 
-But once the type for a is determined, a must be that type for the whole signature. For example, if a is Int and b is String then the signature is equivalent to:
 하지만 a에 대한 타입이 정해지면, a는 전체 구문에서 대한 반드시 동일한 타입이어야 한다. 예를 들어, a가 Int 타입이고, b가 String 타입이면 구문은 다음과 같다.
 
 
