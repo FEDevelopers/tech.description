@@ -155,7 +155,7 @@ findError key =
 미친 소리로 들리겠지만, 생각만큼 혼란스럽지 않다. 이 개념을 이해하기 위해 아래의 Elm 코드를 살펴보자
 
 
-``` javascript
+``` Elm
 buildMessage message value =
     let
         upperMessage =
