@@ -106,7 +106,116 @@ Webpack을 설치해보독 하겠습니다.
 npm install --save-dev webpack webpack-dev-server
 ```
 
-The app will be written using the ES2015 syntax, which brings along an impressive set of new features and some nicely integrated syntactic sugar.
+이 앱은 ES2015 문법을 사용하며, 새로운 기능과 나이스하게 통합된 문법 설탕을 사용합니다. 만약 당신이 ES2015에 대해 더 알고 싶다면, 이 [요약본](https://github.com/DrkSephy/es6-cheatsheet)이 좋은 자료가 될 것 입니다.  
+Babel은 ES2015 구문을 common JS 로 변환해줍니다.
 
- If you would like to know more about ES2015, this recap is a neat resource.
+```javascript
+npm install --save-dev babel-core babel-loader babel-preset-es2015
+```
+
+또한 우리는 React 컴포넌트를 작성하기 위해 JSX 문법을 사용 할 것입니다. 그러므로 *Babel React* 패키지를 설치해봅시다.
+
+```javascript
+npm install --save-dev babel-preset-react
+```
+
+여기서는 우리 소스파일을 빌드 하기 위해 webpack을 설정합니다.
+
+```
+package.json
+```
+```javascript
+"babel": {
+  "presets": ["es2015", "react"]
+}
+```  
+
+```
+webpack.config.js
+```
+```javascript
+module.exports = {
+  entry: [
+    './src/index.js'
+  ],
+  module: {
+    loaders: [{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      loader: 'babel'
+    }]
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+  output: {
+    path: __dirname + '/dist',
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
+  devServer: {
+    contentBase: './dist'
+  }
+};
+```
+
+이제 React와 React Hot Loader를 프로젝트에 추가해봅시다.
+
+```
+npm install --save react react-dom
+npm install --save-dev react-hot-loader
+```
+
+핫 리로딩을 사용하려면, webpack 설정파일을 조금 수정 해야 합니다.:
+
+```
+webpack.config.js
+```
+```javascript
+var webpack = require('webpack'); // Requiring the webpack lib
+
+module.exports = {
+  entry: [
+    'webpack-dev-server/client?http://localhost:8080', // Setting the URL for the hot reload
+    'webpack/hot/only-dev-server', // Reload only the dev server
+    './src/index.js'
+  ],
+  module: {
+    loaders: [{
+      test: /\.jsx?$/,
+      exclude: /node_modules/,
+      loader: 'react-hot!babel' // Include the react-hot loader
+    }]
+  },
+  resolve: {
+    extensions: ['', '.js', '.jsx']
+  },
+  output: {
+    path: __dirname + '/dist',
+    publicPath: '/',
+    filename: 'bundle.js'
+  },
+  devServer: {
+    contentBase: './dist',
+    hot: true // Activate hot loading
+  },
+  plugins: [
+    new webpack.HotModuleReplacementPlugin() // Wire in the hot loading plugin
+  ]
+};
+```
+
+##유닛 테스팅 프레임워크 세팅
+우리는 테스트 프레임워크로 Mocah와 Chai를 사용할 것입니다. Mocah와 Chai는 폭넓게 사용되고 있으며, 그것 들의 산출물은(예상결과와 실제 결과 차이 비교) 테스트-주도-개발 하기엔 최고입니다. Chai-Immutable은 불변 자료 구조를 처리 하는 chai 플러그인 입니다.
+
+```
+npm install --save immutable
+npm install --save-dev mocha chai chai-immutable
+```
+
+우리의 경우엔 Karma같은 브라우저 기반 테스크 러너에 의존하지 않습니다. 대신에 jsdom 라이브러리는 순수 자바스크립트로 가짜(mock) DOM을 설정하고, 테스트를 더 빠르게 수행 할 수 있게 해줍니다.
+
+```
+npm install --save-dev jsdom
+```
 
