@@ -29,5 +29,84 @@ Redux는 마치 React 어플리케이션의 상태를 관리하는 우아한 솔
 #Redux와 Immutable: 함수형 프로그래밍
 몇달전, 저는 대쉬보드 웹앱을 개발하고 있었습니다. 웹앱이 커져감에 따라, 점점 더 찾기 힘든 많은 버그들을 발견하게 되었습니다. "이 페이지로 이동해서 버튼을 클릭하고, 다시 메인 페이지로 돌아가서 커피를 잡고, 아까 그 페이지로 이동하고 다시 클릭하면 무언가 기묘한 일이 발생" 과 같은 버그였습니다. 이 모든 버그의 근원은 우리 모든 코드와 로직에 영향을 미쳤습니다. 이 행동은 우리가 알지 못했던 다른 곳에 원치 핞는 영향을 미칠 수 있었습니다.  
   
-앱의 모든 상태를 가지고 있는 단일 자료구조인 상태트리야 말로 Redux의 힘입니다. 이 의미는 매순간마다, 사용자에게 보여지는 데이터는 상태 트리 안에 있는 결과이며, 단일 출처를 제공하는 것입니다. 우리 앱의 모든 액션은 상태트리에서 가져와서 해당 수정사항을 반영하고(예를들어 할일을 추가 하는것), 업데이트된 상태 트리를 사용자에게 렌더링 합니다. 애매한 부작용은 없으며, 실수로 수정한 변수 참조는 더이상 없습니다. 이는 관심사의 명확한 분리와 좋은 앱 구조를 만들고, 더 나은 디버깅을 할 수 있게 됩니다.
+앱의 모든 상태를 가지고 있는 단일 자료구조인 상태트리야 말로 Redux의 힘입니다. 이 의미는 매순간마다, 사용자에게 보여지는 데이터는 상태 트리 안에 있는 결과이며, 단일 출처를 제공하는 것입니다. 우리 앱의 모든 액션은 상태트리에서 가져와서 해당 수정사항을 반영하고(예를들어 할일을 추가 하는것), 업데이트된 상태 트리를 사용자에게 렌더링 합니다. 애매한 부작용은 없으며, 실수로 수정한 변수 참조는 더이상 없습니다. 이는 관심사의 명확한 분리와 좋은 앱 구조를 만들고, 더 나은 디버깅을 할 수 있게 됩니다.  
+
+[Immutable](https://facebook.github.io/immutable-js/)은 불변 데이터 구조를 조작하거나 생성하게 도와주는 툴이며, 페이스북에서 개발한 라이브러리입니다. 비록 Redux와 함께 사용토록 강제하진 않지만, 객체 수정을 막음으로써 함수적 접근을 하도록 강제 합니다. Immutable을 사용해서 객체를 수정 할땐, 사실 수정된 새로운 객체를 생성하고, 원래의 객체로 유지 하게 합니다.  
+다음은 문서에서 발췌한 예제입니다.
+
+```javascript
+var map1 = Immutable.Map({a:1, b:2, c:3});
+var map2 = map1.set('b', 2);
+assert(map1 === map2); // no change
+var map3 = map1.set('b', 50);
+assert(map1 !== map3); // change
+```
+
+`map1`의 값을 수정하면, `map1` 객체 자신은 동일하게 유지하고, 새로운 객체인 똑같은 `map3`이 생성됩니다. Immutable은 우리 앱에 상태트리를 저장하는데 사용될 것이며, 효율적이고 간결하게 조작할 수 있는 간단한 함수들을 제공합니다.
+
+# 프로젝트 세팅
+> 주의 사항 : 여기 나온 많은 설정들은 앞서 얘기한 @teropa 튜토리얼에서 영감을 얻었습니다.  
+참고 사항
+- 이 프로젝트 NodeJS 버전은 >= 4.0.0 을 추천합니다. nvm을 통해서 Node버전을 쉽게 관리 하실 수 있습니다.
+- [여기](https://github.com/phacks/redux-todomvc/commit/9e2d23ca16980566d9fcaeebbf198031ec55d42f)에 동료들의 커밋이 있습니다.
+
+이제 프로젝트 세팅 할 차례입니다.
+
+```
+mkdir redux-todomvc
+cd redux-todomvc
+npm init -y
+```
+
+프로젝트 디렉토리 구조는 다음과 같습니다.
+
+```
+├── dist
+│   ├── bundle.js
+│   └── index.html
+├── node_modules
+├── package.json
+├── src
+├── test
+└── webpack.config.js
+```
+
+먼저 어플리케이션을 실행할 간단한 HTML 파일을 작성해봅니다.
+
+```
+dist/index.html
+```
+````html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>React TodoMVC</title>
+</head>
+<body>
+  <div id="app"></div>
+  <script src="bundle.js"></script>
+</body>
+</html>
+```
+
+모든 패키징이 잘 되었다 라고 알려주기 위한 간단한 스크립트를 작성해보겠습니다.
+
+```
+src/index.js
+```
+```javascript
+console.log('Hello World!');
+```
+
+**Webpack**을 사용하여 패키징된 `bundle.js` 파일을 빌드 할 것 입니다. **Webpack** 기능의 장점은 속도, 쉬운 구성이고, 그리고 핫로드 즉 웹페이지가 새로고침 되지 않고도, 최신 변경사항으로 리로드 되는 장점 입니다.  
+Webpack을 설치해보독 하겠습니다.
+
+```
+npm install --save-dev webpack webpack-dev-server
+```
+
+The app will be written using the ES2015 syntax, which brings along an impressive set of new features and some nicely integrated syntactic sugar.
+
+ If you would like to know more about ES2015, this recap is a neat resource.
 
