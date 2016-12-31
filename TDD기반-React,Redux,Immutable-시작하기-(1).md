@@ -219,3 +219,624 @@ npm install --save-dev mocha chai chai-immutable
 npm install --save-dev jsdom
 ```
 
+또한 우리는 다음 아래 항목을 처리하는 테스트용 bootstrapping 스크립트를 작성해야 합니다.:
+
+- 브라우저가 일반적으로 제공하는 가짜(Mock) `document` 와 `window` 객체
+- *chai-immutable* 패키지와 함꼐 불변 자료 구조를 사용한다고 *chai* 에게 알림
+
+```
+test/setup.js
+```
+``` javascript
+import jsdom from 'jsdom';
+import chai from 'chai';
+import chaiImmutable from 'chai-immutable';
+
+const doc = jsdom.jsdom('<!doctype html><html><body></body></html>');
+const win = doc.defaultView;
+
+global.document = doc;
+global.window = win;
+
+Object.keys(window).forEach( (key) => {
+  if (!(key in global)) {
+    global[key] = window[key];
+  }
+});
+
+chai.use(chaiImmutable);
+```
+
+우리 `package.json` 설정을 고려하여 `npm test script`를 수정해봅시다.
+
+```
+pacakge.json
+```
+```
+"scripts": {
+  "test": "mocha --compilers js:babel-core/register --require ./test/setup.js 'test/**/*.@(js|jsx)'",
+  "test:watch": "npm run test -- --watch --watch-extensions jsx"
+},
+```
+
+수정: `npm run test:watch` 명령어가 `Windows` 에서는 작동하지 않는 것 같다면, GitHub 저장소 [이슈](https://github.com/phacks/redux-todomvc/issues/1)를 참고 하시기 바랍니다.    
+
+지금 만약 `npm run test:watch` 가 실행되면, test 디렉토리에 있는 모든 `.js` 또는 `.jsx` 파일이 우리의 소스 파일들이 수정될 때마다 `mocha` 테스팅이 실행 될 것입니다.  
+이제 설정이 완료됬습니다.: 터미널에서 `npm run test:watch`나  `webpack-dev-server` 를 실행하고, 브라우저에서 `localhost:8080/`으로 이동하면 콘솔창에 `Hello World!`가 나타나게 됩니다.
+
+# 상태 트리 구성
+앞서 말했듯이, 상태 트리는 우리 어플리케이션(상태)을 포함하여 모든 정보를 가진 자료 구조입니다. 우리는 실제로 앱을 개발하기 전에 이 자료 구조에 대해 잘 생각해야 합니다. 왜냐하면 만은 코드 구조와 상호작용 하기 때문입니다.  
+아래 그림을 보면, 우리 앱은 **todo** 리스트에 여러 아이템들로 구성되어 있습니다.
+
+![todo list item](http://www.theodo.fr/uploads/blog//2016/02/state_tree1.png)
+
+각 아이템들은 텍스트와 쉽게 수정하기 위한 아이디(id)를 가지고 있습니다. 또한, 각 아이템은 2개의 상태(활성,완료) 중 하나를 가질 수 있습니다. 마지막으로 아이템이 편집 상태(사용자가 텍스트를 수정하길 원할 때)일 수 있습니다. 그래서 우리는 각 상태를 지속적으로 추적 해야 합니다.:
+
+![item status](http://www.theodo.fr/uploads/blog//2016/02/state_tree2.png)
+
+그리고 각 아이템들의 상태에 따라 아이템들을 필터링 할 수 있습니다. 그래서 우리는 `filter` 속성을 상태 트리에 추가 해야 합니다. 아래는 최종 상태트리 입니다.
+
+![status tree](http://www.theodo.fr/uploads/blog//2016/02/state_tree3.png)
+
+#앱 UI 작성
+
+![UI](http://www.theodo.fr/uploads/blog//2016/02/todo-app-structure.png)
+
+우선, 컴포넌트별로 앱을 나눌 것 입니다.
+
+- 새로운 *todos* 를 입력하는 *TodoHeader* 컴포넌트
+- *todos* 리스트인 *TodoList* 컴포넌트
+- 1개 *todo* 인 *TodoItem* 컴포넌트
+- *todo* 를 수정하는 *TextInput* 컴포넌트
+- 활성 카운터를 표시하고, 필터, "완료 지우기" 버튼 인 *TodoTools* 컴포넌트
+- 로직이 없는, footer 정보를 표시하는 *Footer* 컴포넌트
+
+마지막으로 위 컴포넌트들을 모두 가지고 있는 *TodoApp* 컴포넌트를 생성할 것입니다.
+
+# 첫번째 컴포넌트 bootstrapping
+> 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/d1d2a56a8d2b4f898ed8fdf20f55e7f7f11ad6ad)에 동료의 관련 커밋 저장소가 있습니다.
+
+우리가 위에서 보았 듯이, 하나의 *TodoApp* 컴포넌트에 모든 컴포넌트들을 넣을 것 입니다. *TodoApp* 컴포넌트를 index.html 안에 `#app div`에 작성하여 시작해봅시다.:
+
+```
+src/index.jsx
+```
+```javascript
+import React from 'react';
+import ReactDOM from 'react-dom';
+import {List, Map} from 'immutable';
+
+import TodoApp from './components/TodoApp';
+
+const todos = List.of(
+  Map({id: 1, text: 'React', status: 'active', editing: false}),
+  Map({id: 2, text: 'Redux', status: 'active', editing: false}),
+  Map({id: 3, text: 'immutable', status: 'completed', editing: false})
+);
+
+ReactDOM.render(
+  <TodoApp todos={todos} />,
+  document.getElementById('app')
+);
+```
+
+우리는 위에서 src/index.js 파일에 `JSX` 문법을 사용했기 때문에, 확장자를 `.jsx`로 변경 해야하고 webpack 설정파일에서도 바꿔줘야 합니다.
+
+```
+webpack.config.js
+```
+```javascript
+enrty: [
+  'webpack-dev-server/client?http://localhost:8080',
+  'webpack/hot/only-dev-server',
+  './src/index.jsx' // index file 확장자를 jsx로 변경
+],
+```
+
+#todo 리스트 UI작성
+이제 *todo* 아이템들 리스트를 표시하는 `TodoApp` 컴포넌트의 첫번째 버전을 작성할 것 입니다.
+
+```
+src/components/TodoApp.jsx
+```
+```javascript
+import React from  'react';
+
+export default class TodoApp extends React.Component{
+  getItems(){
+    return this.props.todos || [];
+  }
+
+  render(){
+    return <div>
+      <section className="todoapp">
+        <section className="main">
+          <ul className="todo-list">
+            {this.getItems().map(item =>
+              <li className="active" key={item.get('text')}>
+                <div className="view">
+                  <input type="checkbox"
+                          className="toggle"/>
+                  <label htmlFor="todo">
+                    {item.get('text')}
+                  </label>
+                  <button className="destroy"></button>
+                </div>
+              </li>
+            )}
+          </ul>
+        </section>
+      </section>
+    </div>
+  }
+};
+```
+
+두가지가 갑자기 생각이 납니다.  
+
+첫번째, 브라우저에서 위 결과를 본다면, 그다지 매력적이지 않습니다. 이를 해결하기 위해, [tobomvc-app-css](https://github.com/tastejs/todomvc-app-css) 패키지를 사용해서, 조금 더 재미있게 만드는데 필요한 모든 스타일 속성을 제공 할 것입니다.
+
+```
+npm install --save todomvc-app-css
+npm install style-loader css-loader --save-dev
+```
+
+그리고 webpack에  css 스타일시트를 로드한다고 알려줍니다.:
+
+```
+webpack.config.js
+```
+```javascript
+module: {
+  loaders: [{
+    test: /\.jsx?$/,
+    exclude: /node_modules/,
+    loader: 'react-hot!babel'
+  }, {
+      test: /\.css$/,
+      loader: 'style!css' // css loader를 추가
+  }]
+},
+```
+
+이제 `index.jsx` 파일에 style을 포함시킵니다.
+
+```
+src/index.jsx
+```
+```javascript
+// .... 위와동일
+require('../node_modules/todomvc-app-css/index.css');
+
+ReactDOM.render(
+  <TodoApp todos={todos} />,
+  document.getElementById('app')
+);
+```
+
+두번째로, 코드가 복잡해 보이는 것 같습니다. 그래서 모든 아이템을 리스팅하고 단일 아이템을 표현하는데 사용되는 `TodoList`와 `TodoItem` 컴포넌트를 생성할 것 입니다.
+
+> 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/90fe2cc5f8e1c20546c702b91230369c896b9b81)에 동료의 관련 커밋 저장소가 있습니다.
+
+```
+src/components/TodoApp.jsx
+```
+```javascript
+import React from 'react';
+import TodoList from './TodoList';
+
+export default class TodoApp extends React.Component{
+  render(){
+    return <div>
+      <section className="todoapp">
+        <TodoList todos={this.props.todos} />
+      </section>
+    </div>
+  }
+};
+```
+
+`TodoList` 컴포넌트는 `props`통해 받은 각 아이템을 위한 `TodoItem` 컴포넌트를 표시합니다.
+
+```
+src/components/TodoList.jsx
+```
+```javascript
+import React from 'react';
+import TodoItem from './TodoItem';
+
+export default class TodoList extends React.Component{
+  render(){
+    return <section className="main">
+      <ul className="todo-list">
+        {this.props.todos.map(item=>
+          <TodoItem key={item.get('text')}
+                    text={item.get('text')} />
+        )}
+      </ul>
+    </section>
+  }
+}
+```
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+import React from 'react';
+
+export default class TodoItem extends React.Component{
+  render(){
+    return <li className="todo">
+      <div className="view">
+        <input type="checkbox"
+              className="toggle" />
+        <label htmlFor="todo">
+          {this.props.text}
+        </label>
+      </div>
+    </li>
+  }
+}
+```
+
+사용자 액션과 어떻게 앱에서 이것 들을 통합 할지 방법을 생각 해보기전에, 일단 `TodoItem` 컴포넌트에 아이템을 수정할 수있게 해주는 `input` 을 추가 해보겠습니다.
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+import React from 'react';
+import TextInput from './TextInput';
+
+export default class TodoItem extends React.Component{
+  render(){
+    return <li className="todo">
+      <div className="view">
+        <input type="checkbox"
+               className="toggle" />
+        <label htmlFor="todo">
+          {this.props.text}
+        </label>
+        <button className="destroy"></button>
+      </div>
+      <TextInput /> // TextInput 컴포넌트 추가
+    </li>
+  }
+};
+```
+
+`TextInput` 컴포넌트는 다음과 같이 작성합니다.
+
+```
+src/components/TextInput.js
+```
+```javascript
+import React from 'react';
+
+export default class TextInput extends React.Component {
+  render() {
+    return <input className="edit"
+                  autoFocus={true}
+                  type="text" />
+  }
+};
+```
+
+#리스트 컴포넌트에서 사용자 액션 처리
+이제 리스트 컴포넌트의 UI가 설정되었습니다. 그러나 아직 우리는 사용자 액션과 그것에 따른 앱이 어떻게 응답하는지에 대해 고려하지 않았습니다.
+
+##props의 힘
+React에서 `props` 객체는 컨테이너가 인스턴스화 될 때 설정 속성에 의해 전달됩니다.  
+예를 들어, 만약 `TodoItem` 을 아래와 같이 인스턴스화 하면:
+
+```javascript
+<TodoItem text={'Text of item'} />
+```
+
+우리는 `this.props.text` 변수로 `TodoItem` 컴포넌트에 접근 할 수 있습니다.
+
+```javascript
+// TodoItem.jsx 에서
+console.log(this.props.text);
+// 결과  : 'Text of item'
+```
+
+Redux 아키텍쳐는 집중적으로 `props`를 사용하게 만들었습니다. 기본 원칙은 모든 요소의 상태는 그 `props` 에만 존재하야 합니다. 다르게 말하면: 같은 `props` 집합에 대해 두 인스턴스가 정확하게 동일한 결과를 출력해야 합니다. 전에 봤듯이, 앱의 전체 상태는 상태트리에 포함 되어 있습니다. 이는 `props`로 컴포넌트에 전달된 상태트리가 앱의 시각적인 출력을 전적으로 예상하는 방향으로 결정한다는 걸 의미합니다.
+
+##TodoList 컴포넌트
+> 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/69707f07b6e9cbca7558cb85fcabff54615c1737)에 동료의 관련 커밋이 있습니다.
+
+이번 섹션에서 우리는 테스트-우선 접근법으로 따라갈 것입니다.  
+React 라이브러리는 우리 컴포넌트 테스트를 도와주기 위하여, 아래와 같은 메소드를 제공하는 *TestUtils* 애드온을 제공합니다.
+
+- `renderIntoDocument`, 분리된 DOM 노트에 컴포넌트를 렌더링합니다.
+- `scryRenderedDOMComponentsWithTag`, 제공하는 태그(li, input..)로 DOM에 모든 컴포넌트 인스턴스를 찾습니다.
+- `scryRenderedDOMComponentsWithClass`, 제공되는 class로 DOM에 모든 컴포넌트 인스턴스를 찾습니다.
+- `Simulate`, 사용자 액션을 시뮬레이션합니다.(클릭, 키 입력, 텍스트 입력…)
+
+`react` 패키지에는 `TestUtils` 애드온이 포함되어져 있지 않으므로, 개별적으로 설치해야 합니다.
+
+```
+npm install --save-dev react-addons-test-utils
+```
+
+우리의 첫번째 테스트로 `filter` props 가 `active`인 상태에서 모든 `active` 아이템들을 리스팅 하는 `TodoList` 컴포넌트를 테스트 할 것 입니다.
+
+```
+test/components/TodoList_spec.jsx
+```
+```javascript
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+import TodoList from '../../src/components/TodoList';
+import {expect} from 'chai';
+import {List, Map} from 'immutable';
+
+const {renderIntoDocument,
+      scryRenderedDOMComponentsWithTag} = TestUtils;
+
+describe('TodoList', ()=>{
+  it('renders a list with only the active items if the filter is active',() => {
+    const todos = List.of(
+      Map({id: 1, text: 'React', status: 'active'}),
+      Map({id: 2, text: 'Redux', status: 'active'}),
+      Map({id: 3, text: 'Immutable', status: 'completed'})
+    );
+
+    const filter = 'active';
+    const component = renderIntoDocument(
+      <TodoList filter={filter} todos={todos} />
+    );
+    const items = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(items.length).to.equal(2);
+    expect(items[0].textContent).to.contain('React');
+    expect(items[1].textContent).to.contain('Redxu');
+  });
+});
+```
+
+첫번째 테스트는 실패 하는걸 보게됩니다. 우리는 테스트에서 표시하는 2가지 활성화된 아이템 말고, 3가지 아이템이 있습니다. 실제로 테스트는 아이템을 필터링 하는 로직을 작성하지 않았으므로, 정상입니다.
+
+```
+src/components/TodoList.jsx
+```
+```javascript
+// ...
+export default class TodoList extends React.Component {
+  // 각 상태에 따라 아이템 필터링
+  getItems() {
+    if (this.props.todos) {
+      return this.props.todos.filter(
+        (item) => item.get('status') === this.props.filter
+      );
+    }
+    return [];
+  }
+  render() {
+    return <section className="main">
+      <ul className="todo-list">
+        // 필터링된 아이템만 표시
+        {this.getItems().map(item =>
+          <TodoItem key={item.get('text')}
+                    text={item.get('text')} />
+        )}
+      </ul>
+    </section>
+  }
+};
+```
+
+이제 첫번째 테스트는 통과하였습니다. 여기서 멈추지 말고, `all`과 `completed` 필터를 추가하여 테스트 해봅시다.
+
+```
+test/components/TodoList_spec.js
+```
+```javascript
+// ...
+describe('TodoList', () => {
+  // ...
+
+  it('renders a list with only completed items if the filter is completed', () => {
+    const todos = List.of(
+      Map({id: 1, text: 'React', status: 'active'}),
+      Map({id: 2, text: 'Redux', status: 'active'}),
+      Map({id: 3, text: 'Immutable', status: 'completed'})
+    );
+    const filter = 'completed';
+    const component = renderIntoDocument(
+      <TodoList filter={filter} todos={todos} />
+    );
+    const items = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(items.length).to.equal(1);
+    expect(items[0].textContent).to.contain('Immutable');
+  });
+
+  it('renders a list with all the items', () => {
+    const todos = List.of(
+      Map({id: 1, text: 'React', status: 'active'}),
+      Map({id: 2, text: 'Redux', status: 'active'}),
+      Map({id: 3, text: 'Immutable', status: 'completed'})
+    );
+    const filter = 'all';
+    const component = renderIntoDocument(
+      <TodoList filter={filter} todos={todos} />
+    );
+    const items = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(items.length).to.equal(3);
+    expect(items[0].textContent).to.contain('React');
+    expect(items[1].textContent).to.contain('Redux');
+    expect(items[2].textContent).to.contain('Immutable');
+  });
+});
+```
+
+위 3번째 테스트는 실패합니다. `all` 필터를 위한 로직이 약간 다르기 때문에, 컴포넌트 로직을 수정 해보도록 하겠습니다.
+
+```
+src/components/TodoList.jsx
+```
+```javascript
+// ...
+export default React.Component {
+  // 각 상태에 따른 필터링
+  getItems() {
+    if (this.props.todos) {
+      return this.props.todos.filter(
+        (item) => this.props.filter === 'all' || item.get('status') === this.props.filter
+      );
+    }
+    return [];
+  }
+  // ...
+});
+```
+
+이 시점에서 필터 속성에 의해 앱에 표시되는 리스트가 필터링된다는 것을 알게 되었습니다. 브라우저에서 앱을 보면, 우리가 아직 설정하지 않은 아이템들은 표시되지 않는 것을 볼수 있습니다.
+
+```
+src/index.jsx
+```
+```javascript
+// ...
+const todos = List.of(
+  Map({id: 1, text: 'React', status: 'active', editing: false}),
+  Map({id: 2, text: 'Redux', status: 'active', editing: false}),
+  Map({id: 3, text: 'Immutable', status: 'completed', editing: false})
+);
+const filter = 'all';
+
+require('../node_modules/todomvc-app-css/index.css');
+
+ReactDOM.render(
+  <TodoList todos={todos} filter={filter} />
+  document.getElementById('app')
+);
+```
+```
+src/components/TodoApp.jsx
+```
+```javascript
+// ...
+export default class TodoApp extends React.Component{
+  render(){
+    return <div>
+      <section className="todoapp">
+        // TodoList 컴포넌트로 filter props를 전달
+        <TodoList todos={this.props.todos} filter={this.props.filter} />
+      </section>
+    </div>
+  }
+}
+```
+
+이제 아이템들이 다시 나타나고, `index.jsx`에 선언한 필터 상태로 아이템들이 필터링 됩니다.
+
+##TodoItem 컴포넌트
+> 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/71d2835620f4ba6f3fc3665327f13ec4fba62eee) 동료의 관련 커밋이 있습니다.
+
+이제 `TodoItem` 컴포넌트를 다뤄보겠습니다. 첫번째로, 우리는 `TodoItem` 컴포넌트가 실제로 아이템을 렌더링 하는지 확인 하겠습니다. 그리고 아직 완료되지 않은 기능을 테스트 하겠습니다.
+
+```
+test/components/TodoItem_spec.js
+```
+```javascript
+import React from 'react';
+import TestUtils from 'react-addons-test-utils';
+import TodoItem from '../../src/components/TodoItem';
+import {expect} from 'chai';
+
+const {renderIntoDocument,
+      scryRenderedDOMComponentsWithTag} = TestUtils;
+
+describe('TodoItem' , ()=>{
+  it('renders an item', ()=>{
+    const text = 'React';
+    const component = renderIntoDocument(
+      <TodoItem text={text} />
+    );
+    const todo = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(todo.length).to.equal(1);
+    expect(todo[0].textContent).to.contain('React');
+  });
+
+  it('strikes through the item if it is completed', ()=>{
+    const text = 'React';
+    const component = renderIntoDocument(
+      <TodoItem text={text} isCompleted={true} />
+    );
+    const todo = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(todo[0].classList.contains('completed')).to.equal(true);
+  });
+});
+```
+
+2번째 테스트를 통과하기 위하여, 우리는 `props` 에 전달되는 상태가 `completed` 로 설정되면, class 에 `completed` 를 추가 해야 합니다. DOM class들을 조작하는데 조금 복잡하면, `classnames` 패키지를 사용합니다.
+
+```
+npm install --save classnames
+```
+```javascript
+import React from 'react';
+import classnames from 'classnames';
+import TextInput from './TextInput';
+
+export default class TodoItem extends React.Component{
+  render(){
+    var itemClass = classnames({
+      'todo' : true,
+      'completed' : this.props.isCompleted
+    });
+    return <li classnames={itemClass}>
+      // ...
+    </li>
+  }
+};
+```
+
+또한 아이템은 `isEditing` prop으로 캡슐화된 것을 수정할 때, 특정한 모양을 가져야 합니다.
+
+```
+test/components/TodoItem_spec.js
+```
+```javascript
+// ..
+describe('TodoItem', ()=>{
+  // ...
+  it('should look different when editing', ()=>{
+    const text = 'React';
+    const component = renderIntoDocument(
+      <TodoItem text={text} isEditing={true} />
+    );
+    const todo = scryRenderedDOMComponentsWithTag(component, 'li');
+
+    expect(todo[0].classList.contains('editing')).to.equal(true);
+  });
+});
+```
+
+테스트를 통과하기 위하여, 우리는 `itemObject` 객체를 수정해야 합니다.
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+// ...
+export default class TodoItem extends React.Component{
+  render(){
+    var itemClass = classnames({
+      'todo' : true,
+      'completed' : this.props.isCompleted,
+      'editing' : this.props.isEditing
+    });
+    return <li className={itemClass}>
+      // ..
+    </li>
+  }
+};
+```
