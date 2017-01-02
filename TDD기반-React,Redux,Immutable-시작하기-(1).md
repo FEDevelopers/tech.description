@@ -840,3 +840,240 @@ export default class TodoItem extends React.Component{
   }
 };
 ```
+
+
+만약에 아이템이 완료 상태가 되면, 아이템 왼쪽에 있는 체크박스는 체크되야 합니다.
+
+```
+test/components/TodoItem_spec.js
+```
+```javascript
+// ...
+describe('TodoItem', ()=>{
+  // ..
+  it('should be checked if the item is completed', () =>{
+    const text = 'React';
+    const text2 = 'Redux';
+    const component = renderIntoDocument(
+      <TodoItem text={text} isCompleted={true} />
+      <TodoItem text={text2} isCompleted={false} />
+    );
+
+    const input = scryRenderedDOMComponentsWithTag(component, 'input');
+    expect(input[0].checked).to.equal(true);
+    expect(input[1].checked).to.equal(false);
+  });
+});
+```
+
+React는 input 체크 박스를 상태를 설정 하는 메소드가 있습니다. : `defaultChecked`
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+// ..
+export default class TodoItem extends React.Component{
+  render(){
+    // ...
+    return <li className={itemClass}>
+      <div className="view">
+        <input type="checkbox"
+              className="toggle"
+              defaultChecked={this.props.isCompleted} />
+        // ...
+    </li>
+  }
+};
+```
+
+또한 `TodoList` 컴포넌트에서 `isCompleted` 와 `isEditing` props 를 전달 해야합니다.
+
+```
+src/components/TodoList.jsx
+```
+```javascript
+// ..
+export default class TodoList extends React.Component{
+  // ..
+  // 아이템이 체크 됬는지 확인 하는 함수
+  isCompleted(item){
+    reurn item.get('status') === 'completed';
+  }
+
+  render(){
+    return <section className="main">
+      <ul className="todo-list">
+        {this.getItems().map( item=>
+          <TodoItem key={item.get('text')}
+                    text={item.get('text')}
+                    // 완료와 수정에 관한 정보를 전달합니다.
+                    isCompleted={this.isCompleted(item)}
+                    isEditing={item.get('editing')} />
+        )}
+      </ul>
+    </section>
+  }
+};
+```
+
+현재 우리는 컴포넌트에 앱의 상태를 반영 할 수 있습니다. : 예를들어, 완료 된 아이템은 줄이 그어지며, 웹앱은 버튼 클릭과 같은 사용자 액션도 처리해야 합니다. Redux 모델에서는 이 작업을 props를 이용하고, 특히나 props 로 콜백을 전달하여 처리합니다.  
+이럼으로써 우리는 앱 로직으로부터 UI를 분리 시키게 됩니다. : 컴포넌트는 특정한 액션이 클릭응로부터 왔다는 것을 알 필요 없습니다. 그저 클릭은 트리거 될 뿐입니다.  
+이 원리를 설명하기 위해, 사용자가 삭제 버튼을 클릭하면, `deleteItem` 이 호출되는지 테스트 할 것 입니다.
+
+> 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/b3a6851e8a9f65f1c44e66046bedd1db18c19a48) 동료의 커밋 관련 저장소입니다.
+
+```
+test/components/TodoItem_spec.jsx
+```
+```javascript
+// ..
+// Simulate 헬퍼로 사용자 클릭 시뮬레이션 합니다.
+const {
+  renderIntoDocument,
+  scryRenderedDOMComponentsWithTag,
+  Simulate
+} = TestUtils;
+
+describe('TodoItem' , ()=>{
+  // ...
+  it('invokes callback when the delete button is clicked', () => {
+    const text = 'React';
+    var deleted = false;
+    // 가짜 deleteItem 함수 정의
+    const deleteItem = () => deleted = true;
+    const component = renderIntoDocument(
+      <TodoItem text={text} deleteItem={deleteItem} />
+    );
+    const buttons = scryRenderedDOMComponentsWithTag(component, 'button');
+    Simulate.click(buttons[0]);
+    // deleteItem 함수 호출 검증
+    expect(deleted).to.equal(true);
+  });
+});
+```
+
+위 테스트를 통과하기 위하여, props에서 전달된 `deleteItem` 함수가 호출되게 해주는 `delete` 버튼 `onClick` 핸들러를 선언 해야 합니다.
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+// ..
+export default class TodoItem extends React.Component{
+  render(){
+    // ...
+    return <li className={itemClass}>
+      <div className="view">
+        // ...
+        // props에서 전달한 deleteItem 함수를 호출
+        <button className="destroy"
+                onClick={()=>this.props.deleteItem(this.props.id)}></button>
+      </div>
+      <TextInput />
+    </li>
+  };
+}
+```
+
+아직 아이템을 삭제하기 위한 실제 로직은 구현하지 않았습니다. 이 부분은 Redux의 역할이 될 것 입니다.  
+동일한 모델에서 우리는 다음과 같은 기능을 구현하고 테스트 할 수 있습니다.
+
+- 체크박스 클릭은 `toggleComplete`콜백을 호출
+- 아이템 라벨 더블클릭은 `editItem` 콜백 호출
+
+```
+test/components/TodoItem_spec.js
+```
+```javascript
+// ...
+describe('TodoItem',() => {
+  // ...
+  it('invokes callback when checkbox is clicked', ()=>{
+    const text = 'React';
+    var isChecked = false;
+    const toggleComplete = () => isChecked = true;
+    const component = renderIntoDocument(
+      <TodoItem text={text} toggleComplete={toggleComplete} />
+    );
+    const checkboxes = scryRenderedDOMComponentsWithTag(component, 'input');
+    Simulate.click(checkboxes[0]);
+
+    expect(isChecked).to.equal(true);
+  });
+
+  it('calls a callback when text is double clicked', () => {
+    var text = 'React';
+    const editItem = () => text = 'Redux';
+    const component = renderIntoDocument(
+      <TodoItem text={text} editItem={editItem} />
+    );
+    const label = component.refs.text;
+    Simulate.doubleClick(label);
+    expect(text).to.equal('Redux');
+  });
+});
+```
+
+```
+src/components/TodoItem.jsx
+```
+```javascript
+// ..
+render(){
+  // ...
+  return <li className={itemClass}>
+    <div className="view">
+      // 체크박스 onClick핸들러 추가
+      <input type="checkbox"
+              className="toggle"
+              defaultChecked={this.props.isCompleted}
+              onClick={()=> this.props.toggleComplete(this.props.id)} />
+      // 테스트를 용이하게 하기 위해 라벨에 ref속성 추가
+      // onDoubleClick 핸들러는 놀랍게도 두번 클릭 하면 호출 됩니다.
+      <label htmlFor="todo"
+              ref="text"
+              onDoubleClick={()=>this.props.editItem(this.props.id)}>
+        {this.props.text}
+      </label>
+      <button className="destroy"
+              onClick={()=>this.props.deleteItem(this.props.id)}></button>
+    </div>
+    <TextInput />
+  </li>
+}
+```
+
+또한 우리는 `TodoList` 에서 props로 `editItem`,`deleteItem`,`toggleComplete` 함수를 전달 합니다.
+
+```
+src/components/TodoList.jsx
+```
+```javascript
+// ...
+export default class TodoList extends React.Component {
+  // ...
+  render() {
+    return <section className="main">
+      <ul className="todo-list">
+        {this.getItems().map(item =>
+          <TodoItem key={item.get('text')}
+                    text={item.get('text')}
+                    isCompleted={this.isCompleted(item)}
+                    isEditing={item.get('editing')}
+                    toggleComplete={this.props.toggleComplete}
+                    deleteItem={this.props.deleteItem}
+                    editItem={this.props.editItem} />
+        )}
+      </ul>
+    </section>
+  }
+};
+```
+
+이젠 프로세스에 대해 조금 익숙해졌습니다. 그러면 이 포스팅의 길이를 적당한 조건으로 조정하기 위해 여기까지만 작성하고 `TextInput`([관련 커밋](https://github.com/phacks/redux-todomvc/commit/8550a95fc589ecaa184367bb907c8dfeffc29d2f)), `TodoHeader`[관련 커밋](https://github.com/phacks/redux-todomvc/commit/cc97354bab0a0369f0c39b34ff24b44084a75ebb), `TodoTools` , `Footer`[관련 커밋](https://github.com/phacks/redux-todomvc/commit/237dbc36135427f3b5398f19fcc09ecb1e26d895) 코드 저장소를 살펴보도록 권유드립니다. 해당 저장소에 대한 질문이나 이슈가 있으시면, 여기에 의견을 남기시거나 저장소에 이슈를 남겨주세요.  
+`editItem`이나 `toggleComplete` 같은 함수는 아직 정의되지 않았습니다. 이들은 Redux 액션 관련 다음 챕터 에서 다뤄질 것이므로, 당신이 콘솔에 몇몇 에러를 발견하더라도 걱정하지 마시기 바랍니다.  
+
+이번 포스팅에서는 React, Redux, Immutable 웹 앱을 위한 초석을 다졌습니다. 우리 UI 모듈은 완벽하게 테스트 되었으며, 실제 앱로직과 연결될 준비가 되었습니다.
+과연 이것들이 어떻게 작동할까요? 어떻게 할지 모르는 멍청한 컴포넌트들이 시간여행-디버깅을 가능하게 해주는 앱으로 사용하게 해줄까요?  
+다음 파트 에서 기대하시기 바랍니다.
