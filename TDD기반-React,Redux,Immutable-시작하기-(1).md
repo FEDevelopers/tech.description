@@ -1,19 +1,19 @@
 > http://www.theodo.fr/blog/2016/03/getting-started-with-react-redux-and-immutable-a-test-driven-tutorial-part-1/ 를 번역한 글입니다.
 
 
-몇 주 전에, 저는 할일 없이 [해커 뉴스](https://news.ycombinator.com/)를 보고, Redux에 관한 헤드라인을 봤습니다. 헤드라인을 읽고 Redux는 React와 잘 어울리는 다른 요소라고 이해를 했었습니다. 하지만 자바스크립트에 대해 이미 [피로도](https://medium.com/@ericclemmons/javascript-fatigue-48d4011b6fc4#.bk12bq4lc)가 쌓여있었기 때문에, 저는 Redux의 다음 특징에 대해 읽기 전까진 거의 신경 쓰지 않고 있었습니다. :
+몇 주 전, 저는 할일 없이 [해커 뉴스](https://news.ycombinator.com/)를 보다가, Redux에 관한 헤드라인을 봤습니다. 헤드라인만 읽고 Redux는 React와 잘 어울리는 다른 요소라고 이해를 했었습니다. 저는 자바스크립트에 대해 이미 [피로도](https://medium.com/@ericclemmons/javascript-fatigue-48d4011b6fc4#.bk12bq4lc)가 쌓여있었기 때문에, Redux의 다음 특징에 대해 읽기 전까진 거의 신경 쓰지 않고 있었습니다. :
 
 - 함수형 프로그래밍을 수행하고, 어플리케이션의 동작을 예상하고 보장합니다.
 - 서버와 클라이언트 간의 코드를 공유하는 동형(*isomorphic*) 어플리케이션을 허락합니다.
-- [시간 여행 디버깅](https://code-cartoons.com/hot-reloading-and-time-travel-debugging-what-are-they-3c8ed2812f35#.l69um5b92)(역자주: 시간여행 디버깅은 버그 가 나기 이전 상태로 돌아가서 테스팅을 할 수 있게 해주는 방식)이 가능한가요?
+- [시간 여행 디버깅](https://code-cartoons.com/hot-reloading-and-time-travel-debugging-what-are-they-3c8ed2812f35#.l69um5b92)(역자주: 시간여행 디버깅은 버그 가 나기 이전 상태로 돌아가서 테스팅을 할 수 있게 해주는 방식)의 가능성
 
 Redux는 마치 React 어플리케이션의 상태를 관리하는 우아한 솔루션인 것 처럼 보였습니다. 누가 시간 여행 디버깅을 반대하겠습니까?
 그래저 저는 공식 문서와 [@teropa](https://twitter.com/teropa)의 [환상적인 튜토리얼](http://teropa.info/blog/2015/09/10/full-stack-redux-tutorial.html)을 읽었습니다.( 이 포스팅의 중요한 영감을 얻은 곳입니다.)  
-코드는 우아하고, 디버거는 매우 훌륭합니다. 제말은 다음을 봐보세요.
+코드는 우아하고, 디버거는 매우 훌륭했습니다.
 
 ![todo 영상](http://www.theodo.fr/uploads/blog//2016/02/time-travel.gif)
 
-이번 첫번째 파트에서 만들 앱은 Redux가 일하는 방식에 대한 기본적인 원칙에 대한 것입니다. 다소 간결하게 하기 위해 일부러 범위를 제한적으로 두었습니다.(클라이언트측에만 존재라 동형 앱이 아닌 단순한 앱) 만약 당신이 더 깊게 알고 싶다면, 위에 환상적인 튜토리얼을 권합니다. Gihub 저장소는 [여기](https://github.com/phacks/redux-todomvc) 에 있으며, 최종 앱의 모습을 담고 있습니다. 코드나 튜토리얼에 대한 질문이나 제안은 코멘트를 남기거나 Pull Request를 하십시오.  
+이번 첫번째 파트에서 만들 앱은 Redux가 일하는 방식에 대한 기본적인 원칙에 관한 것입니다. 조금 간결하려고 일부러 범위를 제한하였습니다.(클라이언트측에만 있어서 동형 앱이 아닌 단순한 앱) 만약 당신이 더 깊게 알고 싶다면, 위에 환상적인 튜토리얼을 권합니다. Gihub 저장소는 [여기](https://github.com/phacks/redux-todomvc) 에 있으며, 최종 앱의 모습을 담고 있습니다. 코드나 튜토리얼에 대한 질문이나 제안은 코멘트를 남기거나 Pull Request를 하십시오.  
 
 #앱
 이번 튜토리얼의 목적을 위해 우리는 전통적인 `TodoMVC`앱을 만들 것입니다. 이를 위해 다음과 같은 요구사항이 있습니다.
@@ -24,14 +24,14 @@ Redux는 마치 React 어플리케이션의 상태를 관리하는 우아한 솔
 - 활성화된 할일 카운팅은 하단에 배치합니다.
 - 완료된 할일들은 한꺼번에 삭제가 가능합니다.
 
-당신은 [여기](http://todomvc.com/examples/react/#/) <- 서 앱의 예를 보실 수 있습니다.
+당신은 [여기](http://todomvc.com/examples/react/#/)서 앱의 실제 예를 보실 수 있습니다.
 
 #Redux와 Immutable: 함수형 프로그래밍
-몇달전, 저는 대쉬보드 웹앱을 개발하고 있었습니다. 웹앱이 커져감에 따라, 점점 더 찾기 힘든 많은 버그들을 발견하게 되었습니다. "이 페이지로 이동해서 버튼을 클릭하고, 다시 메인 페이지로 돌아가서 커피를 잡고, 아까 그 페이지로 이동하고 다시 클릭하면 무언가 기묘한 일이 발생" 과 같은 버그였습니다. 이 모든 버그의 근원은 우리 모든 코드와 로직에 영향을 미쳤습니다. 이 행동은 우리가 알지 못했던 다른 곳에 원치 핞는 영향을 미칠 수 있었습니다.  
+몇달전, 저는 대쉬보드 웹앱을 개발하고 있었습니다. 웹앱이 커져감에 따라, 점점 더 찾기 힘든 많은 버그들을 발견하게 되었습니다. "이 페이지로 이동해서 버튼을 클릭하고, 다시 메인 페이지로 돌아가서 잠깐 커피를 들고나서, 아까 그 페이지로 이동하고 다시 클릭하면 무언가 기묘한 일이 발생" 과 같은 버그였습니다. 이 버그는 우리의 모든 코드와 로직에 영향을 미치고, 우리가 알지 못했던 다른 곳에 원치 않는 영향을 미칠 수 있었습니다.  
   
-앱의 모든 상태를 가지고 있는 단일 자료구조인 상태트리야 말로 Redux의 힘입니다. 이 의미는 매순간마다, 사용자에게 보여지는 데이터는 상태 트리 안에 있는 결과이며, 단일 출처를 제공하는 것입니다. 우리 앱의 모든 액션은 상태트리에서 가져와서 해당 수정사항을 반영하고(예를들어 할일을 추가 하는것), 업데이트된 상태 트리를 사용자에게 렌더링 합니다. 애매한 부작용은 없으며, 실수로 수정한 변수 참조는 더이상 없습니다. 이는 관심사의 명확한 분리와 좋은 앱 구조를 만들고, 더 나은 디버깅을 할 수 있게 됩니다.  
+앱의 모든 상태를 가지고 있는 단일 자료구조인 상태트리야 말로 Redux의 힘입니다. 이 의미는 매순간마다, 사용자에게 보여지는 데이터는 상태 트리 안에 있는 결과이며, 단일 출처를 제공하는 것입니다. 우리 앱의 모든 액션은 상태트리에서 가져와서 해당 수정사항을 반영하고(예를들어 할일을 추가 하는것), 업데이트된 상태 트리를 사용자에게 렌더링 합니다. 애매한 부작용은 없으며, 실수로 수정해버린 변수 참조 같은 일은 더이상 없을 것입니다. 이는 관심사의 명확한 분리와 좋은 앱 구조를 만들고, 더 나은 디버깅을 할 수 있게 됩니다.  
 
-[Immutable](https://facebook.github.io/immutable-js/)은 불변 데이터 구조를 조작하거나 생성하게 도와주는 툴이며, 페이스북에서 개발한 라이브러리입니다. 비록 Redux와 함께 사용토록 강제하진 않지만, 객체 수정을 막음으로써 함수적 접근을 하도록 강제 합니다. Immutable을 사용해서 객체를 수정 할땐, 사실 수정된 새로운 객체를 생성하고, 원래의 객체로 유지 하게 합니다.  
+[Immutable](https://facebook.github.io/immutable-js/)은 불변 데이터 구조를 조작하거나 생성하게 도와주는 툴이며, 페이스북에서 개발한 라이브러리입니다. 비록 Redux와 함께 사용토록 강제하진 않지만, 객체 수정을 막음으로써 함수적 접근을 하도록 유도 합니다. Immutable을 사용해서 객체를 수정 하는 건 사실 수정된 새로운 객체를 생성하고 원래의 객체로 유지 하게 하는 것입니다.  
 다음은 문서에서 발췌한 예제입니다.
 
 ```javascript
@@ -48,7 +48,7 @@ assert(map1 !== map3); // change
 > 주의 사항 : 여기 나온 많은 설정들은 앞서 얘기한 @teropa 튜토리얼에서 영감을 얻었습니다.  
 참고 사항
 - 이 프로젝트 NodeJS 버전은 >= 4.0.0 을 추천합니다. nvm을 통해서 Node버전을 쉽게 관리 하실 수 있습니다.
-- [여기](https://github.com/phacks/redux-todomvc/commit/9e2d23ca16980566d9fcaeebbf198031ec55d42f)에 동료들의 커밋이 있습니다.
+- [여기](https://github.com/phacks/redux-todomvc/commit/9e2d23ca16980566d9fcaeebbf198031ec55d42f)에 동료의 커밋이 있습니다.
 
 이제 프로젝트 세팅 할 차례입니다.
 
@@ -90,7 +90,7 @@ dist/index.html
 </html>
 ```
 
-모든 패키징이 잘 되었다 라고 알려주기 위한 간단한 스크립트를 작성해보겠습니다.
+모든 패키징이 잘 됬는지 알기 위한 간단한 스크립트를 작성해보겠습니다.
 
 ```
 src/index.js
@@ -99,8 +99,8 @@ src/index.js
 console.log('Hello World!');
 ```
 
-**Webpack**을 사용하여 패키징된 `bundle.js` 파일을 빌드 할 것 입니다. **Webpack** 기능의 장점은 속도, 쉬운 구성이고, 그리고 핫로드 즉 웹페이지가 새로고침 되지 않고도, 최신 변경사항으로 리로드 되는 장점 입니다.  
-Webpack을 설치해보독 하겠습니다.
+**Webpack**을 사용하여 패키징된 `bundle.js` 파일을 빌드 할 것 입니다. **Webpack** 기능의 장점은 속도, 쉬운 구성이고, 그리고 핫로드 즉 웹페이지가 새로고침 되지 않고도, 최신 변경사항으로 리로드 되는 것이 장점 입니다.  
+Webpack을 설치해보도록 하겠습니다.
 
 ```
 npm install --save-dev webpack webpack-dev-server
@@ -119,7 +119,7 @@ npm install --save-dev babel-core babel-loader babel-preset-es2015
 npm install --save-dev babel-preset-react
 ```
 
-여기서는 우리 소스파일을 빌드 하기 위해 webpack을 설정합니다.
+소스파일을 빌드 하기 위해 webpack을 설정합니다.
 
 ```
 package.json
@@ -172,19 +172,19 @@ npm install --save-dev react-hot-loader
 webpack.config.js
 ```
 ```javascript
-var webpack = require('webpack'); // Requiring the webpack lib
+var webpack = require('webpack'); // webpack 라이브러리 로드
 
 module.exports = {
   entry: [
-    'webpack-dev-server/client?http://localhost:8080', // Setting the URL for the hot reload
-    'webpack/hot/only-dev-server', // Reload only the dev server
+    'webpack-dev-server/client?http://localhost:8080', // 핫리로드 위한 URL 세팅
+    'webpack/hot/only-dev-server', // 오로지 dev서버에서만 작동
     './src/index.js'
   ],
   module: {
     loaders: [{
       test: /\.jsx?$/,
       exclude: /node_modules/,
-      loader: 'react-hot!babel' // Include the react-hot loader
+      loader: 'react-hot!babel' // react-hot loader 추가
     }]
   },
   resolve: {
@@ -197,16 +197,16 @@ module.exports = {
   },
   devServer: {
     contentBase: './dist',
-    hot: true // Activate hot loading
+    hot: true // 핫리로드 활성화
   },
   plugins: [
-    new webpack.HotModuleReplacementPlugin() // Wire in the hot loading plugin
+    new webpack.HotModuleReplacementPlugin() // 핫리로드 플러그인 추가
   ]
 };
 ```
 
 ##유닛 테스팅 프레임워크 세팅
-우리는 테스트 프레임워크로 Mocah와 Chai를 사용할 것입니다. Mocah와 Chai는 폭넓게 사용되고 있으며, 그것 들의 산출물은(예상결과와 실제 결과 차이 비교) 테스트-주도-개발 하기엔 최고입니다. Chai-Immutable은 불변 자료 구조를 처리 하는 chai 플러그인 입니다.
+우리는 테스트 프레임워크로 Mocha와 Chai를 사용할 것입니다. Mocha와 Chai는 폭넓게 사용되고 있으며, 그것 들의 산출물은(예상결과와 실제 결과 차이 비교) 테스트-주도-개발 하기엔 최고입니다. Chai-Immutable은 불변 자료 구조를 처리 하는 chai 플러그인 입니다.
 
 ```
 npm install --save immutable
@@ -265,7 +265,7 @@ pacakge.json
 이제 설정이 완료됬습니다.: 터미널에서 `npm run test:watch`나  `webpack-dev-server` 를 실행하고, 브라우저에서 `localhost:8080/`으로 이동하면 콘솔창에 `Hello World!`가 나타나게 됩니다.
 
 # 상태 트리 구성
-앞서 말했듯이, 상태 트리는 우리 어플리케이션(상태)을 포함하여 모든 정보를 가진 자료 구조입니다. 우리는 실제로 앱을 개발하기 전에 이 자료 구조에 대해 잘 생각해야 합니다. 왜냐하면 만은 코드 구조와 상호작용 하기 때문입니다.  
+앞서 말했듯이, 상태 트리는 우리 어플리케이션(상태)을 포함하여 모든 정보를 가진 자료 구조입니다. 우리는 실제로 앱을 개발하기 전에 이 자료 구조에 대해 잘 생각해야 합니다. 왜냐하면 많은 코드 구조와 상호작용 하기 때문입니다.  
 아래 그림을 보면, 우리 앱은 **todo** 리스트에 여러 아이템들로 구성되어 있습니다.
 
 ![todo list item](http://www.theodo.fr/uploads/blog//2016/02/state_tree1.png)
@@ -296,7 +296,7 @@ pacakge.json
 # 첫번째 컴포넌트 bootstrapping
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/d1d2a56a8d2b4f898ed8fdf20f55e7f7f11ad6ad)에 동료의 관련 커밋 저장소가 있습니다.
 
-우리가 위에서 보았 듯이, 하나의 *TodoApp* 컴포넌트에 모든 컴포넌트들을 넣을 것 입니다. *TodoApp* 컴포넌트를 index.html 안에 `#app div`에 작성하여 시작해봅시다.:
+우리가 하나의 *TodoApp* 컴포넌트에 위에 작성한 모든 컴포넌트들을 넣을 것 입니다. *TodoApp* 컴포넌트를 index.html 안에 `#app div`에 작성하여 시작해봅시다.:
 
 ```
 src/index.jsx
@@ -374,7 +374,7 @@ export default class TodoApp extends React.Component{
 
 두가지가 갑자기 생각이 납니다.  
 
-첫번째, 브라우저에서 위 결과를 본다면, 그다지 매력적이지 않습니다. 이를 해결하기 위해, [tobomvc-app-css](https://github.com/tastejs/todomvc-app-css) 패키지를 사용해서, 조금 더 재미있게 만드는데 필요한 모든 스타일 속성을 제공 할 것입니다.
+첫번째, 브라우저에서 위 결과를 본다면, 그다지 매력적이지 않을 것 같습니다. 이를 위해, [tobomvc-app-css](https://github.com/tastejs/todomvc-app-css) 패키지를 사용해서, 조금 더 재미있게 만드는데 필요한 모든 스타일 속성을 제공 할 것입니다.
 
 ```
 npm install --save todomvc-app-css
@@ -542,7 +542,7 @@ console.log(this.props.text);
 // 결과  : 'Text of item'
 ```
 
-Redux 아키텍쳐는 집중적으로 `props`를 사용하게 만들었습니다. 기본 원칙은 모든 요소의 상태는 그 `props` 에만 존재하야 합니다. 다르게 말하면: 같은 `props` 집합에 대해 두 인스턴스가 정확하게 동일한 결과를 출력해야 합니다. 전에 봤듯이, 앱의 전체 상태는 상태트리에 포함 되어 있습니다. 이는 `props`로 컴포넌트에 전달된 상태트리가 앱의 시각적인 출력을 전적으로 예상하는 방향으로 결정한다는 걸 의미합니다.
+Redux 아키텍쳐는 집중적으로 `props`를 사용하게끔 만들어 졌습니다. 기본 원칙은 모든 요소의 상태는 그 `props` 에만 존재하야 합니다. 다르게 말하면: 같은 `props` 집합에 대해 두 인스턴스가 정확하게 동일한 결과를 출력해야 합니다. 전에 봤듯이, 앱의 전체 상태는 상태트리에 포함 되어 있습니다. 이는 `props`로 컴포넌트에 전달된 상태트리가 앱의 시각적인 출력을 전적으로 예상하는 방향으로 결정한다는 걸 의미합니다.
 
 ##TodoList 컴포넌트
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/69707f07b6e9cbca7558cb85fcabff54615c1737)에 동료의 관련 커밋이 있습니다.
@@ -597,7 +597,7 @@ describe('TodoList', ()=>{
 });
 ```
 
-첫번째 테스트는 실패 하는걸 보게됩니다. 우리는 테스트에서 표시하는 2가지 활성화된 아이템 말고, 3가지 아이템이 있습니다. 실제로 테스트는 아이템을 필터링 하는 로직을 작성하지 않았으므로, 정상입니다.
+첫번째 테스트는 실패 하게됩니다. 우리는 테스트에서 표시하는 2가지 활성화된 아이템 말고, 3가지 아이템이 있습니다. 실제로 테스트는 아이템을 필터링 하는 로직을 작성하지 않았으므로, 테스트 실패는 정상입니다.
 
 ```
 src/components/TodoList.jsx
@@ -776,7 +776,7 @@ describe('TodoItem' , ()=>{
 });
 ```
 
-2번째 테스트를 통과하기 위하여, 우리는 `props` 에 전달되는 상태가 `completed` 로 설정되면, class 에 `completed` 를 추가 해야 합니다. DOM class들을 조작하는데 조금 복잡하면, `classnames` 패키지를 사용합니다.
+테스트를 통과하기 위하여, 우리는 `props` 에 전달되는 상태가 `completed` 로 설정되면, class 에 `completed` 를 추가 해야 합니다. DOM class들을 조작하는데 조금 복잡니, `classnames` 패키지를 사용하겠습니다.
 
 ```
 npm install --save classnames
@@ -799,7 +799,7 @@ export default class TodoItem extends React.Component{
 };
 ```
 
-또한 아이템은 `isEditing` prop으로 캡슐화된 것을 수정할 때, 특정한 모양을 가져야 합니다.
+또한 아이템은 `isEditing` props로 캡슐화된 것을 수정할 때, 특정한 모양을 가져야 합니다.
 
 ```
 test/components/TodoItem_spec.js
@@ -918,7 +918,7 @@ export default class TodoList extends React.Component{
 ```
 
 현재 우리는 컴포넌트에 앱의 상태를 반영 할 수 있습니다. : 예를들어, 완료 된 아이템은 줄이 그어지며, 웹앱은 버튼 클릭과 같은 사용자 액션도 처리해야 합니다. Redux 모델에서는 이 작업을 props를 이용하고, 특히나 props 로 콜백을 전달하여 처리합니다.  
-이럼으로써 우리는 앱 로직으로부터 UI를 분리 시키게 됩니다. : 컴포넌트는 특정한 액션이 클릭응로부터 왔다는 것을 알 필요 없습니다. 그저 클릭은 트리거 될 뿐입니다.  
+이럼으로써 우리는 앱 로직으로부터 UI를 분리 시키게 됩니다. : 컴포넌트는 특정한 액션이 클릭으로부터 왔다는 것을 알 필요 없습니다. 그저 클릭은 트리거 될 뿐입니다.  
 이 원리를 설명하기 위해, 사용자가 삭제 버튼을 클릭하면, `deleteItem` 이 호출되는지 테스트 할 것 입니다.
 
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/b3a6851e8a9f65f1c44e66046bedd1db18c19a48) 동료의 커밋 관련 저장소입니다.
@@ -1071,7 +1071,8 @@ export default class TodoList extends React.Component {
 };
 ```
 
-이젠 프로세스에 대해 조금 익숙해졌습니다. 그러면 이 포스팅의 길이를 적당한 조건으로 조정하기 위해 여기까지만 작성하고 `TextInput`([관련 커밋](https://github.com/phacks/redux-todomvc/commit/8550a95fc589ecaa184367bb907c8dfeffc29d2f)), `TodoHeader`[관련 커밋](https://github.com/phacks/redux-todomvc/commit/cc97354bab0a0369f0c39b34ff24b44084a75ebb), `TodoTools` , `Footer`[관련 커밋](https://github.com/phacks/redux-todomvc/commit/237dbc36135427f3b5398f19fcc09ecb1e26d895) 코드 저장소를 살펴보도록 권유드립니다. 해당 저장소에 대한 질문이나 이슈가 있으시면, 여기에 의견을 남기시거나 저장소에 이슈를 남겨주세요.  
+이제 프로세스에 대해 조금 익숙해졌습니다. 그러면 이 포스팅의 길이를 적당하게 조절하기 위해 여기까지만 작성하고 `TextInput`([관련 커밋](https://github.com/phacks/redux-todomvc/commit/8550a95fc589ecaa184367bb907c8dfeffc29d2f)), `TodoHeader`([관련 커밋](https://github.com/phacks/redux-todomvc/commit/cc97354bab0a0369f0c39b34ff24b44084a75ebb)), `TodoTools` , `Footer`([관련 커밋](https://github.com/phacks/redux-todomvc/commit/237dbc36135427f3b5398f19fcc09ecb1e26d895)) 코드 저장소를 살펴보도록 권유드립니다. 해당 저장소에 대한 질문이나 이슈가 있으시면, 여기에 의견을 남기시거나 저장소에 이슈를 남겨주세요.  
+
 `editItem`이나 `toggleComplete` 같은 함수는 아직 정의되지 않았습니다. 이들은 Redux 액션 관련 다음 챕터 에서 다뤄질 것이므로, 당신이 콘솔에 몇몇 에러를 발견하더라도 걱정하지 마시기 바랍니다.  
 
 이번 포스팅에서는 React, Redux, Immutable 웹 앱을 위한 초석을 다졌습니다. 우리 UI 모듈은 완벽하게 테스트 되었으며, 실제 앱로직과 연결될 준비가 되었습니다.
