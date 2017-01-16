@@ -1,7 +1,7 @@
 [원본 링크](https://threejs.org/docs/index.html#Manual/Introduction/Creating_a_scene)
 ^Threejs-introduction^
 
-# (introduction) Scene 만들기
+# Creating a Scene (Scene 만들기)
 
 이 섹션은 three.js에 대한 간단한 소개를 하기 위함입니다. 회전하는 큐브로 Scene을 설정하는 것으로부터 시작해보도록 하겠습니다. 실제 예제는 페이지의 밑에 제공되므로, 먄약에 막히거나 도움이 필요하신 경우 참고해주세요.
 
