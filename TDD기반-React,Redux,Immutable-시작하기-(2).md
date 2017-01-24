@@ -1,4 +1,5 @@
 > http://www.theodo.fr/blog/2016/03/getting-started-with-react-redux-and-immutable-a-test-driven-tutorial-part-2/ 를 번역한 글입니다.
+
 이 포스트는 React, Redux, Immutable 튜토리얼의 2번째이자 마지막 파트입니다.  
 만약 여러분이 첫번째 튜토리얼을 놓쳤다면, 첫번째 파트를 [여기](https://github.com/FEDevelopers/tech.description/wiki/TDD%EA%B8%B0%EB%B0%98-React,Redux,Immutable-%EC%8B%9C%EC%9E%91%ED%95%98%EA%B8%B0-(1))서 보실 수 있습니다.  
 
