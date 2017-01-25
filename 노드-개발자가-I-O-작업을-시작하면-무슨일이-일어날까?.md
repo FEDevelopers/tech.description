@@ -50,6 +50,26 @@ if (args[1]->IsObject()) {
 
 `ASYNC_CALL`[C++ 매크로](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L360-L361)이며 함수가 아니다. 게다가 `ASYNC_DEST_CALL`를 사용하여 `ASYNC_CALL`을 더 확장한다. 컴파일 시간에 ASYNC_CALL 매크로는 아래 C++ 코드로 확장된다. 이 코드의 가장 중요한 부분이 `uv_fs_sate()` 호출 부분이다. 이 함수는 노드 어플리케이션 이벤트 루프에 묶여있던 stat 요청을 libuv에게 전달한다. 작업이 끝나면 After 함수가 호출된다.
 
+```c++
+Environment* env = Environment::GetCurrent(args);
+CHECK(request->IsObject());
+FSReqWrap* req_wrap = FSReqWrap::New(env, request.As Object>;(),
+                                     "stat", dest, encoding);
+int err = uv_fs_stat(env->event_loop(),
+                     req_wrap->req(),
+                     __VA_ARGS__,
+                     After);
+req_wrap->Dispatched();
+if (err < 0) {   uv_fs_t* uv_req = req_wrap->req();
+  uv_req->result = err;
+  uv_req->path = nullptr;
+  After(uv_req);
+  req_wrap = nullptr;
+} else {
+  args.GetReturnValue().Set(req_wrap->persistent());
+}
+```
+
 ## 노드JS 종료, libuv 시작
 
 우리는 노드 C++ 계층에서 떠나 libuv C 코드로 이동한다. libuv는 독립적인 워크 쓰레드 풀로 워크를 떠넘기면서 비동기 파일시스템 작업을 제공할수 있다. 가능한한 플랫폼 독립적으로 유지하기 위해 libuv는 유닉스와 윈도우 양쪽에 같은 기능을 구현해야 한다. 이 글의 목적을 위해 리눅스에서 돌아간다고 가정하고 [`uv_fs_stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/win/fs.c#L2252)의 적절한 구현으로 넘어가겠다. 만약 윈도우에 환경이라면 [Windows `uv_fs_stat()` 구현](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/win/fs.c#L2252)을 시작하면서 비슷한 방법으로 따라오길 바란다.
