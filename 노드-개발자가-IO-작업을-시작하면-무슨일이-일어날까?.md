@@ -48,7 +48,7 @@ if (args[1]->IsObject()) {
 }
 ```
 
-`ASYNC_CALL`[C++ 매크로](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L360-L361)이며 함수가 아니다. 게다가 `ASYNC_DEST_CALL`를 사용하여 `ASYNC_CALL`을 더 확장한다. 컴파일 시간에 ASYNC_CALL 매크로는 아래 C++ 코드로 확장된다. 이 코드의 가장 중요한 부분이 `uv_fs_sate()` 호출 부분이다. 이 함수는 노드 어플리케이션 이벤트 루프에 묶여있던 stat 요청을 libuv에게 전달한다. 작업이 끝나면 After 함수가 호출된다.
+`ASYNC_CALL`[C++ 매크로](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L360-L361)이며 함수가 아니다. 게다가 [`ASYNC_DEST_CALL` 매크로](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L340-L358)를 사용하여 `ASYNC_CALL`을 더 확장한다. 컴파일 시간에 ASYNC_CALL 매크로는 아래 C++ 코드로 확장된다. 이 코드의 가장 중요한 부분이 `uv_fs_sate()` 호출 부분이다. 이 함수는 노드 어플리케이션 이벤트 루프에 묶여있던 stat 요청을 libuv에게 전달한다. 작업이 끝나면 After 함수가 호출된다.
 
 ```c++
 Environment* env = Environment::GetCurrent(args);
@@ -91,7 +91,7 @@ int uv_fs_stat(uv_loop_t* loop,
 
 기본적으로 작업 큐의 항목을 처리할수 있는 [`worker()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L64) 함수로 구현된 4개의 쓰레드 풀 워커가 있다. 만약 작업이 없으면 쓰레드는 그냥 대기할 것이다. 하지만 일단 워커가 작업을 큐에서 빼내면 [`work()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L95) 메소드를 실행한다. `uv__work_submit()`로 돌아가서 보면 사실 [`work()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L186) 메소드는  `uv__fs_work(https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L186)`다.
 
-`uv__fs_work()` 내부를 보면 파일시스템 요청 타입을 확인한다. 우리의 경우 [`STAT`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L963) 타입이다. 아래 보이는 것처럼 이건 C의 [`stat(2)`](http://man7.org/linux/man-pages/man2/stat.2.html) 함수를 호출하는 [`uv__fs_sate()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L841)를 호출한다. 더 이상 저수준 코드를 추적하지는 않겠다. 하지만 이 요청은 C 기본 라이브러리와 운영체제로 간다. [`stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L845-L847) 호출에 성공하면 [uv__to_stat()](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L766)가 호출되는데 결과를 libuv uv_stat_t 자료 구조로 복사하기 위해서다. libuv는 자체 stat 구조를 사용하여 플랫폼간에 보다 일관적인 인터페이스를 제공할 수 있다. [uv__fs_stae()의 결과는 원래 파일 시스템 요청에 덧붙여진다](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L973-L982). 
+`uv__fs_work()` 내부를 보면 파일시스템 요청 타입을 확인한다. 우리의 경우 [`STAT`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L963) 타입이다. 아래 보이는 것처럼 이건 C의 [`stat(2)`](http://man7.org/linux/man-pages/man2/stat.2.html) 함수를 호출하는 [`uv__fs_sate()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L841)를 호출한다. 더 이상 저수준 코드를 추적하지는 않겠다. 하지만 이 요청은 C 기본 라이브러리와 운영체제로 간다. [`stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L845-L847) 호출에 성공하면 [uv__to_stat()](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L766)가 호출되는데 결과를 libuv uv_stat_t 구조체로 복사하기 위해서다. libuv는 자체 stat 구조체를 사용하여 플랫폼간에 보다 일관적인 인터페이스를 제공할 수 있다. [uv__fs_stae()의 결과는 원래 파일 시스템 요청에 덧붙여진다](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L973-L982). 
 
 ```c
 static int uv__fs_stat(const char *path, uv_stat_t *buf) { 
