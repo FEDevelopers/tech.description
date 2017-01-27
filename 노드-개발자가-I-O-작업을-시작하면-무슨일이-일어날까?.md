@@ -86,3 +86,34 @@ int uv_fs_stat(uv_loop_t* loop,
   POST; 
 }
 ```
+
+ `un__work_submit()` 내부에서, 요청은 [`post()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L107) 함수를 통해 쓰레드 풀의 작업 큐([여기](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/queue.h)서 구현된)에 [전달](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L188)된다. `post()`는 뮤텍스를 사용해서 작업 큐(`wq`)에 대한 접근을 동기화한다. 이것을 통해 메인 쓰레드와 작업 쓰레드가 안전한 방법으로 하나의 큐를 공유할 수 있다. 큐에서 요청을 제거하는 것은 워커 쓰레드에 달려있다. 
+
+기본적으로 작업 큐의 항목을 처리할수 있는 [`worker()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L64) 함수로 구현된 4개의 쓰레드 풀 워커가 있다. 만약 작업이 없으면 쓰레드는 그냥 대기할 것이다. 하지만 일단 워커가 작업을 큐에서 빼내면 [`work()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L95) 메소드를 실행한다. `uv__work_submit()`로 돌아가서 보면 사실 [`work()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L186) 메소드는  `uv__fs_work(https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L186)`다.
+
+`uv__fs_work()` 내부를 보면 파일시스템 요청 타입을 확인한다. 우리의 경우 [`STAT`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L963) 타입이다. 아래 보이는 것처럼 이건 C의 [`stat(2)`](http://man7.org/linux/man-pages/man2/stat.2.html) 함수를 호출하는 [`uv__fs_sate()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L841)를 호출한다. 더 이상 저수준 코드를 추적하지는 않겠다. 하지만 이 요청은 C 기본 라이브러리와 운영체제로 간다. [`stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L845-L847) 호출에 성공하면 [uv__to_stat()](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L766)가 호출되는데 결과를 libuv uv_stat_t 자료 구조로 복사하기 위해서다. libuv는 자체 stat 구조를 사용하여 플랫폼간에 보다 일관적인 인터페이스를 제공할 수 있다. [uv__fs_stae()의 결과는 원래 파일 시스템 요청에 덧붙여진다](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L973-L982). 
+
+```c
+static int uv__fs_stat(const char *path, uv_stat_t *buf) { 
+  struct stat pbuf;
+  int ret;
+  ret = stat(path, &pbuf); 
+  if (ret == 0) 
+    uv__to_stat(&pbuf, buf); 
+  return ret; 
+}
+```
+
+## 결과를 가지고 돌아가기 
+
+여기서 `stat()` 작업이 완료되면 그 결과를 자바스크립트 계층으로로 되돌리기 시작한다. 제어 흐름은 [`uv_async_send()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L101)가 호출된 쓰레드의 `worker()` 함수로 이동한다. [`uv_async_send()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/unix/async.c#L60)는 노드의 메인 쓰레드에서 돌아가는 이벤트 루프를 깨울 책임이 있다. 이것은 메인 쓰레드가 보고 있는 파일 디스크립터에 대한 쓰기를 통해 [`uv__async_send()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/unix/async.c#L147)에서 완료된다. 
+
+메인 쓰레드에서 [`uv__io_poll()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/unix/kqueue.c#L69)은 작업이 완료됨을 확인하고 IO 이벤트의 콜백을 호출한다. 결과적으로 [비동기 이벤트 콜백](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/unix/async.c#L143)인 [`uv__async_io()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/unix/async.c#L78)를 호출한다.  이것은 워커의 [`done()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L236)을 호출하는 [`uv__work_done()`](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L218)을 호출한다. 사실 done() 메소드는 [`POST`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L118) 매크로와 `uv__work_wubmit()`을 통한  [uv__fs_done() 임](https://github.com/nodejs/node/blob/db1087c9757c31a82c50a1eba368d8cba95b57d0/deps/uv/src/threadpool.c#L187)을 떠올려 봐라. 
+
+[`uv__fs_done()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L986) 콜백은 [이벤트 루프에서 요청을 제거](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L990)하고 [요청 콜백을 호출](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L997)한다. [`INIT`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L63) 매크로가 [`uv_fs_stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L1274)로 [전달된 요청 콜백 함수를 세팅한다는 것](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/deps/uv/src/unix/fs.c#L74)을 기억하는가?  이 콜백은 우리를 노드JS 바인딩 레이어로 되돌려준다. [`uv_fs_stat()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L345)는 콜백인 [`After()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L348)와 함께 호출된다는 것을 기억하자.
+
+`After()` 내부에서 작업에 성공했다고 가정하면 [`uv_fs_stat()` 결과를 포함하는 `uv_stat_t` 구조체는 `BuildStatsObject()` 함수로 전달된다](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L204-L209). 이것은 `uv_stat_t` 구조체로부터 정보를 포함하는 자바스크립트 객체를 만든다. 이 자바스크립트 객체가 빌드되면 [`MakeCallback()`](https://github.com/nodejs/node/blob/24a3d0e71b46bdf79041eb71e46662c891ab7694/src/node_file.cc#L321)이 호출되고 요청 객체를 정리할 수 있다. [`MakeCallback()`](https://github.com/nodejs/node/blob/833294f681db34dda78276f1f65dc9eb3badcd9e/src/async-wrap.cc#L295)은 `fs.stat()`의 결과를 가지고 자바스크립트 런타임을 다시 호출하는 역할을 한다. 이 시점에서 우리의 자바스크립트 코드는 계속 실행할 수 있게 되는 것이다.
+
+## 결론 
+
+여기까지 노드 자바스크립트 계층으로부터 C++ 바인딩 레이어 그리고 libuv의 쓰레드 풀까지 파일 시스템 요청을 추적해 봤다. 동기와 비동기 호출이 같은 코드 경로를 공유할 수 있는 방법 뿐만 아니라 어떻게 다양한 계층이 상호작용하는지 살펴봤다. 노드의 자바스크립트 계층 아래 세상을 경험해 보지 않았다면 (이러한) 압도감을 느낄수도 없었을 것이다.
