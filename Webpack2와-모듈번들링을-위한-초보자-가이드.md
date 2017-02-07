@@ -398,3 +398,96 @@ import people from './people'
 const root = document.querySelector('#root')
 root.innerHTML = `<p>There are ${people.length} people.</p>`
 ```
+
+
+이 진입점은 다음 파일들을 생성합니다.
+
+- `app.bundle.js` : *스타일* 과 *lodash/collection* 모듈을 포함
+- `admin.bundle.js` : 추가 모듈 미포함
+- `commons.js` : *people* 모듈 포함
+
+이제 두 영역 모두에서 `commons` 청크 파일을 포함 시킬 수 있습니다.:
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello webpack</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="dist/commons.js"></script>
+    <script src="dist/app.bundle.js"></script>
+  </body>
+</html>
+```
+```html
+<!-- admin.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello webpack</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="dist/commons.js"></script>
+    <script src="dist/admin.bundle.js"></script>
+  </body>
+</html>
+```
+
+브라우저에서 `index.html`과 `admin.html`을 실행시키면 자동적으로 `commons` 청크 파일이 생성되어 실행되는 것을 볼 수 있습니다.
+
+##Extracting CSS
+또다른 유명한 플러그인 인 [extract-text-webpack-plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin)은 모듈을 자체 파일로 추출 하는데 사용합니다.  
+
+아래에서는 `.scss` 룰을 수정하여 `Sass`를 컴파일하고, `CSS`를 불러온 후, 각 CSS 번들로 추출함으로써 자바스크립트 번들에서 삭제 합니다.
+
+```
+npm install extract-text-webpack-plugin@2.0.0-beta.4 --save-dev
+```
+```javascript
+// webpack.config.js
+const ExtractTextPlugin = require('extract-text-webpack-plugin')
+const extractCSS = new ExtractTextPlugin('[name].bundle.css')
+
+const config = {
+  // ...
+  module: {
+    rules: [{
+      test: /\.scss$/,
+      loader: extractCSS.extract(['css-loader','sass-loader'])
+    },{
+      // ...
+    }]
+  },
+  plugins: [
+    extractCSS,
+    // ...
+  ]
+}
+```
+
+webpack을 재시작하면 새로운 번들인 `app.bundle.js` 을 볼수 있으며, 아래와 같이 바로 링크를 삽입 할 수 있습니다.
+
+```html
+<!-- index.html -->
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Hello webpack</title>
+    <link rel="stylesheet" href="dist/app.bundle.js">
+  </head>
+  <body>
+    <div id="root"></div>
+    <script src="dist/commons.js"></script>
+    <script src="dist/app.bundle.js"></script>
+  </body>
+</html>
+```
+
+브라우저를 새로고침하면 컴파일된 CSS는 `app.bundle.js` 에서 `app.bundle.css` 로 이동된 것을 볼수 있습니다. 성공!
