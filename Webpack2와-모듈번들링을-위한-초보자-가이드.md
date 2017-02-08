@@ -491,3 +491,78 @@ webpack을 재시작하면 새로운 번들인 `app.bundle.js` 을 볼수 있으
 ```
 
 브라우저를 새로고침하면 컴파일된 CSS는 `app.bundle.js` 에서 `app.bundle.css` 로 이동된 것을 볼수 있습니다. 성공!
+
+#Code Splitting
+
+우리는 이미 몇몇 방법으로 코드를 나누는 것을 보았습니다.
+
+- 각각의 진입점을 수동으로 생성
+- `commons` 청크로 공유코드 자동으로 분리
+- `extract-text-webpack-plugin`으로 컴파일된 번들에서 청크 추출
+
+또다른 방법으로 [System.import](https://webpack.js.org/guides/migrating/#code-splitting-with-es2015) 또는 [require.ensure](https://webpack.js.org/guides/migrating/#code-splitting-with-es2015) 을 통해 우리의 번들을 분리할 수 있습니다. 이런 함수들로 코드를 랩핑하면 런타임에 실행될 필요한 청크를 생성할 수 있습니다. 이 방식으로 하면 클라이언트에서 시작될때 모든 파일들을 전송하지 않아도 되므로 실행시간 성능에 향상시킬 수 있습니다. `System.import`는 인자로 모듈이름을 전달하고, `Promise`를 반환받습니다. `require.ensure`는 의존성 목록, 콜백 그리고 청크를 위한 옵션 이름을 전달합니다.  
+
+여러분의 앱의 한부분이 의존성이 많고 다른 앱부분에는 불필요하다면, 앱 자체 번들로 나누는 것이 좋습니다. `d3`가 필요한 `dashboard.js` 이름의 새 모듈을 추가하여 위 내용을 설명하도록 하겠습니다.
+
+```
+npm install d3 --save
+```
+```javascript
+// src/dashboard.js
+import * as d3 from 'd3';
+
+console.log('Loaded!', d3');
+
+export const draw = () => {
+  console.log('Draw!')
+}
+```
+
+`app.js` 아래에서 `dashboard.js`을 가져오겠습니다.
+
+```javascript
+// ..
+const routes = {
+  dashboard: () => {
+    System.import('./dashboard').then((dashboard) => {
+      dashboard.draw()
+    }).catch((err) => {
+      console.log('Chunk loading failed')
+    })
+  }
+}
+
+// timeout으로 비동기 로딩 데모실행
+setTimeout(routes.dashboard, 1000)
+```
+
+모듈을 비동기로 로드하여 추가하였기 때문에, 우리 webpack 설정에 어디에서 가져올지 알 수 있도록 적절한 `output.publicPath` 속성이 필요합니다.
+
+```javascript
+// webpack.config.js
+
+const config = {
+  // ...
+  output: {
+    path: path.resolve(__dirname, 'dist'),
+    publicPath: '/dist/',
+    filename: '[name].bundle.js'
+  },
+  // ... 
+}
+```
+
+빌드를 재시작하면, `0.bundle.js`이라는 새로운 번들 파일을 보게 될것입니다.
+
+![webpack build result](https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/01/1484692637bundle-2.png)
+
+위 이미지에서 webpack이 눈에 띄게 하려고 `[big]` 번들에 하이라이팅하도록 한 것에 주목하시기 바랍니다.  
+`0.bundle.js`은 JSONP 요청에 의존하여 패치 되므로, 파일 시스템에서 직접 파일을 로드하면 더이상 잘라낼 수가 없습니다. 그래서 서버를 운영해야 할 필요가 생겼습니다.
+
+```
+python -m SimpleHTTPServer 8001
+```
+
+`http://localhost:8001/`을 열어보시기 바랍니다.
+
+로딩 1초후에 동적으로 생성된 `/dist/0.bundle.js` 번들파일에 대한 GET 요청을 보게 되고, 콘솔에 `Loaded!` 를 확인 하실 수 있습니다. 성공!
