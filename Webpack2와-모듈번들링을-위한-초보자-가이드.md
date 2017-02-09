@@ -618,3 +618,50 @@ plugins: [
 ]
 ```
 
+
+마지막으로 `<input>` 요소를 페이지에 추가하고, 요소에 텍스트를 입력해놓고 다른 모듈을 변경했을 때 전체 페이지 새로고침이 발생하지 않는 것을 확인 할 수 있습니다.
+
+```html
+<body>
+  <input />
+  <div id="root"></div>
+  ...
+```
+
+`npm start` 로 서버를 재시작하고 `hot reloading`을 봐보세요!  
+
+`people.js` 에 이름을 변경하고, `input` 요소에 `HMR Rules`를 입력하면 페이지 새로고침 없이 스왑되고, `input` 상태를 유지 하고 있는 것을 확인 할 수 있습니다.  
+
+지금까지 간단한 예제였는데, 얼마나 유용한지 알 수 있기를 바랍니다. React 같은 컴포넌트 기반 개발에서는 특히 상태와 분리된 많은 `dumb` 컴포넌트가 있고, 컴포넌트 상태를 잃지 않고 스왑하고 다시 렌더링 할 수 있으므로, 즉각적인 피드백을 얻을 수 있습니다.
+
+##Hot Reloading CSS
+
+`style.scss`에 `<pre>` 요소의 백그라운드 색깔을 변경하고 보면 `HMR`로 교체되지 않는것 을 보게 됩니다.
+
+```css
+pre {
+  background: red;
+}
+```
+
+`style-loader`를 사용할 때 `HMR`이 자유롭게 사용 할 수 있도록 제공된다고 합니다. 그래서 다른 작업을 할 필요가 없습니다. 교체 할 수 없는 외부 CSS파일로 CSS 모듈을 추출 하여 연결된 링크를 끊었습니다.  
+`SASS` 룰을 원래대로 돌리고, 플러그인 목록에서 `extractCSS` 을 삭제하면 `SASS` 또한 `hot reloading`을 할 수 있습니다.
+
+```javascript
+{
+  test: /\.scss$/,
+  loader: ['style-loader', 'css-loader','sass-loader']
+}
+```
+
+#HTTP/2
+webpack과 같은 모듈 번들러를 사용하면 얻는 이점 중 하나는 assets을 빌드하고 클라이언트에서 패치하는 방법을 제어할 수 있으므로 성능을 향상시키는데 도움이 된다는 것 입니다. 클라이언트에서 만들어진 것들에 대한 요청 수를 줄이기 위해 파일을 연결하는 것이 수년동안 [best practice](https://developer.yahoo.com/performance/rules.html)로 간주되고 있었습니다. 이는 여전히 유효하지만, [HTTP/2 에서는 단일 요청으로 다중 파일을 전달](https://www.sitepoint.com/file-bundling-and-http2/)할 수 있게 되어 더이상의 `silver bullet` 이 아니게 되었습니다. 앱은 실제로 많은 작은 파일들을 개개인별로 캐싱하여 이점을 얻을 수 있습니다. 그래서 클라이언트는 전체 번들을 다시 가져오는 대신 변경된 모듈 부분에 대해서만 가져올 수 있습니다.  
+
+Webpack 창시자인 [Tobias Koppers](https://twitter.com/wSokra)은 `HTTP/2`에서도 여전히 번들링이 중요하다는 내용에 대해 포스팅을 해논게 있습니다.  
+
+자세한 내용은 [webpack & HTTP/2](https://medium.com/webpack/webpack-http-2-7083ec3f3ce6)을 읽어보세요.
+
+#Over to You
+webpack2에 도움이 될 소개글을 찾았고, 많은 도움을 내기 위해 webpack을 사용 할 수 있기를 바랍니다. webpack의 설정, 로더 그리고 플러그인에 대해 골머리를 썩겠지만, 이 도구들을 배우면 효과가 있을 것입니다.  
+
+아직 문서는 작성중이지만, 기존 Webpack1 프로젝트를 새롭게 바꾸려면 [v1 -> v2](https://webpack.js.org/guides/migrating/) 로 쉽게 마이그레이션 할 수 있는 가이드를 참고하세요.
