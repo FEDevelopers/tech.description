@@ -566,3 +566,55 @@ python -m SimpleHTTPServer 8001
 `http://localhost:8001/`을 열어보시기 바랍니다.
 
 로딩 1초후에 동적으로 생성된 `/dist/0.bundle.js` 번들파일에 대한 GET 요청을 보게 되고, 콘솔에 `Loaded!` 를 확인 하실 수 있습니다. 성공!
+
+#Webpack Dev Server
+
+`Live reloading`은 파일이 변경될 때 자동으로 새로고침 해줌으로써 개발 경험을 향상 시킬 수 있습니다. 간단히 설치하고 `webpack-dev-server`로 시작하면 됩니다.
+
+```
+npm install webpack-dev-server@2.2.0-rc.0 --save-dev
+```
+
+`package.json` 에서 `start` 스크립트를 수정하겠습니다.
+
+```
+"start": "webpack-dev-server --inline",
+```
+
+`npm start` 로 서버를 시작하면 여러분의 브라우저에서 [http://localhost:8080/](http://localhost:8080/)를 열 수 있습니다.  
+`src` 폴더에 `people.js` 의 이름을 바꿔보던가, `style.scss` 안에 스타일을 바꿔보면, 여러분의 눈으로 화면에서 변화되는 것을 보게 됩니다.
+
+##Hot Module Replacement
+
+만약 여러분이 `live reloading`에 감탄했다면, [hot module replacement](https://webpack.js.org/concepts/hot-module-replacement)(HMR) 에 더 놀랄것입니다.  
+
+2017년에, 전역 상태의 싱글페이지앱에서 이미 경험해보았습니다. 개발하는 동안 컴포넌트를 작게 변경 할 것이며, 출력사항을 볼 수 있는 실제 브라우저에서 변화된 내용이 반영 됬는지 확인 할 수 있습니다. 수동으로 페이지를 새로고침하거나, `live reload` 하면 전체 상태가 날라가버리고, 처음부터 다시 시작 해야 합니다. `Hot module replacement`는 영원히 바뀌어 있을 것입니다.  
+
+개발자 워크플로우에서 개발자가 모듈을 변경 하게 되면 브라우저는 새로고침(로컬 상태를 날려버리거나)하거나 다른 모듈을 건들지 않고 런타임에 모듈을 컴파일하고 스왑하게 됩니다. 여전히 수동으로 새로고침이 필요하지만, `HMR` 은 많은 양의 시간을 절약할 수 있으며 미래적인 느낌을 받을 수 있습니다.  
+
+`package.json`에 `start` 스크립트를 수정하겠습니다.
+
+```
+"start": "webpack-dev-server --inline --hot",
+```
+
+`app.js` 맨 위에 의존적인 다른 것을 포함하여 모든 모듈들을 webpack이 `hot reloading`을 하게끔 허락한다고 작성합니다.
+
+```javascript
+if(module.hot){
+  module.hot.accept()
+}
+// ... 
+```
+
+참고: `webpack-dev-server --hot`은 `module.hot`을 `true`로 세팅하며, 개발모드에서만 사용됩니다. 프로덕션 모드로 빌드 할 경우 `module.hot`은 `false`로 세팅되고 번들에서 제거됩니다.  
+
+`webpack.config.js`의 플러그인 목록에 `NamedModulesPluign`을 추가하면 더 나은 콘솔로깅으로 향상 시킬 수 있습니다.
+
+```javascript
+plugins: [
+  new webpack.NamedModulesPluign(),
+  // ...
+]
+```
+
