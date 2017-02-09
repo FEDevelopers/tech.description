@@ -2,10 +2,10 @@
 
 > Webpack 은 모듈 번들러 입니다.
 
-모던 웹 개발에 있어서 [Webpack](https://webpack.js.org/)은 매우 중요한 도구중에 하나로 자리 잡았습니다. 주로 자바스크립트를 위한 모듈 번들러이지만, HTML, CSS 심지어 이미지들 같은 프론트엔드 assets 들을 변환시켜 주는 법을 배울 수 있습니다. 여러분의 앱에 HTTP 요청 갯수를 더많이 컨트롤 할 수 있게 만들 수 있으며, 다른 종류의 assets(Jade, Sass, ES6등)를 사용 할 수 있게 도와줍니다. 또한 Webpack을 사용하면 npm 패키지를 쉽게 사용할 수 있습니다.  
+모던 웹 개발에 있어서 [Webpack](https://webpack.js.org/)은 매우 중요한 도구중에 하나로 자리 잡았습니다. 주로 자바스크립트를 위한 모듈 번들러이지만, HTML, CSS 심지어 이미지들 같은 프론트엔드 assets 들을 변환시켜 주는 법을 배울 수 있습니다. 여러분의 앱에 HTTP 요청 갯수를 컨트롤 할 수 있게 만들 수 있으며, 다른 종류의 assets(Jade, Sass, ES6등)를 사용 할 수 있게 도와줍니다. 또한 Webpack을 사용하면 npm 패키지를 쉽게 사용할 수 있습니다.  
 
-이번 포스팅은 webpack을 처음 사용하는 사람을 대상으로 하며, 초기 설치, configuration, modules, loaders, plugins, code splitting, hot module replacement에 대해 설명합니다. 만약 여러분이 비디오 튜토리얼이 좋다면, Glen Maddern’s의 [Webpack from First Principles](https://www.youtube.com/watch?v=WQue1AN93YU)을 시작점으로 삼고 webpack의 특별한점을 이해하는것이 좋을것입니다.  
-집에서 다음을 따라가기 위해서 [NodeJS](https://www.sitepoint.com/quick-tip-multiple-versions-node-nvm/) 설치해야하며, 또한 Gihub 저장소에서 [데모앱](https://github.com/sitepoint-editors/webpack-demo)을 다운 받을 수 있습니다.
+이번 포스팅은 webpack을 처음 사용하는 사람을 대상으로 하며, 초기 설치, configuration, modules, loaders, plugins, code splitting, hot module replacement에 대해 설명합니다. 만약 여러분이 비디오 튜토리얼이 좋다면, Glen Maddern’s의 [Webpack from First Principles](https://www.youtube.com/watch?v=WQue1AN93YU)을 시작점으로 삼아 webpack의 특별한 점을 이해하는 것이 좋을것 같습니다.  
+이제부터 집에서 따라가기 위해 [NodeJS](https://www.sitepoint.com/quick-tip-multiple-versions-node-nvm/) 설치해야하며, 또한 Github 저장소에서 [데모앱](https://github.com/sitepoint-editors/webpack-demo)을 다운 받을 수 있습니다.
 
 #Setup
 
@@ -80,8 +80,8 @@ const config = {
 module.exports = config
 ```
 
-위 설정은 흔한 시작 포인트입니다. 그리고 webpack에게 entry point는 `src/app.js`로 하고, output 은 `/dist/bundle.js`로 하라고 지시하고, 바벨을 이용하여 모든 `.js` 파일들을 *ES2015* 에서 *ES5* 로 변환 하라고 합니다.  
-위 작업을 진행 하기 위해 `babel-core`, webpack loader 인 `babel-loader`, 그리고 `babel-preset-es2015` 3개의 패키지를 설치하여야 합니다. `{ modules: false }`는 Tree Shaking 사용하여, bundle로 부터 나온 사용하지 않는 것들을 삭제하여 파일 크기를 줄입니다.
+위 설정은 webpack에게 `entry point`는 `src/app.js`로 하고, `output` 은 `/dist/bundle.js`로 하라고 지시하고, 바벨을 이용하여 모든 `.js` 파일들을 *ES2015* 에서 *ES5* 로 변환 하라고 하는 흔한 방식입니다.  
+위 작업을 진행 하기 위해 `babel-core`, webpack loader 인 `babel-loader`, 그리고 `babel-preset-es2015` 3개의 패키지를 설치하여야 합니다. `{ modules: false }`는 [Tree Shaking](https://webpack.js.org/guides/tree-shaking/) 사용하여, bundle로 부터 나온 사용하지 않는 것들을 삭제하여 파일 크기를 줄입니다.
 
 ```
 npm install babel-core babel-loader babel-preset-es2015 --save-dev
@@ -96,7 +96,7 @@ npm install babel-core babel-loader babel-preset-es2015 --save-dev
 },
 ```
 
-커맨드라인에서 `npm start` 를 실행하면, webpack은 `watch` 모드로 실행 될 것이며, `src` 디렉토리에 `.js` 파일들이 변경되면, 번들파일이 다시 컴파일 됩니다. 콘솔 결과는 번들 생성 정보를 알려주며, 결과 나온 번들의 갯수와 사이즈에 대해 주의깊게 살펴봐야 합니다.
+커맨드라인에서 `npm start` 를 실행하면, webpack은 `watch` 모드로 실행 될 것이며, `src` 디렉토리에 `.js` 파일들이 변경되면, 번들파일이 다시 컴파일 됩니다. 콘솔 결과는 번들 생성 정보를 알려주며, 결과로 나온 번들의 갯수와 사이즈에 대해 주의깊게 살펴봐야 합니다.
 
 ![webpack result](https://dab1nmslvvntp.cloudfront.net/wp-content/uploads/2017/01/1484692629bundle-1.png)
 
@@ -377,7 +377,7 @@ const config = {
 module.exports = config
 ```
 
-`[name]`을 포함한 `output.filename`의 변경을 확인 하십시오. 위 설정을 통해서 청크 네임으로 변경된 `app.bundle.js`와 `admin.bundle.js`라는 2개의 번들파일을 예상 할 수 있습니다.  
+`[name]`이 포함된 `output.filename` 속성 변경을 확인 하십시오. 위 설정을 통해서 청크 네임으로 변경된 `app.bundle.js`와 `admin.bundle.js`라는 2개의 번들파일을 예상 할 수 있습니다.  
 `commonschunk` 플러그인은 진입점의 공유 모듈을 포함하는 3번째 파일인 `commons.js` 을 생성합니다.
 
 ```javascript
@@ -502,7 +502,7 @@ webpack을 재시작하면 새로운 번들인 `app.bundle.js` 을 볼수 있으
 
 또다른 방법으로 [System.import](https://webpack.js.org/guides/migrating/#code-splitting-with-es2015) 또는 [require.ensure](https://webpack.js.org/guides/migrating/#code-splitting-with-es2015) 을 통해 우리의 번들을 분리할 수 있습니다. 이런 함수들로 코드를 랩핑하면 런타임에 실행될 필요한 청크를 생성할 수 있습니다. 이 방식으로 하면 클라이언트에서 시작될때 모든 파일들을 전송하지 않아도 되므로 실행시간 성능에 향상시킬 수 있습니다. `System.import`는 인자로 모듈이름을 전달하고, `Promise`를 반환받습니다. `require.ensure`는 의존성 목록, 콜백 그리고 청크를 위한 옵션 이름을 전달합니다.  
 
-여러분의 앱의 한부분이 의존성이 많고 다른 앱부분에는 불필요하다면, 앱 자체 번들로 나누는 것이 좋습니다. `d3`가 필요한 `dashboard.js` 이름의 새 모듈을 추가하여 위 내용을 설명하도록 하겠습니다.
+여러분 앱에 한 부분이 의존성이 많고 다른 앱 부분에는 불필요하다면, 앱 자체 번들로 나누는 것이 좋습니다. `d3`가 필요한 `dashboard.js` 이름의 새 모듈을 추가하여 위 내용을 설명하도록 하겠습니다.
 
 ```
 npm install d3 --save
