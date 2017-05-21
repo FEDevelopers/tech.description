@@ -4,7 +4,7 @@
 ![tree](http://moduscreate.com/wp-content/uploads/2016/02/webpacktreeshaking.jpeg)
 
 
-ECMAScript 2015에서 사용하지 않는 코드를 배제하는 알고리즘인 트리 쉐이킹은 webpack2에서 가장 기대되는 기는 중 하나다. ES6의 exports 중 사용되지 않는 것을 배제함으로써 webpack은 번들링을 이전보다 훨씬 작은 사이즈로 만들어준다.
+ECMAScript 2015에서 사용하지 않는 코드를 배제하는 알고리즘인 트리 쉐이킹은 webpack2에서 가장 기대되는 기능 중 하나다. ES6의 exports 중 사용되지 않는 것을 배제함으로써 webpack은 번들링을 이전보다 훨씬 작은 사이즈로 만들어준다.
 
 
 궁극적으로 트리 쉐이킹은 스크립트에서 실제로 import 하는 모듈만 번들링한다. import 하지 않는 모듈은 자바스크립트 최종 빌드 파일에는 포함되지 않는다.
@@ -28,7 +28,7 @@ ECMAScript 2015에서 사용하지 않는 코드를 배제하는 알고리즘인
 긴 코드를 짧게 줄이기 위해 ```.babelrc``` 설정을 조금 바꿔야한다. ```es2015``` preset 대신에 ```babel-preset-es2015-native-modules```라는 이름의 새로운 모듈로 바꿔야한다. 이 값은 Babel이 CommonJS 모듈 방식으로 트랜스파일링하는 것을 skip하게끔 해준다.
 
 
-새로운 ```.babalrc```은 아래와 같다.
+새로운 ```.babelrc```은 아래와 같다.
 
 
 ``` javascript
