@@ -199,7 +199,7 @@ npm install css-loader style-loader sass-loader node-sass --save-dev
 ```javascript
 // webpack.config.js
 rules: [{
-  test: '/\.scss$/',
+  test: /\.scss$/,
   use: [
     'style-loader',
     'css-loader',
