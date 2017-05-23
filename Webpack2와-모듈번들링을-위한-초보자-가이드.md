@@ -69,7 +69,7 @@ const config = {
         loader: 'babel-loader',
         options: {
           presets: [
-            ['es2015', {moduels: false}]
+            ['es2015', {modules: false}]
           ]
         }
       }]
