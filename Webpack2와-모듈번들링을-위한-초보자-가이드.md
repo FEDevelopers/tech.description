@@ -480,7 +480,7 @@ webpack을 재시작하면 새로운 번들인 `app.bundle.js` 을 볼수 있으
   <head>
     <meta charset="utf-8">
     <title>Hello webpack</title>
-    <link rel="stylesheet" href="dist/app.bundle.js">
+    <link rel="stylesheet" href="dist/app.bundle.css">
   </head>
   <body>
     <div id="root"></div>
