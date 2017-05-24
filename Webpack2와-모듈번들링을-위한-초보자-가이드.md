@@ -471,7 +471,7 @@ const config = {
 }
 ```
 
-webpack을 재시작하면 새로운 번들인 `app.bundle.js` 을 볼수 있으며, 아래와 같이 바로 링크를 삽입 할 수 있습니다.
+webpack을 재시작하면 새로운 번들인 `app.bundle.css` 을 볼수 있으며, 아래와 같이 바로 링크를 삽입 할 수 있습니다.
 
 ```html
 <!-- index.html -->
