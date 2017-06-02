@@ -3,7 +3,7 @@
 > 또한 [[ES6] Promises(1):the API](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API) 다음 편 입니다.
 
 
-#목차
+# 목차
 1. [Promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#1-promises)
 2. [첫번째 예제](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#2-%EC%B2%AB%EB%B2%88%EC%A7%B8-%EC%98%88%EC%A0%9C)
 3. [Promises 생성과 사용](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#3-promises-%EC%83%9D%EC%84%B1%EA%B3%BC-%EC%82%AC%EC%9A%A9)
@@ -34,7 +34,7 @@
  2. [단점](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#102-%EB%8B%A8%EC%A0%90)
 11. [Promises와 generators](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API#11-promises%EC%99%80-generators)
 
-#6. 에러 처리
+# 6. 에러 처리
  앞서 언급했듯이, 에러 처리에서 반환하는 것은 *fulfillment* 값이 될 것입니다.(*rejection* 값이 아닌) 따라서 실패시 사용하는 기본값을 지정 할 수 있습니다.
 
 ```` javascript
@@ -48,7 +48,7 @@
     });
 ````
 
-##6-1 예외를 잡자(Catching exceptions)
+## 6-1 예외를 잡자(Catching exceptions)
  **executor**의 예외(Exceptions)는 다음 에러 핸들러(*handler*) 에게 전달 됩니다.
 
 ```` javascript
@@ -72,7 +72,7 @@
     });
 ````
 
-##6-2 에러's 체이닝(Chaining errors)
+## 6-2 에러's 체이닝(Chaining errors)
  아래 예제를 보면 에러 핸들러를 제공 하지 않는 `then()`메서드는 하나 이상의 호출이 있을 수 있습니다. 그런 다음 에러 핸들러가 있는 곳 까지 에러는 전달 됩니다.
 
 ```` javascript
@@ -84,11 +84,11 @@
     });
 ````
 
-#7.Composition
+# 7.Composition
 > 이번 섹션은 새로운 것을 만들기 위해 기존 **promises**를 구성(*composition*) 하는 법을 설명하고자 합니다. 우리는 이미 **promises**를 구성(*composition*)하는 방법에 대해 본 적이 있습니다(:`then()`을 통한 순차적인 체이닝)  
 `Promise.all()`과 `Promise.race()`은 추가적인 **promises**를 구성(*composition*)방법을 제공합니다.
 
-##7-1 `Promise.all()` 을 통한 `map()`
+## 7-1 `Promise.all()` 을 통한 `map()`
  **Promises**가 한가지 좋은 것은 promise기반 함수는 결과를 반환 하기 때문에, 여전히 많은 동기적으로 작동하는 도구(:라이브러리 tools)가 잘 작동한다는 것 입니다. 예를 들어, 배열이 제공하는 `map()` 메서드를 다음과 같이 사용 할 수 있습니다.
 
 ```` javascript
@@ -113,7 +113,7 @@
     });
 ````
 
-##7-2 `Promise.race()`를 통한 Timing out
+## 7-2 `Promise.race()`를 통한 Timing out
 `Promise.race()`는 *promises* 배열을 받으며, 새로운 **promise P**를 반환 합니다.(*thenables*와 다른 값은 `Promise.resolve()`를 통해 promises 로 변환 됩니다.)  
 만약 첫번째 **Promise**가 성공 또는 거절로 확정되면 그 *Promise*가 전달되어집니다. 
 
@@ -130,7 +130,7 @@
     .catch(function (reason) { ... });
 ````
 
-#8. 항상 비동기인 Promises
+# 8. 항상 비동기인 Promises
 *promise* 라이브러리는 동기(즉시실행) 또는 비동기(현재 상황 이후에 promises실행)적으로 결과를 전달 하는 것을 완벽하게 통제 할 수 있습니다.  
 그러나 **Promise/A+**은 후자의 경우(현재 상황이후에 promises실행)를 사용하길 요구합니다.  
 `then()` 메서드를 위해 [requirement](https://promisesaplus.com/#point-34) 를 따르기를 권장 합니다. (It states so via the following requirement (2.2.4) for the then() method:)
@@ -140,13 +140,13 @@
 이 의미는 여러분의 코드는 [run-to-completion](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-3-run-to-completion-%EC%9D%98%EB%AF%B8%ED%95%B4%EC%84%9D%ED%95%98%EA%B8%B0-%EB%AA%A8%ED%98%B8%ED%95%9C-%EA%B3%A0%EC%9C%A0-%EC%9A%A9%EC%96%B4) 에 의존 할 수 있다는 것입니다.   
 그리고 *promises* 체이닝은 다른  **tasks**의 프로세스를 처리하지 않을 것입니다.
 
-#9. Cheat sheet: the ECMAScript 6 promise API
+# 9. Cheat sheet: the ECMAScript 6 promise API
  이번 섹션은 [명세](https://tc39.github.io/ecma262/#sec-promise-objects)에 설명 된대로 *ECMAScript6 promise API* 에 대한 개요를 설명합니다.
 
-##9.1 Glossary(어휘)
+## 9.1 Glossary(어휘)
 **Promise API**는 결과를 비동기적으로 제공하는 것에 관한 내용입니다. *promise* 객체는 그 객체를 통해 전달되는 결과를 전달하는 대리자입니다.
 
-####상태:
+#### 상태:
 - promise는 항상 3개중에 1개의 상호배타적인 상태를 가집니다.
  - 결과가 준비되기전에는 promise는 대기중(*pending*) 상태입니다.
  - 만약 결과가 준비됬으면, promise는 완료(*fulfilled*) 상태입니다.
@@ -154,11 +154,11 @@
 - 어떤 행위가 끝났다는건 promise 상태가 확정 됬다는 것입니다.(*fulfilled* 또는 *rejected*던지간에..)
 - promise는 한번 확정되면, 더이상 변하지 않습니다.
 
-####상태 변화 반응(*Reacting*):
+#### 상태 변화 반응(*Reacting*):
 - *Promise* 반응(*reactions*)은 *promise* `then()`에 등록한 콜백이며, *fulfillment* 또는 *rejection*을 통지를 받습니다.
 - *thenable*은 **promise** 스타일 `then()` 메서드를 가진 객체입니다. **API**는 promise가 설정됬다는 알림을 받는 것에 관심있을 뿐 아니라 *thenables*도 요구 합니다.
 
-####변경 상태: 
+#### 변경 상태: 
 *promise*는 상태를 변경하기 위해 2가지 방법이 있습니다. 당신이 한번 호출 한 후에 재 호출은 아무 효과가 없습니다.
 
 - promise가 거부(*Rejecting*)됬다는 것은 promise가 거절(*rejected*)된다는 것을 의미합니다.
@@ -166,7 +166,7 @@
  - 일반적인 값(*thenable*이 아닌)으로 해결(*Resolving*)하면 그 값으로 충족(*fulfills*)됩니다.
  - *thenable* **T**를 가진 promise **P**를 해결(*Resovling*)하는 것은 더이상 promise **P**는 사용할수 없고, *fulfillment* 또는 *rejection* 값을 가진 **T**의 상태를 따르게 됩니다. 적절한 **P**의 반응(*reactions*)은 **T**가 해결되면 즉시 재호출 되는 것입니다.
 
-##9.2 생성자
+## 9.2 생성자
  promise 생성자는 다음과 같은 시그니쳐를 따릅니다.
 
 ```` javascript
@@ -180,12 +180,12 @@
  - 그렇지 않으면, `p`는 `x`로 처리(*fulfilled*) 됩니다.
 - `reject(e)`의 변수`e`를 통해 `p`는 거절(*reject*)됩니다.(`Error` 대신에)
 
-##9.3 정적 메소드
+## 9.3 정적 메소드
 > **Promise**의 모든 정적메소드는 *subclassing* 을 제공합니다.
 
  *subclassing*은 *receiver*를 통해 새로운 인스턴스를 생성합니다.(`new this(..)`) 또한 *subclassing*을 통해 다른 정적메소드에 접근합니다.(`this.resolve(...) VS `Promise.resolve(...))
 
-###Promises 생성
+### Promises 생성
 아래 2개 메서드는 새로운 *receiver* 인스턴스를 생성합니다.(*subclassing*의 this)
 
 - Promise.resolve(x):
@@ -194,7 +194,7 @@
  - 그렇지않으면, `x`가 처리된 새로운 *receiver* 인스턴스를 반홥니다.
 - Promise.reject(reason): 어떤 값-*reason* 을 통해 거절(*rejected*)된 새로운 *promise*를 생성합니다. 
 
-###Promises 합성
+### Promises 합성
  정적메소드인 `Promise.all()`과 `Promise.race()`는 단일 *promise*를 반복 가능한 *promise's*로 구성합니다.  
 그것은 즉:
 
@@ -208,8 +208,8 @@ Method 들 :
  - 만약 *iterable* 요소중 어느 하나라도 거절(*rejected*)되면 *promise.all*은 거절(*rejected*)됩니다. **Rejection** 값 : 첫번째 거절(*rejection*)값
 - Promise.race(iterable): 확정(*settled*)된 *iterable* 첫번째 요소는 다음 반환되어지는 *promise*를 해결하기 위해 사용됩니다. 
 
-##9.4 인스턴스 프로토타입 메서드's
-####`Promise.prototype.then(onFulfilled, onRejected)`:
+## 9.4 인스턴스 프로토타입 메서드's
+#### `Promise.prototype.then(onFulfilled, onRejected)`:
 
 - *onFulfilled* 와 *onRejected* 콜백을 반응(reactions)이라고 부릅니다.
 - *onFulfilled*는 promise가 이미 처리(*fulfilled*) 되었을 경우 즉시 호출되고 또는 그것이 실현되자마자 즉시 호출됩니다. 마찬가지로 *onRejected*는 거절에 관한 정보를 제공 받습니다.
@@ -231,13 +231,13 @@ Method 들 :
     }
 ````
 
-####`Promise.prototype.catch(onRejected)`:
+#### `Promise.prototype.catch(onRejected)`:
 
 - `then(null, onRejected)`와 동일
 
-#10. promises의 장단점
-##10.1 장점
-###통합 비동기 API
+# 10. promises의 장단점
+## 10.1 장점
+### 통합 비동기 API
 *promise*는 중요한 장점이 한가지 있습니다. *promise*는 점점 비동기식 브라우저 API's에 사용될 것이고, 현재 다양하고 호환되지 않은 패턴과 규칙들을 통합 할 것입니다.  
 아래 2가지 promise 기반 API's를 봅시다.  
 
@@ -260,11 +260,11 @@ then(some_module=>{
 })
 ````
 
-###Promises VS events
+### Promises VS events
  *events*에 비해, 일회성 결과를 다루기에는 *promise*가 더 낫습니다. *promise*가 연산되어지는 전이든 후든, 그 결과를 등록했는지 여부는 중요하지 않습니다. 언제 등록 했는지에 상관없이 당신은 결과를 얻을 수 있습니다. 이런 *promise*장점은 자연에 본질적입니다.  
 반면에, 당신은 반복 이벤트를 다룰때는 사용할 수 없습니다. 체이닝은 *promise*의 또다른 장점이지만, 하나의 이벤트 처리기에 등록됩니다.
 
-###Promise VS callbacks
+### Promise VS callbacks
 *callbacks*와 비교하자면, *promise*는 보다 깨끗한 함수(또는 메서드) 시그니쳐를 가지고 있습니다.  
 *callback*은 매개변수에 입력과 출력을 사용합니다. 
 
@@ -281,7 +281,7 @@ then(some_module=>{
 
 추가적인 *promise* 장점은 에러처리를 포함하고 있습니다.(예외를 통합) 그리고 쉽게 합성할수 있습니다.(왜냐면 `Array.prototype.map()`와 같은 비동기 툴을 재사용 할수 있기 때문입니다.)
 
-##10.2 단점
+## 10.2 단점
 *Promises*는 단일 비동기 처리에 유리합니다. 하지만 다음은 적합하지 않습니다.
 - 반복적인 이벤트 : 만약 당신이 관심이 있다면, *reactive programming*를 보길 바랍니다.(일반적인 이벤트 처리 체이닝을 현명하게 추가하는 방법)
 - 데이터 스트림 : 현재 데이터 스트림을 제공하기 위해 [표준](https://streams.spec.whatwg.org/)을 개발중입니다.
@@ -293,7 +293,7 @@ ECMAScript6 *promise*는 때때로 유용할 수 있는 2가지 특성이 없습
 
 **Q promise** 라이브러리는 위 사항의 2번째 것을 [제공](https://github.com/kriskowal/q#progress-notification)하고, **Promise/A+**는 위 2가지 사항을 추가할 것을 [계획](https://github.com/promises-aplus)하고 있습니다.
 
-#11. Promises와 generators
+# 11. Promises와 generators
 `Q.spawn()`같은 유틸리티 함수의 도움으로, 당신은 *generators*통해 구현된 *shallow coroutine*내에서 promise기반 함수를 사용 할수 있습니다. 이는 코드가 동기적으로 보여지고, `try-catch`같은 동기적인 메카니즘을 수행 할 수 있는 중요한 장점을 가지고 있습니다.
 
 ```` javascript
