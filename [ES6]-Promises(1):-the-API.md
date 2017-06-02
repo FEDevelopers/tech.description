@@ -1,6 +1,6 @@
 > 이 문서는 http://www.2ality.com/2014/10/es6-promises-api.html 를 번역한 내용입니다.
 
-#목차
+# 목차
 1. [Promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#1-promises)
 2. [첫번째 예제](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#2-%EC%B2%AB%EB%B2%88%EC%A7%B8-%EC%98%88%EC%A0%9C)
 3. [Promises 생성과 사용](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#3-promises-%EC%83%9D%EC%84%B1%EA%B3%BC-%EC%82%AC%EC%9A%A9)
@@ -19,13 +19,13 @@
 > 이번 포스트는 일반적인 **promise**를 통한 비동기 프로그래밍과 **ES6 promise API**에 일부를 소개하고자 합니다.  
 2개의 비동기 프로그래밍 포스트 중 2번째이며, 충분히 이해하기 위해선 [1번째 포스트](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D)를 읽어보는 것이 좋을 것입니다.
 
-#1. Promises
+# 1. Promises
  **Promises**는 비동기 프로그래밍의 한 부분을 도와주는 패턴입니다.(함수 또는 메서드를 비동기적으로 결과를 받는 것) 이런 기능을 구현하기 위해선 promise 를 반환해야 합니다. 이러한 함수를 구현하기 위해서는 결과에 대해 위임하는 객체인 **promise**를 반환해야 합니다.  
 함수 호출자는 결과가 연산 되었으면 통지 받을 **promise**와 함께 콜백을 등록합니다.
 
 자바스크립트 **promises**의 사실상 표준은 [**Promises/A+**](https://promisesaplus.com/) 입니다. ECMAScript6 **promise** API는 이 표준을 따릅니다.
 
-#2. 첫번째 예제
+# 2. 첫번째 예제
  아래의 첫 번째 예제를 보면 어떻게 **promise**를 다루는지 맛볼수 있습니다.  
 **Node-js**스타일 콜백으로 비동기적으로 파일 읽는 법은 다음과 같습니다.
  
@@ -63,7 +63,7 @@
 첫 번째, 에러 처리의 단일 스타일입니다.  
 두 번째로, 당신은 `readFilePromisified()`와 (A)라인에서 콜백 오류를 핸들링 할 수 있습니다.
 
-#3. Promises 생성과 사용
+# 3. Promises 생성과 사용
 > **promise**가 생산자(Producer)와 소비자(consumer) 측면에서 어떻게 작동하는지 알아봅시다.
 
 ## 3-1. promise 생산(Producing a promise)
@@ -95,7 +95,7 @@
 - 만약 연산이 잘 되었다면, **executor**는 `resolve()` 통해 결과를 전송합니다. 보통 **promise** 완료(fulfills)를 말합니다.(*promise*가 *resolve*였지만 실제로 아닐 경우 뒤에 설명하겠습니다.)
 - 만약 에러가 발생할 경우, **executor**는 `reject()`를 통해 promise-소비자(consumer)에게 통보 합니다. 즉 **promise**는 거절(reject) 상태입니다.
 
-##3.2 promise의 사용(Consuming a promise)
+## 3.2 promise의 사용(Consuming a promise)
 **promise** 소비자(consumer)로서, 당신은 반응(*reactions*)을 통해 완료(`fulfillment)` 혹은 거절(`rejection`) 상태에 대해 'then()` 메소드에 등록한 콜백 함수로부터 통보를 받게 됩니다.
 
 ```` javascript
@@ -111,7 +111,7 @@
 - 전자의 경우, **promise** 상태가 확정(*settled*)되는대로 바로 적절한 반응(*reaction*)이 호출됩니다.
 - 후자의 경우, **promise** 결과(**fulfillment** 또는 **rejection** 값)가 캐시 되어, 적절하게 원하는 타이밍에 즉시 `then()` 다룰수 있게 해줍니다.(task로 큐에 저장) 
 
-##3.3 성공 또는 거절만 처리(Only handling fulfillments or rejections)
+## 3.3 성공 또는 거절만 처리(Only handling fulfillments or rejections)
  만약 당신이 성공에만 관심 있다면, `then()`의 2번째 파라미터를 생략할 수 있습니다.
 
 ```` javascript
@@ -136,10 +136,10 @@
 
 성공(*fulfillments*)을 위해서는 `then()`을 사용하고 에러는 `catch()`를 사용하는 것을 추천합니다. 왜냐하면 `catch`는 콜백에 멋진 라벨을 지정하고 또 동시에 여러 **promise**의 거절(*rejections*)을 처리할 수 있습니다. (어떻게 하는지 나중에 설명)
 
-#4. 예제(Examples)
+# 4. 예제(Examples)
 > 몇 가지 예제를 통하여 이러한 기본 구성요소를 사용해봅시다.
 
-##4.1 예제:promisifying XMLHttpRequest
+## 4.1 예제:promisifying XMLHttpRequest
  이벤트 기반인 **XMLHttpRequest API** 통해 HTTP GET 메서드를 수행하는 **promise**기반 함수입니다.
 
 ```` javascript
@@ -179,7 +179,7 @@
         });
 ````
 
-##4.2 예제: delaying an activity
+## 4.2 예제: delaying an activity
  **promise** 기반으로 `setTimeout()`을 구현한 `delay()`함수(`Q.delay()`랑 비슷)
 
 ```` javascript
@@ -197,7 +197,7 @@
 
 (A)라인에서 파라미터 없이 `resolve`를 호출합니다.(`resolve(undefined)`를 호출하는 것과 동일). (B)라인에 성공(*fulfillment*) 결과 값은 필요 없습니다. 그냥 통보 받는것 만으로도 충분합니다.
 
-##4.3 예제: timing out a promise(promise의 시간 초과)
+## 4.3 예제: timing out a promise(promise의 시간 초과)
 
 ```` javascript
     function timeout(ms, promise) {
@@ -224,7 +224,7 @@
     });
 ````
 
-#5. `then()` 체이닝
+# 5. `then()` 체이닝
 메소드 호출 결과는 새로운 **promise Q**입니다.
 
 ```` javascript
@@ -236,7 +236,7 @@
 - **Q**는 `onFulfilled` 또는 `onRejected` 중 하나에 의해 반환된 것으로 해결(`resolved`) 합니다.
 - **Q**는 `onFulfilled` 또는 예외를 던진 `onRejected`중 하나에 의해 거절(`rejected`) 합니다.
 
-##5.1 일반 값으로 해결(Resolving with normal values)
+## 5.1 일반 값으로 해결(Resolving with normal values)
  만약 `then()`에 의해 반환된 **promise Q**의 값을 정상적인 값으로 해결(resolve)하면, 그 다음 `then()`을 통해 해당 값을 받을 수 있습니다.
 
 ```` javascript
@@ -249,7 +249,7 @@
     });
 ````
 
-##5.2 Resolving with thenable(thenable로 해결)
+## 5.2 Resolving with thenable(thenable로 해결)
 또한 당신은 `then()`에 의해 반환되 **promise Q**를  *thenable* **R**로 해결(resolve) 할 수 있습니다. **A** *thenable* 은 **promise** 스타일 : `then()`메서드를 가진 객체입니다. 그래서 **promises**는 *thenable* 입니다.  
 **R**을 이용하여 해결(resolve)하는 것은 **Q** 후에 삽입 된다는 것을 의미합니다.(예를들어 `onFulfilled`에서 반환) : **R**의 상태는 **Q**의 `onFulfilled` , `onRejected` 콜백에 전달 됩니다. 어떤 면에서는 **Q**는 **R**이 됩니다.
 
