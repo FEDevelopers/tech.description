@@ -3,7 +3,7 @@
 > 또한 [[ES6] Promises(2):the API](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(2):-the-API) 다음 편 입니다.
 
 
-#목차
+# 목차
 1. [Promises](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#1-promises)
 2. [첫번째 예제](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#2-%EC%B2%AB%EB%B2%88%EC%A7%B8-%EC%98%88%EC%A0%9C)
 3. [Promises 생성과 사용](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(1):-the-API#3-promises-%EC%83%9D%EC%84%B1%EA%B3%BC-%EC%82%AC%EC%9A%A9)
@@ -51,7 +51,7 @@
 17. [Further reading](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-Promises(3):-the-API#17-further-reading)
 
 
-#12. Debugging promises
+# 12. Debugging promises
  비동기 코드를 디버깅하는 가장 주요 문제점은 비동기 함수와 메서드 호출이 포함 되어있다는 것입니다. 비동기 호출은 하나의 *task*에서 시작되어, 새로운 *task*에서 수행됩니다. 만약 새로운 *task*가 잘못되면, *stack trace*는 이전 *task* 정보는 포함하지 않고 해당 *task*만 처리합니다. 따라서, 비동기 프로그래밍에서 훨씬 적은 디버깅 정보로 작업을 수행 해야합니다.  
 
 최근에 구글 크롬에서 비동기 코드를 디버깅 할 수 있게 되었습니다. 아직 완벽하게 *promises*를 서포트 해주지는 않습니다. 그러나 일반적인 비동기 호출을 얼마나 잘 처리하는지 대해선 인상적입니다.    
@@ -74,7 +74,7 @@
 
 ![스샷](http://3.bp.blogspot.com/-kpQjy16k4xw/VDEiTaCfsaI/AAAAAAAAA4w/fqG3nssNZ5Q/s400/debugging_callbacks.png)
 
-#13. promises 의 내부
+# 13. promises 의 내부
 이번 섹션에서는 *promises*를 다른 각도로 다가갈 것 입니다.: **API**을 어떻게 사용하는지 배우는 대신에, 간단한 구현 방법을 배워보겠습니다.  
 이 다른 각도를 통해 *promises*의 감각을 키우는데 크게 도움이 되었습니다.  
 **DemoPromise** 라고 부르는 promise를 구현하고, [GitHub](https://github.com/rauschma/demo_promise)을 통해 사용할수 있습니다.
@@ -87,7 +87,7 @@
 
 즉 *resolve*와  *reject*는 메서드 입니다.(생성자 매개변수로 전달되는 함수)
 
-##13.1 A stand-alone promise
+## 13.1 A stand-alone promise
 우리의 첫번째 구현은 최소한의 기능만 갖춘 독립형 *promise* 입니다.
 
 - *promise*를 생성 할수 있습니다.
@@ -161,7 +161,7 @@
 
 `reject()`는 `resolve()`랑 비슷합니다.
 
-##13.2 체이닝
+## 13.2 체이닝
 다음으로 체이닝을 구현 해봅시다.:
 
 - `then()`은 *onFulfilled*나 *onRejected* 으로 확정된 *promise*를 반환합니다.
@@ -213,7 +213,7 @@
 - *onRejected*의 결과는 `returnValue`를 해결하는데 사용됩니다.(거절이 아닌(*reject*))((D)라인)
  - 만약 *onRejected*가 누락된 경우, `returnValue`를 해결하는데 거절(*rejection*) 값을 사용합니다.
 
-##13.3 Flattening(편평한)
+## 13.3 Flattening(편평한)
 > 역자주 : Flattening 은 해석하기 애매한 단어 임으로, 영어로 표기
 
 **Flattening** 은 체이닝을 좀더 편리하게 만듭니다. : 일반적으로, 반응(*reaction*)에서 값을 반환하면 다음 `then()`으로 전달 됩니다. 만약 우리가 *promise*를 반환하면, 그것이 우리가 풀지 않을 수 있다면, 그것은 아래 예제와 같이 좋을 것입니다.  
@@ -278,7 +278,7 @@
 *flattening*은 (A)라인에서 수행됩니다. : 만약 `value`가 *fulfilled*면, `self`가 *fulfilled*되길 원합니다. 그리고 만약 `value`가 *rejected*라면, `self`가 *rejected* 되길 원합니다.  
 private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alreadyResolved`를 통해 보호받습니다. 
 
-##13.4 상세한 Promise 상태
+## 13.4 상세한 Promise 상태
  체이닝 통해서 *promises* 상태는 점점 더 복잡해집니다.
 
 ![머지?](http://1.bp.blogspot.com/-Nz5wt9gH8Jc/VDEiUlFWj1I/AAAAAAAAA4k/813hgpWviw0/s1600/promise_states_all.jpg)
@@ -293,7 +293,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 - 해결된 *promise*가 꼭 확정된(*settling*) 상태는 아닐수 있습니다. : 당신은 보류(*pending*)된 상태로 *promise*를 해결(*resolve*) 할 수 있습니다.
 - 해결은 거절(rejection)을 포함합니다. : 거절(*reject*)된 *promise*로 해결(*resolving*) 하면 *promise*를 거절(*reject*) 할 수 있습니다.
 
-##13.5 예외
+## 13.5 예외
 마지막으로 우리는, 거절(*rejections*)을 사용자 코드단에서 예외로 처리하고 싶습니다. 현재 **사용자 코드(user code)**는 `then()`의 2개 콜백 파라미터를 의미합니다.
 
 ![예외](http://2.bp.blogspot.com/-x6hBT5B_yw4/VDEiULOJwII/AAAAAAAAA4E/aUTml-VNKRk/s1600/promise4_exceptions.jpg)
@@ -318,7 +318,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
     }
 ````
 
-##13.6 공개 생성자패턴
+## 13.6 공개 생성자패턴
 만약 **DemoPromise**를 실제 **promise** 구현체로 변경하고 싶다면, 공개 생성자 패턴을 구현 해야 합니다.  
 **ES6** *Promises*는 메서드를 통해 해결(*resolved*)되거나 거절(*rejected*)되어지지 않습니다. 그러나 생성자 콜백 파라미터 실행자에  전달되어지는 함수를 통해서..(but via functions that are handed to the executor, the callback parameter of the constructor)
 
@@ -326,10 +326,10 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 
 만약 실행자(*executor*)가 `then`으로 예외를 던진다면, *promise*는 거절(*rejected*)되어져야 합니다.
 
-#14. 추가적인 2가지 유용한 promise 메서드's
+# 14. 추가적인 2가지 유용한 promise 메서드's
 > 이번 섹션에서는 ES6 promises에 쉽게 추가 할 수 있는 2가지 유용한 메서드를 설명 합니다. *promise*는 많은 라이브러리를 가지고 있습니다.
 
-##14.1 done()
+## 14.1 done()
  몇몇 *promise*를 여러개 체이닝 호출을 하면 에러가 쥐도새도 모르게 삭제될 위험이 있을 수 있습니다.  
 예를들어:
 
@@ -382,7 +382,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 
 `done()`의 기능은 유용하지만, **ECMAScript6**에는 추가 되지 않습니다. 왜냐하면, 이런 일련의 과정은 미래에 디버거가 자동적으로 수행될 것 입니다.
 
-##14.2 finally()
+## 14.2 finally()
 때론 오류가 발생하던지 말던지, 독립적인 액션을 수행하길 원할 때가 있습니다. 예를들어, 작업을 마친후 리소스는 정리 해야합니다. 그것을 위한게 바로 `finally()` 메서드 입니다. 예외처리에서 `finally` 구문과 비슷하게 작동합니다.  
 `finally()` 는 인자가 없는 콜백을 받지만, 해결(*resolution*)인지 거절(*rejection*)인지 통보 받습니다.
 
@@ -442,7 +442,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
     .finally(server.stop);
 ````
 
-#15 ES6 호환되는 promise 라이브러리
+# 15 ES6 호환되는 promise 라이브러리
 많은 promise 라이브러리가 밖에 있습니다. 다음은 *ECMAScript 6 API*에 따르며, 지금 바로 사용 할수 있으며, 쉽게 네이티브 ES6로 나중에 마이그레이션 할 수 있습니다.
 
 - [RSVP.js](https://github.com/tildeio/rsvp.js/) : Stefan Penner에 의해 만들어진 RSVP.JS는 *ES6 Promise API* 상위 집합니다.
@@ -452,10 +452,10 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 - Kris Kowal 의 [Q.Promise](https://github.com/kriskowal/q#using-qpromise)는 ES6 API입니다.
 - 마지막으로 Paul Millr의 [ES6 Shim](https://github.com/paulmillr/es6-shim)는 *Promise*를 포함합니다.
 
-#16.레거시 비동기 코드와의 인터페이스
+# 16.레거시 비동기 코드와의 인터페이스
 당신이 *promise* 라이브러리를 사용하면, 때론 *promise*기반이 아닌 비동기 코드가 필요할 때가 있습니다. 이번 섹션은 *Node-js*스타일 비동기함수와 *jQuery deferreds*가 어떻게 작동하는지 설명하고자 합니다.
 
-##16.1 Node.js 인터페이스
+## 16.1 Node.js 인터페이스
 *promise* 라이브러리 **Q**는 Node.js 스타일 콜백을 사용하는 함수를 promise를 반환하는 함수로 변환하기 위한 몇몇 [툴 함수](https://github.com/kriskowal/q/wiki/API-Reference#interfacing-with-nodejs-callbacks)를 가지고 있습니다.(반대 함수도 있다. promise를 반환하는 함수를 Node.js 스타일 콜백으로)  
 예를들어:
 
@@ -470,7 +470,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
 
 [deonodify](https://github.com/matthew-andrews/denodeify/)는 알림기능만 제공하고 ECMAScript6 promise API를 따르는 마이크로 라이브러리 입니다. 
 
-##16.2 jQuery 인터페이스
+## 16.2 jQuery 인터페이스
 *jQuery*는 *promise*와 비슷한 **deferreds**를 가지고 있습니다. 그러나 호환성을 방해하는 몇몇 [다른점](https://github.com/kriskowal/q/wiki/Coming-from-jQuery)이 있습니다. **deferreds**의 `then()`은 거의 *ES6 promises*와 비슷합니다.(에러를 캐치 할 수 없는 주요한 다른점이 있습니다.) 따라서 `Promise.resolve()`로 *jQuery deferred*를 *ES6 promise*로 변환 시킬수 있습니다.
 
 ```` javascript
@@ -487,7 +487,7 @@ private메서드인 `_doResovle()`와 `_doReject()` 통해 발생하고, `alread
     });
 ````
 
-#17. Further reading
+# 17. Further reading
 
 - [1]: “[Promises/A+](https://promisesaplus.com/)”, edited by Brian Cavalier and Domenic Denicola (the de-facto standard for JavaScript promises)
 - [2]: “[JavaScript Promises: There and back again](https://developers.google.com/web/fundamentals/getting-started/primers/promises)” by Jake Archibald  (good general intro to promises)
