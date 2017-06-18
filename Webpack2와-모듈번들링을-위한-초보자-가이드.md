@@ -7,7 +7,7 @@
 이번 포스팅은 webpack을 처음 사용하는 사람을 대상으로 하며, 초기 설치, configuration, modules, loaders, plugins, code splitting, hot module replacement에 대해 설명합니다. 만약 여러분이 비디오 튜토리얼이 좋다면, Glen Maddern’s의 [Webpack from First Principles](https://www.youtube.com/watch?v=WQue1AN93YU)을 시작점으로 삼아 webpack의 특별한 점을 이해하는 것이 좋을것 같습니다.  
 이제부터 집에서 따라가기 위해 [NodeJS](https://www.sitepoint.com/quick-tip-multiple-versions-node-nvm/) 설치해야하며, 또한 Github 저장소에서 [데모앱](https://github.com/sitepoint-editors/webpack-demo)을 다운 받을 수 있습니다.
 
-#Setup
+# Setup
 
 이제 npm으로 새로운 프로젝트를 초기화하고, webpack을 설치합시다.
 
@@ -184,10 +184,10 @@ root.innerHTML = `<pre>${JSON.stringify(managerGroups,null,2)}</pre>`
 
 참고 : *lodash/collection* 같이 상대경로 없는 import는 npm으로 인스톨된 `/node_modules` 에 있는 모듈입니다. 여러분 자신의 모듈은 항상 *./people* 와 같은 상대경로가 필요합니다.
 
-#Loaders
+# Loaders
 우리는 `babel-loader`에 대해 이미 소개한적이 있습니다. `babel-loader`는 여러 다양한 타입 파일을 import 할 때 webpack에 어떤 작업을 할 것인지 설정할 수 있는 많은 loaders중 하나입니다. loaders를 일련의 변형으로 묶을 수 있으며, 자바스크립트에서 *Sass* 가 어떻게 가져오는지 작동법을 알 수 있는 좋은 방법입니다.
 
-##Sass
+## Sass
 이 변환을 하기 위해선 3가지 분리된 loaders와 `node-sass` 라이브러리를 포함시켜야 합니다.
 
 ```
@@ -249,7 +249,7 @@ import './style.scss'
 
 `index.html`을 새로고침 하면 약간의 스타일링된 상태를 볼 수 있습니다.
 
-##CSS in JS
+## CSS in JS
 우리는 모듈로써 자바스크립트에서 Sass파일을 가져왔습니다.
 
 `dist/bundle.js`을 열어서 “pre {“ 을 검색해보겠습니다. 사실 Sass는 CSS 문자열로 컴파일되어 번들내에 모듈로 저장되어졌습니다. 자바스크립트에서 이 모듈을 가져올 때, `style-loader`는 문자열이 포함된 `<style>` 태그로 삽입 합니다.
@@ -263,7 +263,7 @@ import './style.scss'
 - CSS Modules: CSS의 전역 네임스페이스를 만들면 여러분의 CSS를 변경 해도 부작용이 없다라고 확신하기가 어렵습니다. CSS 모듈은 기본적으로 로컬로 만들고, 여러분의 자바스크립트에서 참조할 수 있는 고유 클래스 이름을 표시함으로써 이를 변경합니다.
 - 코드를 분할 / 번들링하는 영리한 방법으로 HTTP 요청 갯수를 줄입니다.
 
-##Images
+## Images
 *loaders* 의 마지막 예제로 `url-loader`로 이미지를 처리하는 법을 보겠습니다.  
 표준 HTML 문서에서 브라우저는 `<img>` 태그나 배경-이미지 속성이 있는 요소를 발견하면 이미지를 가져옵니다. webpack은 이미지 소스를 자바스크립트 내부에 문자열로 저장하여 작은 이미지같은 경우 최적화 할 수 있습니다. 이러면 미리 로드하여 브라우저는 별도의 요청으로 나중에 가져올 필요가 없습니다.
 
@@ -338,11 +338,11 @@ pre {
 
 비록 자바스크립트가 시작지점이지만, HTML, CSS, SVG와 같은 각각 다른 asset 타입마다 빌드 프로세스의 일부분으로 간주되어야 하는 그들 자신만의 의존성을 가지고 있는점에 감사드립니다.
 
-#Plugins
+# Plugins
 우리는 이미 webpack 플러그인이 내장된 예제를 보았습니다. `npm run build` 스크립트를 통해 호출된 `webpack -p`는 webpack과 함께 제공되는 [UglifyJsPlugin](https://webpack.js.org/api/cli/#shortcuts)을 사용하여 `production`을 위한 번들 파일을 `minify` 합니다.  
 loaders가 하나의 파일을 변환하는 동안 플러그인은 더 큰 코드 청크 에서 작동합니다.
 
-##Common code
+## Common code
 [commons-chunk-plugin](https://webpack.js.org/plugins/commons-chunk-plugin/) 은 webpack에서 제공하는 또다른 핵심 플러그인으로, 여러 진입점 사이에 공유되는 코드로 구성되는 별도의 모듈을 생성하는데 사용할 수 있습니다. 지금까지는 하나의 진입점과 하나의 번들을 사용하였습니다. 다중 진입과 출력 파일 분할을 통해서 많은 이득을 얻을 수 있는 [실제 시나리오](https://webpack.js.org/concepts/entry-points/#scenarios)가 많이 있습니다.  
 공용 앱인 `app.js`와 관리영역인 `admin.js`와 같이 모듈을 공유하는 두가지 다른 영역의 어플리케이션을 가지고 있는 경우 다음과 같이 별도의 진입점을 생성할 수 있습니다.
 
@@ -441,7 +441,7 @@ root.innerHTML = `<p>There are ${people.length} people.</p>`
 
 브라우저에서 `index.html`과 `admin.html`을 실행시키면 자동적으로 `commons` 청크 파일이 생성되어 실행되는 것을 볼 수 있습니다.
 
-##Extracting CSS
+## Extracting CSS
 또다른 유명한 플러그인 인 [extract-text-webpack-plugin](https://github.com/webpack-contrib/extract-text-webpack-plugin)은 모듈을 자체 파일로 추출 하는데 사용합니다.  
 
 아래에서는 `.scss` 룰을 수정하여 `Sass`를 컴파일하고, `CSS`를 불러온 후, 각 CSS 번들로 추출함으로써 자바스크립트 번들에서 삭제 합니다.
@@ -492,7 +492,7 @@ webpack을 재시작하면 새로운 번들인 `app.bundle.css` 을 볼수 있�
 
 브라우저를 새로고침하면 컴파일된 CSS는 `app.bundle.js` 에서 `app.bundle.css` 로 이동된 것을 볼수 있습니다. 성공!
 
-#Code Splitting
+# Code Splitting
 
 우리는 이미 몇몇 방법으로 코드를 나누는 것을 보았습니다.
 
@@ -567,7 +567,7 @@ python -m SimpleHTTPServer 8001
 
 로딩 1초후에 동적으로 생성된 `/dist/0.bundle.js` 번들파일에 대한 GET 요청을 보게 되고, 콘솔에 `Loaded!` 를 확인 하실 수 있습니다. 성공!
 
-#Webpack Dev Server
+# Webpack Dev Server
 
 `Live reloading`은 파일이 변경될 때 자동으로 새로고침 해줌으로써 개발 경험을 향상 시킬 수 있습니다. 간단히 설치하고 `webpack-dev-server`로 시작하면 됩니다.
 
@@ -584,7 +584,7 @@ npm install webpack-dev-server@2.2.0-rc.0 --save-dev
 `npm start` 로 서버를 시작하면 여러분의 브라우저에서 [http://localhost:8080/](http://localhost:8080/)를 열 수 있습니다.  
 `src` 폴더에 `people.js` 의 이름을 바꿔보던가, `style.scss` 안에 스타일을 바꿔보면, 여러분의 눈으로 화면에서 변화되는 것을 보게 됩니다.
 
-##Hot Module Replacement
+## Hot Module Replacement
 
 만약 여러분이 `live reloading`에 감탄했다면, [hot module replacement](https://webpack.js.org/concepts/hot-module-replacement)(HMR) 에 더 놀랄것입니다.  
 
@@ -654,14 +654,14 @@ pre {
 }
 ```
 
-#HTTP/2
+# HTTP/2
 webpack과 같은 모듈 번들러를 사용하면 얻는 이점 중 하나는 assets을 빌드하고 클라이언트에서 패치하는 방법을 제어할 수 있으므로 성능을 향상시키는데 도움이 된다는 것 입니다. 클라이언트에서 만들어진 것들에 대한 요청 수를 줄이기 위해 파일을 연결하는 것이 수년동안 [best practice](https://developer.yahoo.com/performance/rules.html)로 간주되고 있었습니다. 이는 여전히 유효하지만, [HTTP/2 에서는 단일 요청으로 다중 파일을 전달](https://www.sitepoint.com/file-bundling-and-http2/)할 수 있게 되어 더이상의 `silver bullet` 이 아니게 되었습니다. 앱은 실제로 많은 작은 파일들을 개개인별로 캐싱하여 이점을 얻을 수 있습니다. 그래서 클라이언트는 전체 번들을 다시 가져오는 대신 변경된 모듈 부분에 대해서만 가져올 수 있습니다.  
 
 Webpack 창시자인 [Tobias Koppers](https://twitter.com/wSokra)은 `HTTP/2`에서도 여전히 번들링이 중요하다는 내용에 대해 포스팅을 해논게 있습니다.  
 
 자세한 내용은 [webpack & HTTP/2](https://medium.com/webpack/webpack-http-2-7083ec3f3ce6)을 읽어보세요.
 
-#Over to You
+# Over to You
 webpack2에 도움이 될 소개글을 찾았고, 많은 도움을 내기 위해 webpack을 사용 할 수 있기를 바랍니다. webpack의 설정, 로더 그리고 플러그인에 대해 골머리를 썩겠지만, 이 도구들을 배우면 효과가 있을 것입니다.  
 
 아직 문서는 작성중이지만, 기존 Webpack1 프로젝트를 새롭게 바꾸려면 [v1 -> v2](https://webpack.js.org/guides/migrating/) 로 쉽게 마이그레이션 할 수 있는 가이드를 참고하세요.
