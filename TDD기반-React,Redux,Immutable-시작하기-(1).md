@@ -15,7 +15,7 @@ Redux는 마치 React 어플리케이션의 상태를 관리하는 우아한 솔
 
 이번 첫번째 파트에서 만들 앱은 Redux가 일하는 방식에 대한 기본적인 원칙에 관한 것입니다. 조금 간결하려고 일부러 범위를 제한하였습니다.(클라이언트측에만 있어서 동형 앱이 아닌 단순한 앱) 만약 당신이 더 깊게 알고 싶다면, 위에 환상적인 튜토리얼을 권합니다. Gihub 저장소는 [여기](https://github.com/phacks/redux-todomvc) 에 있으며, 최종 앱의 모습을 담고 있습니다. 코드나 튜토리얼에 대한 질문이나 제안은 코멘트를 남기거나 Pull Request를 하십시오.  
 
-#앱
+# 앱
 이번 튜토리얼의 목적을 위해 우리는 전통적인 `TodoMVC`앱을 만들 것입니다. 이를 위해 다음과 같은 요구사항이 있습니다.
 
 - 각 할일은 활성화 또는 완료 할 수 있습니다.
@@ -26,7 +26,7 @@ Redux는 마치 React 어플리케이션의 상태를 관리하는 우아한 솔
 
 당신은 [여기](http://todomvc.com/examples/react/#/)서 앱의 실제 예를 보실 수 있습니다.
 
-#Redux와 Immutable: 함수형 프로그래밍
+# Redux와 Immutable: 함수형 프로그래밍
 몇달전, 저는 대쉬보드 웹앱을 개발하고 있었습니다. 웹앱이 커져감에 따라, 점점 더 찾기 힘든 많은 버그들을 발견하게 되었습니다. "이 페이지로 이동해서 버튼을 클릭하고, 다시 메인 페이지로 돌아가서 잠깐 커피를 들고나서, 아까 그 페이지로 이동하고 다시 클릭하면 무언가 기묘한 일이 발생" 과 같은 버그였습니다. 이 버그는 우리의 모든 코드와 로직에 영향을 미치고, 우리가 알지 못했던 다른 곳에 원치 않는 영향을 미칠 수 있었습니다.  
   
 앱의 모든 상태를 가지고 있는 단일 자료구조인 상태트리야 말로 Redux의 힘입니다. 이 의미는 매순간마다, 사용자에게 보여지는 데이터는 상태 트리 안에 있는 결과이며, 단일 출처를 제공하는 것입니다. 우리 앱의 모든 액션은 상태트리에서 가져와서 해당 수정사항을 반영하고(예를들어 할일을 추가 하는것), 업데이트된 상태 트리를 사용자에게 렌더링 합니다. 애매한 부작용은 없으며, 실수로 수정해버린 변수 참조 같은 일은 더이상 없을 것입니다. 이는 관심사의 명확한 분리와 좋은 앱 구조를 만들고, 더 나은 디버깅을 할 수 있게 됩니다.  
@@ -76,7 +76,8 @@ npm init -y
 ```
 dist/index.html
 ```
-````html
+
+```html
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -95,6 +96,7 @@ dist/index.html
 ```
 src/index.js
 ```
+
 ```javascript
 console.log('Hello World!');
 ```
@@ -124,6 +126,7 @@ npm install --save-dev babel-preset-react
 ```
 package.json
 ```
+
 ```javascript
 "babel": {
   "presets": ["es2015", "react"]
@@ -133,6 +136,7 @@ package.json
 ```
 webpack.config.js
 ```
+
 ```javascript
 module.exports = {
   entry: [
@@ -171,6 +175,7 @@ npm install --save-dev react-hot-loader
 ```
 webpack.config.js
 ```
+
 ```javascript
 var webpack = require('webpack'); // webpack 라이브러리 로드
 
@@ -205,7 +210,7 @@ module.exports = {
 };
 ```
 
-##유닛 테스팅 프레임워크 세팅
+## 유닛 테스팅 프레임워크 세팅
 우리는 테스트 프레임워크로 Mocha와 Chai를 사용할 것입니다. Mocha와 Chai는 폭넓게 사용되고 있으며, 그것 들의 산출물은(예상결과와 실제 결과 차이 비교) 테스트-주도-개발 하기엔 최고입니다. Chai-Immutable은 불변 자료 구조를 처리 하는 chai 플러그인 입니다.
 
 ```
@@ -227,6 +232,7 @@ npm install --save-dev jsdom
 ```
 test/setup.js
 ```
+
 ``` javascript
 import jsdom from 'jsdom';
 import chai from 'chai';
@@ -252,6 +258,7 @@ chai.use(chaiImmutable);
 ```
 pacakge.json
 ```
+
 ```
 "scripts": {
   "test": "mocha --compilers js:babel-core/register --require ./test/setup.js 'test/**/*.@(js|jsx)'",
@@ -278,7 +285,7 @@ pacakge.json
 
 ![status tree](http://www.theodo.fr/uploads/blog//2016/02/state_tree3.png)
 
-#앱 UI 작성
+# 앱 UI 작성
 
 ![UI](http://www.theodo.fr/uploads/blog//2016/02/todo-app-structure.png)
 
@@ -333,7 +340,7 @@ enrty: [
 ],
 ```
 
-#todo 리스트 UI작성
+# todo 리스트 UI작성
 이제 *todo* 아이템들 리스트를 표시하는 `TodoApp` 컴포넌트의 첫번째 버전을 작성할 것 입니다.
 
 ```
@@ -523,10 +530,10 @@ export default class TextInput extends React.Component {
 };
 ```
 
-#리스트 컴포넌트에서 사용자 액션 처리
+# 리스트 컴포넌트에서 사용자 액션 처리
 이제 리스트 컴포넌트의 UI가 설정되었습니다. 그러나 아직 우리는 사용자 액션과 그것에 따른 앱이 어떻게 응답하는지에 대해 고려하지 않았습니다.
 
-##props의 힘
+## props의 힘
 React에서 `props` 객체는 컨테이너가 인스턴스화 될 때 설정 속성에 의해 전달됩니다.  
 예를 들어, 만약 `TodoItem` 을 아래와 같이 인스턴스화 하면:
 
@@ -544,7 +551,7 @@ console.log(this.props.text);
 
 Redux 아키텍쳐는 집중적으로 `props`를 사용하게끔 만들어 졌습니다. 기본 원칙은 모든 요소의 상태는 그 `props` 에만 존재하야 합니다. 다르게 말하면: 같은 `props` 집합에 대해 두 인스턴스가 정확하게 동일한 결과를 출력해야 합니다. 전에 봤듯이, 앱의 전체 상태는 상태트리에 포함 되어 있습니다. 이는 `props`로 컴포넌트에 전달된 상태트리가 앱의 시각적인 출력을 전적으로 예상하는 방향으로 결정한다는 걸 의미합니다.
 
-##TodoList 컴포넌트
+## TodoList 컴포넌트
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/69707f07b6e9cbca7558cb85fcabff54615c1737)에 동료의 관련 커밋이 있습니다.
 
 이번 섹션에서 우리는 테스트-우선 접근법으로 따라갈 것입니다.  
@@ -597,7 +604,7 @@ describe('TodoList', ()=>{
 });
 ```
 
-첫번째 테스트는 실패 하게됩니다. 우리는 테스트에서 표시하는 2가지 활성화된 아이템 말고, 3가지 아이템이 있습니다. 실제로 테스트는 아이템을 필터링 하는 로직을 작성하지 않았으므로, 테스트 실패는 정상입니다.
+ 첫번째 테스트는 실패 하게됩니다. 우리는 테스트에서 표시하는 2가지 활성화된 아이템 말고, 3가지 아이템이 있습니다. 실제로 테스트는 아이템을 필터링 하는 로직을 작성하지 않았으므로, 테스트 실패는 정상입니다.
 
 ```
 src/components/TodoList.jsx
@@ -735,7 +742,7 @@ export default class TodoApp extends React.Component{
 
 이제 아이템들이 다시 나타나고, `index.jsx`에 선언한 필터 상태로 아이템들이 필터링 됩니다.
 
-##TodoItem 컴포넌트
+## TodoItem 컴포넌트
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/71d2835620f4ba6f3fc3665327f13ec4fba62eee) 동료의 관련 커밋이 있습니다.
 
 이제 `TodoItem` 컴포넌트를 다뤄보겠습니다. 첫번째로, 우리는 `TodoItem` 컴포넌트가 실제로 아이템을 렌더링 하는지 확인 하겠습니다. 그리고 아직 완료되지 않은 기능을 테스트 하겠습니다.
