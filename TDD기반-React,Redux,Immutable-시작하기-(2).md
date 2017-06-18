@@ -238,7 +238,7 @@ export const TodoAppContainer = connect(mapStateToProps)(TodoApp);
 
 브라우저에서 앱을 리로드 하게되면, Redux 툴을 사용하지 않는 이상 이전과 같이 초기화 된 상태를 보게 될 것 입니다.
 
-#Redux dev tools
+# Redux dev tools
 > 참고 : [여기](https://github.com/phacks/redux-todomvc/commit/9e82a2bf7ffaea5d0fda6af361a126517aecc115)에 관련 커밋이 있습니다.
 
 Redux 스토어와 리듀서를 설정했으므로, 이제 우리는 간소화된 개발을 위해 `Redux dev tools` 을 설정 하겠습니다.  
@@ -510,7 +510,7 @@ export class TodoApp extends React.Component{
 
 이게 끝입니다. 필터가 완벽하게 작동할 것입니다.
 
-##아이템 수정
+## 아이템 수정
 > [여기](https://github.com/phacks/redux-todomvc/commit/2a7b1138f778524d4aa7eac193c995258d28c5a3) 관련 커밋이 있습니다.
 
 사용자가 아이템을 수정할 때, 실제로는 3가지 중 2가지 액션이 트리거된 작업이 있습니다.
@@ -681,7 +681,7 @@ export default function(state=Map(), action){
 
 이제 브라우저에서 잘 작동 할 것입니다.
 
-##완료 삭제와 아이템 추가 삭제
+## 완료 삭제와 아이템 추가 삭제
 > [여기](https://github.com/phacks/redux-todomvc/commit/c89059a6767903fdf8b9827209f92e1f7385bdb7) 관련 커밋이 있습니다.
 
 나머지 3개 액션은 다음과 같습니다.
@@ -856,7 +856,7 @@ export class TodoApp extends React.Component{
 
 와우 `TodoMVC` 앱이 이제 완성되었습니다.
 
-#마무리
+# 마무리
 React, Redux, Immutable 스택 TDD 튜토리얼은 마쳤습니다.  
 
 더 많은 것들을 알고 싶어하는 여러분들을 위해 다음과 같은 것들이 있습니다.
