@@ -251,7 +251,7 @@ module: {
 
 ![url-loader 2가지 방법](https://d262ilb51hltx0.cloudfront.net/max/1600/1*-qVdcA3E8JSdtszxHqfIdA.png)
 
-##.babelrc file
+## .babelrc file
  **babel-loader** `presets`을 통해 **ES6** 에서 **ES5** 로 어떻게 변환 해야 하는지 그리고 React **JSX** 에서 **JS** 어떻게 파싱 하는지 대해 설정을 할 수 있게 해준다.
 
 ```` javascript
@@ -332,7 +332,7 @@ module: {
 ## Resolving File Extensions
  대부분의 **Webpack** 설정 파일은 아래와 같이 빈 string 을 포함한 **resolve extensions** 라는 속성을 가지고 있다. 빈 string 은 `require(‘./myFile’)` 과 같은 빈 확장자를 import하게 도와주는 역할이다. 
 
-```` javascript
+```javascript
 {
  resolve: {
    extensions: [‘’, ‘.js’, ‘.jsx’]
