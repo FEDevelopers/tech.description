@@ -599,7 +599,7 @@ describe('TodoList', ()=>{
 
     expect(items.length).to.equal(2);
     expect(items[0].textContent).to.contain('React');
-    expect(items[1].textContent).to.contain('Redxu');
+    expect(items[1].textContent).to.contain('Redux');
   });
 });
 ```
