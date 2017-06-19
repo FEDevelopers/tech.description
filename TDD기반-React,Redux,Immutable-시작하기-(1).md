@@ -783,7 +783,7 @@ describe('TodoItem' , ()=>{
 });
 ```
 
-테스트를 통과하기 위하여, 우리는 `props` 에 전달되는 상태가 `completed` 로 설정되면, class 에 `completed` 를 추가 해야 합니다. DOM class들을 조작하는데 조금 복잡니, `classnames` 패키지를 사용하겠습니다.
+테스트를 통과하기 위하여, 우리는 `props` 에 전달되는 상태가 `completed` 로 설정되면, class 에 `completed` 를 추가 해야 합니다. DOM class들을 조작하는데 조금 복잡하니, `classnames` 패키지를 사용하겠습니다.
 
 ```
 npm install --save classnames
@@ -1084,4 +1084,4 @@ export default class TodoList extends React.Component {
 
 이번 포스팅에서는 React, Redux, Immutable 웹 앱을 위한 초석을 다졌습니다. 우리 UI 모듈은 완벽하게 테스트 되었으며, 실제 앱로직과 연결될 준비가 되었습니다.
 과연 이것들이 어떻게 작동할까요? 어떻게 할지 모르는 멍청한 컴포넌트들이 시간여행-디버깅을 가능하게 해주는 앱으로 사용하게 해줄까요?  
-다음 파트 에서 기대하시기 바랍니다.
+[다음 파트](https://github.com/FEDevelopers/tech.description/wiki/TDD기반-React,Redux,Immutable-시작하기-(2)) 에서 기대하시기 바랍니다.
