@@ -1,6 +1,6 @@
 > 이 문서는 http://exploringjs.com/es6/ch_async.html 를 번역한 내용입니다.
 
-#목차
+# 목차
 1. [자바스크립트 호출 스택(call stack)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#1-%EC%9E%90%EB%B0%94%EC%8A%A4%ED%81%AC%EB%A6%BD%ED%8A%B8-%ED%98%B8%EC%B6%9C-%EC%8A%A4%ED%83%9Dcall-stack)
 2. [브라우저 이벤트 루프(event loop)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-%EB%B8%8C%EB%9D%BC%EC%9A%B0%EC%A0%80-%EC%9D%B4%EB%B2%A4%ED%8A%B8-%EB%A3%A8%ED%94%84event-loop)
  1. [타이머(Timers)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#2-1-%ED%83%80%EC%9D%B4%EB%A8%B8timers)
@@ -19,7 +19,7 @@
 4. [다음에 할 내용(Looking ahead)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#4-%EB%8B%A4%EC%9D%8C%EC%97%90-%ED%95%A0-%EB%82%B4%EC%9A%A9looking-ahead)
 5. [추가로 읽을 거리(Further reading)](https://github.com/FEDevelopers/tech.description/wiki/%5BES6%5D-%EB%B9%84%EB%8F%99%EA%B8%B0-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%98%EB%B0%8D#5-%EC%B6%94%EA%B0%80%EB%A1%9C-%EC%9D%BD%EC%9D%84-%EA%B1%B0%EB%A6%ACfurther-reading)
 
-#Asynchronouse programming (Background)
+# Asynchronouse programming (Background)
  이 챕터는 자바스크립트의 비동기 프로그래밍(asynchronous programming) 기본에 대한 이야기입니다. 또한 이번 챕터는 **ES6 Promise**을 위한 기본 배경 지식이기도 합니다.
 
 ## 1. 자바스크립트 호출 스택(**call stack**)
@@ -336,10 +336,10 @@ async.map(fileNames,
 - 에러 핸들러를 재사용하기 힘들다.
 - 또한, 기본 에러 핸들러를 제공하는 게 더 어렵다. 기본 에러 핸들러는 당신이 함수를 호출 할 때 자신만의 핸들러를 작성하지 않을 때 유용합니다. 또한 만약 호출자가 특정한 핸들러를 지정하지 않는다면 함수에 의해 사용될 수도 있다.
 
-##4. 다음에 할 내용(Looking ahead)
+## 4. 다음에 할 내용(Looking ahead)
  다음 챕터는 **Promise**와 **ES6 Promise** API을 다룹니다. **Promise**는 콜백보다 더 복잡합니다. 중요한 이점을 제공함으로써 콜백의 단점을 제거합니다.
 
-##5. 추가로 읽을 거리(Further reading)
+## 5. 추가로 읽을 거리(Further reading)
 - [1] “[Help i’m stuck in an event-loop](http://vimeo.com/96425312)” by Philip Roberts (video).
 - [2] “[Event loops](https://html.spec.whatwg.org/multipage/webappapis.html#event-loops)” in the HTML Specification
 - [3] “[Asynchronous programming and continuation-passing style in JavaScript](http://www.2ality.com/2012/06/continuation-passing-style.html)” by Axel Rauschmayer.
