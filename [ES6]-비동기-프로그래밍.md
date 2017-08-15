@@ -80,7 +80,7 @@ Error
  3. 사용자 input 감지 후 반응(마우스 클릭, key 입력 등등)
  4. 비동기 네트워크 요청 수행 결과
 
-위 2-4 항목은 브라우저에 내장된 엔진을 통해 자바스크립트 코드를 실행하는 작업입니다. 그것들은 코드가 종료될 때 종료됩니다. 그런 다음 큐에서 다음 *task*를 가져와 실행합니다. 다음 그림은 이러한 모든 메커니즘이 어떻게 연결되는지 방법을 제공합니다.
+위 항목은 브라우저에 내장된 엔진을 통해 자바스크립트 코드를 실행하는 작업입니다. 그것들은 코드가 종료될 때 종료됩니다. 그런 다음 큐에서 다음 *task*를 가져와 실행합니다. 다음 그림은 이러한 모든 메커니즘이 어떻게 연결되는지 방법을 제공합니다.
 
 ![task 메커니즘](http://exploringjs.com/es6/images/async----event_loop.jpg)
 
@@ -101,7 +101,7 @@ setTimeout(callback, ms);
 ### 2-2 DOM 변경 표시 (Displaying DOM changes)
  대부분 DOM 변경(특히 layout 재갱신이 포함된 경우)의 경우 화면은 바로 업데이트되지 않습니다. `“레이아웃 새로고침은 16ms 정도 시간이 흐른다.”`[@bz_moz](https://twitter.com/bz_moz/status/513777809287028736) 그리고 **event loop**를 통해 실행 할 기회가 주어집니다.  
 
-`requestAnaimationFrame()`을 [문서](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)에서 확인해 보면 브라우저가 DOM을 업데이트 빈번하게 업데이트할 경우 레이아웃 흐름에 방해되지 않게 조정할 수가 있다고 합니다.
+`requestAnimationFrame()`을 [문서](https://developer.mozilla.org/en-US/docs/Web/API/window/requestAnimationFrame)에서 확인해 보면 브라우저가 DOM을 업데이트 빈번하게 업데이트할 경우 레이아웃 흐름에 방해되지 않게 조정할 수가 있다고 합니다.
 
 ### 2-3 Run-to-completion 의미(고유 용어로써 영어사용)
  자바스크립트는 소위 “run-to-completion” 라는 걸 가지고 있습니다. 항상 현재 **task**는 다음 **task** 가 실행되기 전에 끝나게 됩니다. 즉, 각 작업이 현재 모든 상태를 완벽하게 제어 할 수 있다는 걸 의미하며, 동시적으로 간섭이 되는 걸 걱정할 필요가 없습니다.  
