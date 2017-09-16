@@ -2,7 +2,7 @@
 
 > Gulp는 멋진 작업을 빠르게 수행할수 있도록 도와주는 워크 플로우 자동화 도구에요. 이 글은 프론트엔드 개발을 위한 사용방법에 대해 설명합니다.
 
-![gulp logo](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1449/gulp-logo_23d8cc12ae5e4645eb127377b86289ae.webp)
+![gulp logo](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1449/gulp-logo_3c8d66c9a285fd34aad328227c5ba765.jpg)
 
 웹사이트 개발이 점점 복잡해지는만큼 프론트엔드 워크플로우 자동화 도구는 필수입니다. Gulp는 그러한 도구 중에 하나이죠.
 
@@ -14,7 +14,7 @@
 
 이러한 복잡성을 해결하기 위해 조립라인 같은 프론트엔드 워크플로우 자동화 도구를 만들수 있고, 우리를 위한 모든 조각들을 서로 배치할수 있어요.
 
-![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1517/automated-assembly-line_23d8cc12ae5e4645eb127377b86289ae.webp)
+![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1517/automated-assembly-line_3c8d66c9a285fd34aad328227c5ba765.jpg)
 
 컴퓨터는 해야할 목록이 주어지면 매 시간마다 결정론적 방법으로 그것들을 수행하는 것을 매우 잘 수행합니다. 이러한 것은 인간이 잘하지 못하는 거죠. 대신 우리는 높은 수준의 아키텍처와 창의적인 생각을 더 잘 할수 있습니다.
 
@@ -57,7 +57,7 @@
 
 프론트엔드 워크플로우 자동화를 위해 여러분이 사용할 수 있는 도구는 많습니다. 대부분 [Node.js](https://nodejs.org/en/) & [NPM](https://www.npmjs.com/) 에코 시스템에 의존하요. 중요한 것은 작업에 적합한 도구를 사용하는 겁니다.
 
-![작업에 적합한 도구](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1522/the-right-tool-for-the-job_23d8cc12ae5e4645eb127377b86289ae.webp)
+![작업에 적합한 도구](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1522/the-right-tool-for-the-job_3c8d66c9a285fd34aad328227c5ba765.jpg)
 
 [JAMstack](https://jamstack.org/) 스타일을 위한 [React](https://facebook.github.io/react/)나 [Vue](https://vuejs.org/)를 이용한 자바스크립트 중심의 프로젝트는 [webpack](https://webpack.github.io/)을 사용하겠죠. 스캐폴딩과 코드 스플리팅(code splitting)이나 핫 모듈 리로딩 같은 고급 기능들 때문에 말이죠. 하지만 웹팩을 효과적으로 사용하기 위해서는 모듈 번들러로만 사용하지 말고 모듈 로더로 사용할 필요가 있습니다. 
 
@@ -83,7 +83,7 @@ Tangent: 왜 모든 프론트엔드 자동화 도구는 Node.js를 사용할까�
 
 실제 `gulpfile.js`의 핵심에 들어가기 전에 웹사이트 구축에 대한 일반 철학을 이해하는 것이 중요해요. `gulpfile.js`는 이러한 웹사이트를 구축하는데 도움을 주는 것이므로 저의 전반적인 접근을 이해하는 것이 좋을것 같군요.
 
-![General Philosophy](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1542/general-philosophy_23d8cc12ae5e4645eb127377b86289ae.webp)
+![General Philosophy](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1542/general-philosophy_3c8d66c9a285fd34aad328227c5ba765.jpg)
 
 일반적으로, 제가 일하는 웹사이트는 [PRPL 패턴](https://developers.google.com/web/fundamentals/performance/prpl-pattern/)을 따릅니다. 초기에 렌더링이 필요한 부분만 로딩하고 필요한 리소스를 프리패치해서 모든것을 비동기적으로 게으른 로딩으로 처리합니다. 
 
@@ -107,7 +107,7 @@ Tangent: 왜 모든 프론트엔드 자동화 도구는 Node.js를 사용할까�
 
 프로젝트가 어떻게 보이는지 살펴보는 것이 좋겠네요. 폴더 사용과 전체 구조 측면에서 말이죠. 
 
-![나무](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1568/bonsai-project-tree_0af0ea3af77cbee594480709c6c6b3e4.webp)
+![나무](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1568/bonsai-project-tree_7eff2ce273ae45bc37d818ef6ec9de7c.jpg)
 
 제 프로젝트 루트 디렉토리는 다음과 같아요.
 
