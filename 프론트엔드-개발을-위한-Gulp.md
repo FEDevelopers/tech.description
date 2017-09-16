@@ -1,5 +1,4 @@
-> Gulp를 이용한 프론트엔드 개발 자동화에 대한 번역글입니다. 
-> (원문: [https://nystudio107.com/blog/a-gulp-workflow-for-frontend-development-automation](https://nystudio107.com/blog/a-gulp-workflow-for-frontend-development-automation))
+> 이 문서는 https://nystudio107.com/blog/a-gulp-workflow-for-frontend-development-automation 를 번역한 내용입니다.
 
 > Gulp는 멋진 작업을 빠르게 수행할수 있도록 도와주는 워크 플로우 자동화 도구에요. 이 글은 프론트엔드 개발을 위한 사용방법에 대해 설명합니다.
 
