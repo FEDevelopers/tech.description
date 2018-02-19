@@ -286,7 +286,6 @@ var message = myObject.helloFunction();
 ```
 
 
-helloFunction is a method in myObject. To get the method, use a property accessor: myObject.helloFunction.
 여기서 ```helloFunction```는 myOjbect의 메소드다. 메소드에 접근하기 위해서는 ```myObject.helloFunction```와 같은 속성 접근자를 이용하면 된다.
 
 
