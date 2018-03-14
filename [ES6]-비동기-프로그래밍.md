@@ -24,7 +24,7 @@
 
 ## 1. 자바스크립트 호출 스택(**call stack**)
  `function f` 가 `function g`를 호출할 때 `function g`는 끝난 후에 어디로 돌아가야 하는지 알아야합니다.(`function f` 안에서)  
-일반적으로 이런 정보는 호출스택(call stack)인 **스택(*stack*)**이 관리를 합니다.  
+일반적으로 이런 정보는 호출스택(call stack)인 **스택(*stack*)** 이 관리를 합니다.  
 아래 예제를 봅시다.
 
 ```` javascript
