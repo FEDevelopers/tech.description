@@ -123,51 +123,52 @@ title: 'title',
 <div mycustomattribute="value" />
 <div mycustomattribute={42} />
 <div mycustomattribute={myObject} />
+
+	리액트 15 버전: 경고 후 무시.
+	리액트 16 버전: 문자열로 값 변경 후 DOM에 전달.
+	참고: on으로 시작하는 속성은 잠재적인 보안 문제가 될 수 있으므로 예외 처리 후 전달되지 않음.
 ```
-
-리액트 15 버전: 경고 후 무시.<br>
-리액트 16 버전: 문자열로 값 변경 후 DOM에 전달.<br>
-참고: on으로 시작하는 속성은 잠재적인 보안 문제가 될 수 있으므로 예외 처리 후 전달되지 않음.
-
 
 - 리액트에 정의된 것과 다른 이름으로 사용된 알려진 속성일 경우:
 ``` javascript
 <div tabindex="-1" />
 <div class="hi" />
-```
-리액트 15 버전: 경고 후 무시.<br>
-리액트 16 버전: 경고하지만, 문자열로 값 변경 후 DOM에 전달.<br>
-참고: 지원되는 모든 속성에 대해 항상 리액트 네이밍을 사용.
 
+	리액트 15 버전: 경고 후 무시.
+	리액트 16 버전: 경고하지만, 문자열로 값 변경 후 DOM에 전달.
+	참고: 지원되는 모든 속성에 대해 항상 리액트 네이밍을 사용.
+```
 
 - 불리언을 가지지 않는 속성에 불리언 값이 들어갔을 경우: 
 ``` javascript
 <div className={false} />
+
+	리액트 15 버전: 문자열로 값 변경 후 DOM에 전달.
+	리액트 16 버전: 경고 후 무시
 ```
-리액트 15 버전: 문자열로 값 변경 후 DOM에 전달.<br>
-리액트 16 버전: 경고 후 무시.<br>
 
 - 이벤트가 아닌 속성에 함수 값이 들어갔을 경우:
 ``` javascript
 <div className={function() {}} />
-```
-리액트 15 버전: 함수를 문자열로 변경 후 DOM에 전달.<br>
-리액트 16 버전: 경고 후 무시.<br>
 
+	리액트 15 버전: 함수를 문자열로 변경 후 DOM에 전달.
+	리액트 16 버전: 경고 후 무시.
+```
 
 - 속성에 심볼 값이 들어갔을 경우:
 ``` javascript
 <div className={Symbol('foo')} />
+
+	리액트 15 버전: 오류(크래쉬).
+	리액트 16 버전: 경고 후 무시.
 ```
-리액트 15 버전: 오류(크래쉬).<br>
-리액트 16 버전: 경고 후 무시.<br>
 
 - 속성에 NaN 값이 들어갔을 경우:
 ``` javascript
 <div tabIndex={0 / 0} />
-```
-리액트 15 버전: NaNs를 문자열로 변경 후 DOM에 전달.<br>
-React 16: 경고 후 NaNs를 문자열로 변경 후 DOM에 전달. <br>
 
+	리액트 15 버전: NaNs를 문자열로 변경 후 DOM에 전달.
+	React 16: 경고 후 NaNs를 문자열로 변경 후 DOM에 전달. 
+```
 
 이번 배포를 테스트하는 동안 잠재적 회귀를 추적하기 위해 [모든 알려진 속성에 대해 자동으로 생성된 테이블](https://github.com/facebook/react/blob/master/fixtures/attribute-behavior/AttributeTableSnapshot.md)을 만들었다.
