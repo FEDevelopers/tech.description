@@ -1,5 +1,5 @@
 # 리액트 16 버전에서의 DOM 속성
-> > 이 문서는 https://reactjs.org/blog/2017/09/08/dom-attributes-in-react-16.html 를 번역한 내용입니다.
+> 이 문서는 https://reactjs.org/blog/2017/09/08/dom-attributes-in-react-16.html 를 번역한 내용입니다.
 
 
 과거 알 수 없는 DOM 속성의 경우 리액트에서는 렌더링이 무시됐었다. 만약 당신이 JSX로 속성을 썼었다면 리액트는 인지하지 못하고 그 부분을 지나쳤었다. 예를 들면 이렇다.
