@@ -462,13 +462,13 @@ process.stdin
 아래는 파일 압축 스크립트를 생성하기 위해 `fs` 읽기/쓰기 가능한 스트림과 함께 `zlib.crateGzip()` 스트림을 함께 사용하는 예제입니다.
 
 ```js
-const fs = require('js');
+const fs = require('fs');
 const zlib = require('zlib');
 const file = procdss.argv[2];
 
-fs.createReadString(file)
+fs.createReadStream(file)
   .pipe(zlib.createGzip())
-  .pipe(fs.createWriteString(file + '.gz'));
+  .pipe(fs.createWriteStream(file + '.gz'));
 ```
 
 인자로 전달한 파일을 gzip으로 압축하기 위해 이 스크립트를 사용할 수 있습니다. 파일을 zlib 빌트인 트랜스폼 스트림으로 넣기 위해 읽기  스트림을 연결했고, 새로운 gzip 파일을 위해 읽기 스트림을 연결했습니다. 간단하죠?
