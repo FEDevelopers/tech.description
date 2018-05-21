@@ -25,7 +25,6 @@
 
 
 ## 5. 간접 실행
-Indirect invocation is performed when a function is called using .call() or .apply() methods.
 간접 실행은 함수가 .call()이나 .apply() 메소드와 함께 호출될 때 수행된다. 
 
 
@@ -321,7 +320,7 @@ walkPeriod.format(); // => 'undefined hours and undefined minutes'
 ```
 
 
-format은 화살표 함수고, 전역 문맥에 정의 되었기 때문에 여기서의 thissms window 객체를 가리키게 된다.
+format은 화살표 함수고, 전역 문맥에 정의 되었기 때문에 여기서의 this는 window 객체를 가리키게 된다.
 
 심지어 메소드 호출 형태로 실행 되더라도 여기서의 문맥은 window다. 왜냐하면 화살표 함수는 어떠한 실행 타입이더라도 변하지 않는 정적 문맥을 가지기 때문이다.
 
