@@ -57,7 +57,7 @@
 
 프론트엔드 워크플로우 자동화를 위해 여러분이 사용할 수 있는 도구는 많습니다. 대부분 [Node.js](https://nodejs.org/en/) & [NPM](https://www.npmjs.com/) 에코 시스템에 의존하요. 중요한 것은 작업에 적합한 도구를 사용하는 겁니다.
 
-![작업에 적합한 도구](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1522/the-right-tool-for-the-job_3c8d66c9a285fd34aad328227c5ba765.jpg)
+![작업에 적합한 도구](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/the-right-tool-for-the-job.jpg.webp)
 
 [JAMstack](https://jamstack.org/) 스타일을 위한 [React](https://facebook.github.io/react/)나 [Vue](https://vuejs.org/)를 이용한 자바스크립트 중심의 프로젝트는 [webpack](https://webpack.github.io/)을 사용하겠죠. 스캐폴딩과 코드 스플리팅(code splitting)이나 핫 모듈 리로딩 같은 고급 기능들 때문에 말이죠. 하지만 웹팩을 효과적으로 사용하기 위해서는 모듈 번들러로만 사용하지 말고 모듈 로더로 사용할 필요가 있습니다. 
 
