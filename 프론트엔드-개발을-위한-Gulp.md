@@ -2,7 +2,7 @@
 
 > Gulp는 멋진 작업을 빠르게 수행할수 있도록 도와주는 워크 플로우 자동화 도구에요. 이 글은 프론트엔드 개발을 위한 사용방법에 대해 설명합니다.
 
-![gulp logo](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1449/gulp-logo_3c8d66c9a285fd34aad328227c5ba765.jpg)
+![gulp logo](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/gulp-logo.jpg.webp)
 
 웹사이트 개발이 점점 복잡해지는만큼 프론트엔드 워크플로우 자동화 도구는 필수입니다. Gulp는 그러한 도구 중에 하나이죠.
 
@@ -14,7 +14,7 @@
 
 이러한 복잡성을 해결하기 위해 조립라인 같은 프론트엔드 워크플로우 자동화 도구를 만들수 있고, 우리를 위한 모든 조각들을 서로 배치할수 있어요.
 
-![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1517/automated-assembly-line_3c8d66c9a285fd34aad328227c5ba765.jpg)
+![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/general-philosophy.jpg.webp)
 
 컴퓨터는 해야할 목록이 주어지면 매 시간마다 결정론적 방법으로 그것들을 수행하는 것을 매우 잘 수행합니다. 이러한 것은 인간이 잘하지 못하는 거죠. 대신 우리는 높은 수준의 아키텍처와 창의적인 생각을 더 잘 할수 있습니다.
 
@@ -107,7 +107,7 @@ Tangent: 왜 모든 프론트엔드 자동화 도구는 Node.js를 사용할까�
 
 프로젝트가 어떻게 보이는지 살펴보는 것이 좋겠네요. 폴더 사용과 전체 구조 측면에서 말이죠. 
 
-![나무](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1568/bonsai-project-tree_7eff2ce273ae45bc37d818ef6ec9de7c.jpg)
+![나무](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/bonsai-project-tree.jpg.webp)
 
 제 프로젝트 루트 디렉토리는 다음과 같아요.
 
