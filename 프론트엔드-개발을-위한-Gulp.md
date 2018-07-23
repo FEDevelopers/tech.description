@@ -14,7 +14,7 @@
 
 이러한 복잡성을 해결하기 위해 조립라인 같은 프론트엔드 워크플로우 자동화 도구를 만들수 있고, 우리를 위한 모든 조각들을 서로 배치할수 있어요.
 
-![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/general-philosophy.jpg.webp)
+![공장의 조립 라인](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/automated-assembly-line.jpg.webp)
 
 컴퓨터는 해야할 목록이 주어지면 매 시간마다 결정론적 방법으로 그것들을 수행하는 것을 매우 잘 수행합니다. 이러한 것은 인간이 잘하지 못하는 거죠. 대신 우리는 높은 수준의 아키텍처와 창의적인 생각을 더 잘 할수 있습니다.
 
@@ -83,7 +83,7 @@ Tangent: 왜 모든 프론트엔드 자동화 도구는 Node.js를 사용할까�
 
 실제 `gulpfile.js`의 핵심에 들어가기 전에 웹사이트 구축에 대한 일반 철학을 이해하는 것이 중요해요. `gulpfile.js`는 이러한 웹사이트를 구축하는데 도움을 주는 것이므로 저의 전반적인 접근을 이해하는 것이 좋을것 같군요.
 
-![General Philosophy](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/imager/img/blog/1542/general-philosophy_3c8d66c9a285fd34aad328227c5ba765.jpg)
+![General Philosophy](https://nystudio107-ems2qegf7x6qiqq.netdna-ssl.com/img/blog/_1200x675_crop_center-center_82_line/general-philosophy.jpg.webp)
 
 일반적으로, 제가 일하는 웹사이트는 [PRPL 패턴](https://developers.google.com/web/fundamentals/performance/prpl-pattern/)을 따릅니다. 초기에 렌더링이 필요한 부분만 로딩하고 필요한 리소스를 프리패치해서 모든것을 비동기적으로 게으른 로딩으로 처리합니다. 
 
