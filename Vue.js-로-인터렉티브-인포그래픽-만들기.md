@@ -81,8 +81,7 @@ Tour De France  —  Interactive bicycle listing game stages (rear-wheel) an
 
 2개 데이터셋와 러프한 자전거 그림이 준비되었고, 인포그래픽의 정적 SVG CodePen 이 다음과 같다.
 
-<iframe height='291' scrolling='no' title='Static Bicycle SVG' src='//codepen.io/krutie/embed/QZMVOX/?height=291&theme-id=0&default-tab=html,result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='https://codepen.io/krutie/pen/QZMVOX/'>Static Bicycle SVG</a> by Krutie (<a href='https://codepen.io/krutie'>@krutie</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+https://codepen.io/krutie/pen/QZMVOX/
 
 우리는 데이터셋에서 레코드당 나머지 활대를 동적으로 생성하고 *GreenSock* 라이브러리로 애니메이션 하기 때문에, 휠당 하나의 활대만 만들었습니다. 
 
@@ -127,8 +126,7 @@ Less is more - 비슷한 프로젝트를 할때에 해야할 접근 방식이어
 
 자전거 바퀴 주변에 곡선 경로를 기억해라, 그 곡선 경로는 자전거 휠 반경보다 조금 더 크다. 그러므로, 이 경로에서 텍스트를 애니메이션 하면 휠 모양으로 따라가게 되는 것처럼 보일 것이다.
 
-<iframe height='265' scrolling='no' title='Text on a Curved Path' src='//codepen.io/krutie/embed/zmPzvj/?height=265&theme-id=0&default-tab=html,result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='https://codepen.io/krutie/pen/zmPzvj/'>Text on a Curved Path</a> by Krutie (<a href='https://codepen.io/krutie'>@krutie</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+https://codepen.io/krutie/pen/zmPzvj
 
 `path` 와 `textPath` 는 ` xlink:href` 속성을 사용 하여 어느 경로든 텍스트를 세팅 할 수 있는 SVG 요소의 좋은 조합이다.
 
@@ -172,8 +170,7 @@ tl.fromTo( ".stageDetail", 1,
 2. 데이터 기반으로 동적으로 활대 정렬
 3. 스테이지(활대) 클릭시 활대 재 정렬
 
-<iframe height='265' scrolling='no' title='TDF Wheel Animation ' src='//codepen.io/krutie/embed/xyLmdR/?height=265&theme-id=0&default-tab=js,result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='https://codepen.io/krutie/pen/xyLmdR/'>TDF Wheel Animation </a> by Krutie (<a href='https://codepen.io/krutie'>@krutie</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+https://codepen.io/krutie/pen/xyLmdR
 
 위 SVG CodePen 에서 활대는 SVG 직사각형과 텍스트가 그룹화된 것임을 알 수 있다. 텍스트와 활대가 함께 애니메이션 되기 위한 목적으로 그룹화 하였다.
 
@@ -332,5 +329,4 @@ Mixins내에 Vuex Store에 접근 할 수 있으므로, 모든 GSAP 함수는 `s
 
 인터렉티브하고 멋진 인포그래픽을 만들기 위해선 데이터를 분석해야하고, 창의적인 비쥬얼과 효율적인 기술인 Vue.js 이어야 한다. 당신의 프로젝트에서 이 컨셉을 더 사용 할 수 있다. 마지막으로 우리가 했던 유사하게 만든 원형 인터렉티브 컬러 휠을 두겠다.
 
-<iframe height='265' scrolling='no' title='Material UI Circular Colour Palette made with Vue JS and GSAP ' src='//codepen.io/krutie/embed/LjWRqZ/?height=265&theme-id=0&default-tab=js,result' frameborder='no' allowtransparency='true' allowfullscreen='true' style='width: 100%;'>See the Pen <a href='https://codepen.io/krutie/pen/LjWRqZ/'>Material UI Circular Colour Palette made with Vue JS and GSAP </a> by Krutie (<a href='https://codepen.io/krutie'>@krutie</a>) on <a href='https://codepen.io'>CodePen</a>.
-</iframe>
+https://codepen.io/krutie/pen/LjWRqZ
