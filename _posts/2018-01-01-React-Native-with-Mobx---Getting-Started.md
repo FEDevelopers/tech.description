@@ -92,7 +92,7 @@ export default observableListStore;
 
 이제 *store* 를 생성하였고, 앱에 index파일로 이동하여 *store* 를 사용하기 위해 진입점을 수정하고, *Navigation* 을 생성하여 추가한다.
 
-````javascript
+``` javascript
 import React, { Component } from 'react';
 import {
   AppRegistry,
@@ -118,19 +118,14 @@ export default class ReactNativeMobX extends Component {
             <Navigator
                 configureScene={this.configureScene.bind(this)}
                 renderScene={this.renderScene.bind(this)}
-                initialRoute={{
-                    component: App,
-                    passProps: {
-                        store: ListStore
-                    }
-                }}
+                initialRoute={{component: App, passProps: {store: ListStore}}}
             />
         );
     }
 }
 
 AppRegistry.registerComponent('ReactNativeMobX', () => ReactNativeMobX);
-````
+```
 
 index파일에 기본 `navigation` 상태와 새롭게 만든 *store* 를 등록 하였고, `initialRoute`에 props로 *store* 를 전달한다. 또한 초기 route는 아직 생성하지 않은 `App`컴포넌트로 설정하였다. 이제 `App` 컴포넌트는 props로 *store* 에 접근 할 수 있게 되었다.  
 `configureScene`에서 타입이 `Modal`인지 체크하고, 맞다면 우리는 *SceneConfigs* 중 *FloatFromBottom* 을 호출하여 다음 장면을 Modal로 보여준다.  
@@ -138,7 +133,7 @@ index파일에 기본 `navigation` 상태와 새롭게 만든 *store* 를 등록
 
 `app/App.js`:
 
-````javascript
+``` javascript
 import React, { Component } from 'react';
 import { View, Text, TextInput, TouchableHighlight, StyleSheet } from 'react-native';
 import {observer} from 'mobx-react/native';
@@ -292,7 +287,7 @@ const styles = StyleSheet.create({
 });
 
 export default TodoList;
-````
+```
 
 나는 최대한 이 파일에서 진행되는 것들에 대해 설명하려고 노력할 것이다. 질문이 있거나, 명확하지 않은 부분에 대해 의견을 남기면된다.
 
