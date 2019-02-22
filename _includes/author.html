@@ -1,0 +1,13 @@
+{% assign author = site.data.authors[page.author] %}
+
+{% if author %}
+<div class="author">
+    {% if author.web %}
+      작성자: <a href="{{ author.web }}" target="_blank">{{ author.name }}</a>
+    {% else if author.email %}
+      작성자: <a href="mailto:{{ author.email }}" target="_blank">{{ author.name }}</a>
+    {% else %}
+      작성자: {{ author.name }}
+    {% endif %}
+</div>
+{% endif %}
