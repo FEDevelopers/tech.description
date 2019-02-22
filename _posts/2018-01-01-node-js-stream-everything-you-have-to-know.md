@@ -1,6 +1,7 @@
 ---
 layout: post
 title: Node.js Stream 당신이 알아야할 모든 것
+author: jeonghwan_kim
 ---
 
 > 원본: [https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93](https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93)
