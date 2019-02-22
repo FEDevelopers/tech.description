@@ -1,7 +1,7 @@
 ---
 layout: post
 title: Node.js Stream 당신이 알아야할 모든 것
-author: jeonghwan_kim
+translater: jeonghwan_kim
 ---
 
 이 글은 Samer Buna의 [Node.js Streams: Everything you need to know](https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93)를 번역한 포스트입니다.

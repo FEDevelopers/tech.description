@@ -1,0 +1,13 @@
+{% assign translater = site.data.translaters[page.translater] %}
+
+{% if translater %}
+<div class="date">
+    {% if translater.web %}
+      Translated by <a href="{{ translater.web }}" target="_blank">{{ translater.name }}</a>
+    {% else if translater.email %}
+      Translated by <a href="mailto:{{ translater.email }}" target="_blank">{{ translater.name }}</a>
+    {% else %}
+      Translated by {{ translater.name }}
+    {% endif %}
+</div>
+{% endif %}
