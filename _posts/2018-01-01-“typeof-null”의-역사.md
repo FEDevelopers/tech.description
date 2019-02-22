@@ -1,3 +1,8 @@
+---
+layout: post
+translater: hunyong_song
+---
+
 > 이 문서는 http://2ality.com/2013/10/typeof-null.html를 번역한 것입니다.
 
 

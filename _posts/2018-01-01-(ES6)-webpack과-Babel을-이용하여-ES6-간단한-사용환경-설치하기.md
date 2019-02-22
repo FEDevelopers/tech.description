@@ -1,9 +1,3 @@
----
-layout: post
-title: Node.js Stream 당신이 알아야할 모든 것
-translater: jeonghwan_kim
----
-
 **[원본링크가기](https://leanpub.com/setting-up-es6/read#sec_webpack-babel)**
 
 역자: ES6를 로컬에서 간단하게 사용하기위한 방법이 잘 정리되어 있는거 같아 번역해보았습니다 :)

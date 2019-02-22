@@ -1,3 +1,8 @@
+---
+layout: post
+translater: hunyong_song
+---
+
 > 해당 문서는 https://code-cartoons.com/hot-reloading-and-time-travel-debugging-what-are-they-3c8ed2812f35#.h493rgis2 를 번역한 내용입니다.
 
 

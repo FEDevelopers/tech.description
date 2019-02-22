@@ -1,3 +1,8 @@
+---
+layout: post
+translater: hunyong_song
+---
+
 > 이 문서는 http://moduscreate.com/webpack-2-tree-shaking-configuration/ 를 번역한 내용입니다.
 
 

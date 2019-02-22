@@ -1,3 +1,8 @@
+---
+layout: post
+translater: hunyong_song
+---
+
 > 이 문서는 http://www.2ality.com/2012/04/arrow-functions.html 를 번역한 내용입니다.
 
 
