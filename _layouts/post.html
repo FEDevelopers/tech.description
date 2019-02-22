@@ -13,13 +13,6 @@ layout: default
     Written on {{ page.date | date: "%B %e, %Y" }}
   </div>
 
-  {% assign author = site.data.authors[page.author] %}
-  <!-- Output author details if some exist. -->
-  {% if author %}
-  <div class="author">
-    작성자 <a href="{{ author.web }}" target="_blank">{{ author.name }}</a>
-  </div>
-  {% endif %}
-
+  {% include author.html %}
   {% include disqus.html %}
 </article>
