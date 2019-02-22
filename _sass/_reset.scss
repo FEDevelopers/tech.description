@@ -51,3 +51,53 @@ table {
 *, *:before, *:after {
   -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
 }
+
+
+.pagination-wrapper {
+	text-align: center;
+}
+
+.pagination {
+	display: inline-block;
+	margin: 0 0 2rem;
+}
+
+.pagination a,
+.pagination span {
+	border-radius: 3px;
+	float: left;
+	height: 36px;
+	line-height: 36px;
+	width: 30px;
+}
+
+a.pagination-step,
+span.pagination-step {
+	padding: 0 10px;
+	width: auto;
+}
+
+.pagination-first,
+.pagination-last,
+.pagination-more {
+	display: none;
+}
+
+.pagination .active {
+	background: #ddd;
+	color: #fff;
+}
+
+@media (min-width: 38em) {
+	.pagination-first,
+	.pagination-last,
+	.pagination-more {
+		display: block;
+	}
+
+	a.pagination-step,
+	span.pagination-step {
+		padding: 0 15px;
+		width: auto;
+	}
+}
