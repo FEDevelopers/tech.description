@@ -4,7 +4,8 @@ title: Node.js Stream 당신이 알아야할 모든 것
 author: jeonghwan_kim
 ---
 
-> 원본: [https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93](https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93)
+이 글은 Samer Buna의 [Node.js Streams: Everything you need to know](https://medium.freecodecamp.com/node-js-streams-everything-you-need-to-know-c9141306be93)를 번역한 포스트입니다.
+오역이나 오타 등 고칠내용을 발견하시면 댓글 부탁드립니다.
 
 ![](https://cdn-images-1.medium.com/max/2000/1*xGNVMFqXXTeK7ZyK2eN21Q.jpeg)
 
