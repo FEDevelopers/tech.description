@@ -1,1 +1,0 @@
-- 번역 문서를 읽는 중, 오타나 어색한 문장이 있으면 [이슈](https://github.com/FEDevelopers/tech.description/issues)를 등록해주세요!
